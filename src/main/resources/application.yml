@@ -1,0 +1,18 @@
+server:
+  port: 80
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/yummy?characterEncoding=UTF-8&useSSL=true&serverTimezone=GMT%2B8
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+
+yummy-system:
+  #单笔最小支付限额
+  min-payment: 0.01
