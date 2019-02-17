@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 商家登录</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+请输入登录信息
+<table>
+    <tr>
+        <th>账号:</th>
+        <th><input id="restaurant-id"></th>
+    </tr>
+    <tr>
+        <th>密码:</th>
+        <th><input id="restaurant-password" type="password"></th>
+    </tr>
+</table>
+
+<button id="restaurant-login-button">登录</button>
+<a href="/restaurant/register">注册餐厅</a>
+<p id="restaurant-info" style="color: red"></p>
+<script th:src="@{/js/restaurantLogin.js}"></script>
+</body>
+</html>

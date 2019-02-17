@@ -25,22 +25,22 @@ public class Order {
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp()")
     private Date date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "customer_email")
     private Customer customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Set<OrderDetail> details;
 
     /**
      * 该订单生效的满减策略
      */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "strategy_id")
     private RestaurantStrategy strategy;
 

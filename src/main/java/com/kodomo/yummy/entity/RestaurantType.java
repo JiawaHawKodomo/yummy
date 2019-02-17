@@ -22,7 +22,7 @@ public class RestaurantType {
     @Column(unique = true)
     private String content;
 
-    @ManyToMany(targetEntity = Restaurant.class, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "_relationship_restaurant_to_type",
             joinColumns = {@JoinColumn(name = "restaurant_id")},
             inverseJoinColumns = {@JoinColumn(name = "type_id")})

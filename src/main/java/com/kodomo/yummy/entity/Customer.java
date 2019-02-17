@@ -2,10 +2,8 @@ package com.kodomo.yummy.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author Shuaiyu Yao
@@ -22,5 +20,11 @@ public class Customer {
     private String name;
     private String telephone;
     @Column(name = "state", nullable = false, columnDefinition = "integer default 0")
-    private CustomerState state;
+    private UserState state;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @JoinTable(name = "_relationship_customer_to_location",
+            joinColumns = {@JoinColumn(name = "customer_email")},
+            inverseJoinColumns = {@JoinColumn(name = "location_id")})
+    private Set<Location> locations;//多对多单向
 }

@@ -20,7 +20,7 @@ public class OrderDetail {
     private Integer id;
     @Column(nullable = false)
     private Integer quantity;//购买数量
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "offering_id", nullable = false)
     private Offering offering;//购买商品
 

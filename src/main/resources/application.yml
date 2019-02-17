@@ -10,9 +10,19 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: true
 
 
 yummy-system:
-  #单笔最小支付限额
   min-payment: 0.01
+  pay-time: 15
+  activating-link: localhost/activate/
+
+lbs:
+  key: HYVBZ-QI7C5-EBFIA-QJMEN-DAVT2-S7B4Q
+
+smtp:
+  key: goulheucygtrbjci
+  email: 260386109@qq.com

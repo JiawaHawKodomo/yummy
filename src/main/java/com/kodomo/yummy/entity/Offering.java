@@ -25,7 +25,7 @@ public class Offering {
     private Double price;
     private String note;//商家备注
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 

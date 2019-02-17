@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 验证结果</title>
+</head>
+<body>
+<div th:if="${state}==true">
+    验证成功
+</div>
+<div th:unless="${state==true}">
+    验证失败
+</div>
+</body>
+</html>

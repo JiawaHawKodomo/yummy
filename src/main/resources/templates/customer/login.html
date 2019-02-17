@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 登录</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+Yummy登录, 若未注册则自动注册
+<table>
+    <tr>
+        <td>邮箱:</td>
+        <td>
+            <input id="customer-email-input">
+        </td>
+    </tr>
+    <tr>
+        <td>密码:</td>
+        <td>
+            <input id="customer-password-input" type="password">
+        </td>
+    </tr>
+</table>
+<button id="login-button">登录</button>
+</body>
+<script th:src="@{/js/customerLogin.js}"></script>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 商家注册</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+
+请输入您的信息:
+<table>
+    <tr>
+        <th>餐厅名称:</th>
+        <th><input id="restaurant-name"></th>
+    </tr>
+    <tr>
+        <th>设置密码:</th>
+        <th><input id="restaurant-password" type="password"></th>
+    </tr>
+    <tr>
+        <th>电话号码:</th>
+        <th><input id="restaurant-telephone"></th>
+    </tr>
+    <tr>
+        <th>营业时间:</th>
+        <th><input id="business-hours" placeholder="格式如09:00-21:00"></th>
+    </tr>
+    <tr>
+        <th>餐厅类型:</th>
+        <th><input id="restaurant-type"></th>
+    </tr>
+    <tr>
+        <th>备注说明:</th>
+        <th><textarea id="note" placeholder="请填写向客户展示的说明" maxlength="240"></textarea></th>
+    </tr>
+</table>
+
+<p>选择餐厅地点</p>
+<!--/*@thymesVar id="lbsKey" type="String"*/-->
+<iframe id="mapPage" width="500px" height="500px" frameborder=0
+        th:src="'https://apis.map.qq.com/tools/locpicker?search=1&type=1&key='+${lbsKey}+'&referer=myapp'">
+</iframe>
+<p>
+    <button id="submit-button">提交</button>
+</p>
+<p id="response-p" style="color: red"></p>
+<script th:src="@{/js/restaurantRegister.js}"></script>
+</body>
+</html>
