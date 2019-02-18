@@ -1,6 +1,8 @@
 package com.kodomo.yummy.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,7 +11,8 @@ import javax.persistence.*;
  * @author Shuaiyu Yao
  * @create 2019-02-13 15:10
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "order_detail")
 public class OrderDetail {
@@ -32,5 +35,14 @@ public class OrderDetail {
     public double getTotalPrice() {
         if (quantity == null) return 0;
         return getSinglePrice() * quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDetail{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", offering=" + offering.getName() +
+                '}';
     }
 }

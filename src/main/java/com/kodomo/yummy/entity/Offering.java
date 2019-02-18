@@ -1,6 +1,8 @@
 package com.kodomo.yummy.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,7 +13,8 @@ import java.util.Date;
  * @create 2019-02-13 14:29
  */
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "offering_info")
 public class Offering {
 
@@ -26,7 +29,6 @@ public class Offering {
     private String note;//商家备注
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
     @Column(name = "start_time", columnDefinition = "timestamp default current_timestamp()", updatable = false)
@@ -47,5 +49,17 @@ public class Offering {
      */
     public boolean isOnSale() {
         return endTime == null || endTime.after(new Date());
+    }
+
+    @Override
+    public String toString() {
+        return "Offering{" +
+                "offeringId=" + offeringId +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", note='" + note + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
     }
 }

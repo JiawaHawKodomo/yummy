@@ -3,9 +3,16 @@ package com.kodomo.yummy.bl.restaurant;
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.UserState;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
@@ -24,8 +31,8 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     }
 
     @Override
-    public Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point) throws ParamErrorException {
-        return restaurantCreator.createNewRestaurantForDatabase(name, password, tel, time, type, note, city, lat, lng, block, point);
+    public Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException {
+        return restaurantCreator.createNewRestaurantForDatabase(name, password, tel, time, type, note, city, lat, lng, block, point, addressNote);
     }
 
     @Override
@@ -44,6 +51,28 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
             }
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * 按状态获取餐厅信息
+     *
+     * @param state state
+     * @return list
+     */
+    @Override
+    public List<Restaurant> getRestaurantByState(UserState state) {
+        if (state == null) {
+            return new ArrayList<>();
+        }
+
+        Restaurant example = new Restaurant();
+        example.setState(state);
+        try {
+            return restaurantDao.findAll(Example.of(example), Sort.by(Sort.Direction.ASC, "registerTime"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 }

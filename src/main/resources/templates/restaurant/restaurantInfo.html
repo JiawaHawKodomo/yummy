@@ -5,6 +5,8 @@
     <title>Yummy! 商家信息</title>
 </head>
 <body>
+<a href="/restaurant/logout">登出</a>
+
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
 <!--/*@thymesVar id="UserState" type="com.kodomo.yummy.entity.UserState"*/-->
 <p th:text="'账号:'+${session.restaurant.getRestaurantId()+',这是唯一的登录入口, 请牢记'}"></p>

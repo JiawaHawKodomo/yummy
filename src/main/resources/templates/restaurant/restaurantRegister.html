@@ -13,32 +13,37 @@
 请输入您的信息:
 <table>
     <tr>
-        <th>餐厅名称:</th>
-        <th><input id="restaurant-name"></th>
+        <td>餐厅名称:</td>
+        <td><input id="restaurant-name">*</td>
     </tr>
     <tr>
-        <th>设置密码:</th>
-        <th><input id="restaurant-password" type="password"></th>
+        <td>设置密码:</td>
+        <td><input id="restaurant-password" type="password">*</td>
     </tr>
     <tr>
-        <th>电话号码:</th>
-        <th><input id="restaurant-telephone"></th>
+        <td>再次输入密码:</td>
+        <td><input id="restaurant-password2" type="password">*</td>
     </tr>
     <tr>
-        <th>营业时间:</th>
-        <th><input id="business-hours" placeholder="格式如09:00-21:00"></th>
+        <td>电话号码:</td>
+        <td><input id="restaurant-telephone">*</td>
     </tr>
     <tr>
-        <th>餐厅类型:</th>
-        <th><input id="restaurant-type"></th>
+        <td>营业时间:</td>
+        <td><input id="business-hours" placeholder="格式如09:00-21:00">*</td>
     </tr>
     <tr>
-        <th>备注说明:</th>
-        <th><textarea id="note" placeholder="请填写向客户展示的说明" maxlength="240"></textarea></th>
+        <td>餐厅类型:</td>
+        <td><input id="restaurant-type">*</td>
+    </tr>
+    <tr>
+        <td>备注说明:</td>
+        <td><textarea id="note" placeholder="请填写向客户展示的说明" maxlength="240"></textarea></td>
     </tr>
 </table>
 
 <p>选择餐厅地点</p>
+<div>地址备注:<textarea id="restaurant-address" placeholder="如果选择的地址信息不准确, 请填写地址信息备注"></textarea></div>
 <!--/*@thymesVar id="lbsKey" type="String"*/-->
 <iframe id="mapPage" width="500px" height="500px" frameborder=0
         th:src="'https://apis.map.qq.com/tools/locpicker?search=1&type=1&key='+${lbsKey}+'&referer=myapp'">

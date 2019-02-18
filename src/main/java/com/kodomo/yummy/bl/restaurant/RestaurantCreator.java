@@ -38,19 +38,20 @@ public class RestaurantCreator {
     /**
      * 创建Restaurant实体对象, 检查合法性
      *
-     * @param name  name
-     * @param tel   tel
-     * @param time  time
-     * @param type  type
-     * @param note  note
-     * @param city  city
-     * @param lat   lat
-     * @param lng   lng
-     * @param block block
-     * @param point point
+     * @param name        name
+     * @param tel         tel
+     * @param time        time
+     * @param type        type
+     * @param note        note
+     * @param city        city
+     * @param lat         lat
+     * @param lng         lng
+     * @param block       block
+     * @param point       point
+     * @param addressNote addressNote
      * @return restaurant对象
      */
-    Restaurant createNewRestaurantForDatabase(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point) throws ParamErrorException {
+    Restaurant createNewRestaurantForDatabase(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException {
         StringBuilder errorInfo = new StringBuilder();
         if (name == null || name.equals("")) {
             errorInfo.append("名称填写错误").append(System.lineSeparator());
@@ -107,6 +108,7 @@ public class RestaurantCreator {
         location.setLng(lng);
         location.setBlockInfo(block);
         location.setPointInfo(point);
+        location.setNote(addressNote);
         restaurant.setLocation(location);
 
         //存储

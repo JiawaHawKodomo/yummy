@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 管理页面</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<a href="/management/logout">登出</a>
+<p style="color: red">退出系统时请务必登出</p>
+
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+<div>
+    <p>添加管理员</p>
+    <table>
+        <tr>
+            <th>账号:</th>
+            <th><input id="manager-register-id"></th>
+        </tr>
+        <tr>
+            <th>密码:</th>
+            <th><input id="manager-register-password" type="password"></th>
+        </tr>
+        <tr>
+            <th>再次输入:</th>
+            <th><input id="manager-register-password2" type="password"></th>
+        </tr>
+    </table>
+    <button id="manager-register-button">提交</button>
+    <p id="manager-register-info" style="color: red"></p>
+</div>
+
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+
+<div>
+    <p>审批餐厅</p>
+    <table border="5" cellpadding="10">
+        <tr>
+            <th>餐厅编号</th>
+            <th>餐厅名称</th>
+            <th>申请时间</th>
+            <th>营业时间</th>
+            <th>餐厅类型</th>
+            <th>备注说明</th>
+            <th>城市</th>
+            <th>具体地点</th>
+            <th>地点备注</th>
+            <th>操作</th>
+        </tr>
+        <!--/*@thymesVar id="unactivatedRestaurant" type="java.util.List"*/-->
+        <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+        <tr th:each="restaurant:${unactivatedRestaurant}">
+            <td th:text="${restaurant.getRestaurantId()}"></td>
+            <td th:text="${restaurant.getName()}"></td>
+            <td th:text="${restaurant.getRegisterTime()}"></td>
+            <td th:text="${restaurant.getBusinessHours()}"></td>
+            <td th:text="${restaurant.getTypeByString()}"></td>
+            <td th:text="${restaurant.getNote()}"></td>
+            <td th:text="${restaurant.getCity()}"></td>
+            <td th:text="${restaurant.getBlockInfo()+restaurant.getPointInfo()}"></td>
+            <td th:text="${restaurant.getLocationNote()}"></td>
+            <td th:id="'td-'+${restaurant.getRestaurantId()}">
+                <button class="restaurant-pass-button" th:id="'pass-button-'+${restaurant.getRestaurantId()}">通过
+                </button>
+                <button class="restaurant-no-pass-button" th:id="'no-pass-button-'+${restaurant.getRestaurantId()}">
+                    不通过
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script th:src="@{/js/managementInfo.js}"></script>
+</body>
+</html>

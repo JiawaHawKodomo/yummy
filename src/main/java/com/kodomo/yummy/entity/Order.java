@@ -2,6 +2,8 @@ package com.kodomo.yummy.entity;
 
 import com.kodomo.yummy.config.StaticConfig;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,7 +14,8 @@ import java.util.Set;
  * @author Shuaiyu Yao
  * @create 2019-02-13 14:41
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "order_info")
 public class Order {
@@ -58,5 +61,17 @@ public class Order {
         double tmp = getTotalPriceBeforeDiscount() - getDiscount();
         double min = StaticConfig.getMinPayment();
         return tmp < min ? min : tmp;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", date=" + date +
+                ", customer=" + customer.getEmail() +
+                ", restaurant=" + restaurant.getRestaurantId() +
+                ", details=" + details +
+                ", strategy=" + strategy +
+                '}';
     }
 }

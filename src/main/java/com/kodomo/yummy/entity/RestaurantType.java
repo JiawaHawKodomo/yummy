@@ -1,6 +1,8 @@
 package com.kodomo.yummy.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,7 +14,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "restaurant_type")
-@Data
+@Getter
+@Setter
 public class RestaurantType {
 
     @Id
@@ -22,13 +25,18 @@ public class RestaurantType {
     @Column(unique = true)
     private String content;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "_relationship_restaurant_to_type",
-            joinColumns = {@JoinColumn(name = "restaurant_id")},
-            inverseJoinColumns = {@JoinColumn(name = "type_id")})
-    private Set<Restaurant> r;
+    @ManyToMany(mappedBy = "types", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<Restaurant> restaurants;
 
     public boolean isSameWith(String s) {
         return content != null && s != null && content.equals(s);
+    }
+
+    @Override
+    public String toString() {
+        return "RestaurantType{" +
+                "typeId=" + typeId +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

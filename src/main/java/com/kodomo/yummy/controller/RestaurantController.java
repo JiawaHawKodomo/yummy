@@ -58,6 +58,12 @@ public class RestaurantController {
         return result;
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        request.getSession(true).setAttribute("restaurant", null);
+        return "redirect:/";
+    }
+
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("lbsKey", lbsKey);
@@ -78,10 +84,11 @@ public class RestaurantController {
         Double lng = Double.valueOf(request.getParameter("lng"));
         String block = request.getParameter("poiaddress");
         String point = request.getParameter("poiname");
+        String addressNote = request.getParameter("addressNote");
 
         Map<String, Object> result = new HashMap<>();
         try {
-            Restaurant restaurant = restaurantBlService.registerRestaurant(name, password, tel, time, type, note, city, lat, lng, block, point);
+            Restaurant restaurant = restaurantBlService.registerRestaurant(name, password, tel, time, type, note, city, lat, lng, block, point, addressNote);
             result.put("result", true);
             result.put("restaurant", restaurant);
             //添加session信息

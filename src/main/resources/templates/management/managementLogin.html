@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy管理系统登录</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+管理员信息
+<table>
+    <tr>
+        <th>用户名:</th>
+        <th><label for="management-id"></label><input id="management-id"></th>
+    </tr>
+    <tr>
+        <th>密码:</th>
+        <th><label for="management-password"></label><input id="management-password" type="password"></th>
+    </tr>
+</table>
+
+<button id="management-login-button">登录</button>
+<script th:src="@{/js/managementLogin.js}"></script>
+</body>
+</html>

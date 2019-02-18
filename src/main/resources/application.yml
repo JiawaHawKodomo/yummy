@@ -14,11 +14,14 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: true
 
-
 yummy-system:
   min-payment: 0.01
   pay-time: 15
   activating-link: localhost/activate/
+  super-manager:
+    id: root
+    #123456
+    password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92
 
 lbs:
   key: HYVBZ-QI7C5-EBFIA-QJMEN-DAVT2-S7B4Q

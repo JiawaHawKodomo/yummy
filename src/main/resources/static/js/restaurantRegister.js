@@ -6,10 +6,17 @@ $('#submit-button').on('click', submit);
 function submit() {
     const name = $('#restaurant-name').val();
     const password = $('#restaurant-password').val();
+    const password2 = $('#restaurant-password2').val();
     const tel = $('#restaurant-telephone').val();
     const time = $('#business-hours').val();
     const type = $('#restaurant-type').val();
     const note = $('#note').val();
+    const addressNote = $('#restaurant-address').val();
+
+    if (password !== password2) {
+        responseP.html('两次输入的密码不一样');
+        return;
+    }
 
     $.ajax({
         type: 'post',
@@ -25,7 +32,8 @@ function submit() {
             lat: locationInfo.latlng.lat,
             lng: locationInfo.latlng.lng,
             poiaddress: locationInfo.poiaddress,
-            poiname: locationInfo.poiname
+            poiname: locationInfo.poiname,
+            addressNote: addressNote
         },
         success: function (data) {
             console.log(data);

@@ -26,6 +26,7 @@ public class Location {
     private String pointInfo;
     private Double lat;//纬度
     private Double lng;//经度
+    private String note;
 
     private static final double EARTH_RADIUS = 6378137.0;//赤道半径(单位m)
 
@@ -74,5 +75,9 @@ public class Location {
 
     private static double rad(double d) {
         return d * Math.PI / 180.0;
+    }
+
+    public String getInfo() {
+        return city + blockInfo + pointInfo + note;
     }
 }
