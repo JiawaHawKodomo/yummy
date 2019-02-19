@@ -1,4 +1,4 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.entity_enum;
 
 /**
  * 顾客和店家的账号状态

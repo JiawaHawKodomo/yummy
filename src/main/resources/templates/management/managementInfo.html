@@ -36,7 +36,7 @@
 
 <div>
     <p>审批餐厅</p>
-    <table border="5" cellpadding="10">
+    <table border="2" cellpadding="5">
         <tr>
             <th>餐厅编号</th>
             <th>餐厅名称</th>
@@ -50,8 +50,8 @@
             <th>操作</th>
         </tr>
         <!--/*@thymesVar id="unactivatedRestaurant" type="java.util.List"*/-->
-        <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
         <tr th:each="restaurant:${unactivatedRestaurant}">
+            <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
             <td th:text="${restaurant.getRestaurantId()}"></td>
             <td th:text="${restaurant.getName()}"></td>
             <td th:text="${restaurant.getRegisterTime()}"></td>
@@ -70,6 +70,45 @@
             </td>
         </tr>
     </table>
+</div>
+
+<p/>
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+
+<div>
+    <p>制定订单结算策略</p>
+    <div style="color: red">注: 对于阈值一栏, 如果类型为城市, 则表示在该城市执行</div>
+    <!--/*@thymesVar id="currentOrderSettlementStrategy" type="com.kodomo.yummy.entity.OrderSettlementStrategy"*/-->
+    <div th:unless="${currentOrderSettlementStrategy}!=null" style="color: red">
+        无法找到当前策略, 请新建策略
+    </div>
+    <table id="strategy-table" border="2 solid" cellpadding="5">
+        <tr>
+            <th>类型</th>
+            <th>阈值</th>
+            <th>折算率</th>
+            <th>操作
+                <button id="strategy-add-button">添加</button>
+            </th>
+        </tr>
+
+        <th:block th:if="${currentOrderSettlementStrategy}!=null">
+            <tr th:each="strategy:${currentOrderSettlementStrategy.getDetails()}" class="strategy-tr">
+                <td><select>
+                    <option th:selected="${strategy.getType().ordinal()==0}" value="0">城市</option>
+                    <option th:selected="${strategy.getType().ordinal()==1}" value="1">订单数量</option>
+                </select></td>
+                <td><input th:value="${strategy.getKey()}" class="strategy-key-input"></td>
+                <td><input th:value="${strategy.getRate()}" class="strategy-rate-input"></td>
+                <td>
+                    <button class="strategy-remove-button">删除</button>
+                </td>
+            </tr>
+        </th:block>
+    </table>
+    <button id="strategy-save-button">保存</button>
+    <div id="strategy-info-div" style="color: red"></div>
 </div>
 
 <script th:src="@{/js/managementInfo.js}"></script>

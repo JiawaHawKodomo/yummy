@@ -1,7 +1,7 @@
 package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.entity.UserState;
+import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 
 import java.util.List;

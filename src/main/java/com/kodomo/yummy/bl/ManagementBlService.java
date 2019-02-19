@@ -36,4 +36,8 @@ public interface ManagementBlService {
      * @return 结果
      */
     boolean approveRestaurant(String restaurantId, boolean pass) throws UserNotExistsException, UnupdatableException;
+
+
 }
+
+

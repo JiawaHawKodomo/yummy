@@ -6,7 +6,7 @@ import com.kodomo.yummy.dao.RestaurantTypeDao;
 import com.kodomo.yummy.entity.Location;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.RestaurantType;
-import com.kodomo.yummy.entity.UserState;
+import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

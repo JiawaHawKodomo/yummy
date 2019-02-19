@@ -1,13 +1,30 @@
 package com.kodomo.yummy;
 
+import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.dao.CustomerDao;
+import com.kodomo.yummy.dao.OrderSettlementStrategyDao;
 import com.kodomo.yummy.dao.RestaurantDao;
+import com.kodomo.yummy.entity.OrderSettlementStrategy;
 import com.kodomo.yummy.entity.Restaurant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -17,11 +34,18 @@ public class YummyApplicationTests {
     private CustomerDao customerDao;
     @Autowired
     private RestaurantDao restaurantDao;
+    @Autowired
+    private OrderSettlementStrategyDao orderSettlementStrategyDao;
+    @Autowired
+    private OrderBlService orderBlService;
+
+    @Resource
+    private EntityManager entityManager;
 
     @Test
     public void contextLoads() {
-        Restaurant restaurant = restaurantDao.findById(1000000).orElse(null);
-        System.out.println(restaurant.getTypes().size());
+        OrderSettlementStrategy strategy = orderBlService.getCurrentOrderSettlementStrategy();
+        System.out.println(strategy);
     }
 }
 

@@ -3,11 +3,10 @@ package com.kodomo.yummy.bl.restaurant;
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.entity.UserState;
+import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

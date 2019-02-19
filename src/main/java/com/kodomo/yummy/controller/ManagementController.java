@@ -1,21 +1,23 @@
 package com.kodomo.yummy.controller;
 
 import com.kodomo.yummy.bl.ManagementBlService;
+import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.entity.Manager;
-import com.kodomo.yummy.entity.UserState;
+import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.UnupdatableException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,11 +30,13 @@ public class ManagementController {
 
     private final ManagementBlService managementBlService;
     private final RestaurantBlService restaurantBlService;
+    private final OrderBlService orderBlService;
 
     @Autowired
-    public ManagementController(ManagementBlService managementBlService, RestaurantBlService restaurantBlService) {
+    public ManagementController(ManagementBlService managementBlService, RestaurantBlService restaurantBlService, OrderBlService orderBlService) {
         this.managementBlService = managementBlService;
         this.restaurantBlService = restaurantBlService;
+        this.orderBlService = orderBlService;
     }
 
     @GetMapping("/login")
@@ -62,9 +66,16 @@ public class ManagementController {
         return "redirect:/management/login";
     }
 
+    /**
+     * 主页面
+     *
+     * @param model
+     * @return
+     */
     @RequestMapping
     public String management(Model model) {
         model.addAttribute("unactivatedRestaurant", restaurantBlService.getRestaurantByState(UserState.UNACTIVATED));
+        model.addAttribute("currentOrderSettlementStrategy", orderBlService.getCurrentOrderSettlementStrategy());
         return "management/managementInfo";
     }
 
@@ -107,4 +118,29 @@ public class ManagementController {
 
         return result;
     }
+
+    @PostMapping("/orderStrategy")
+    @ResponseBody
+    public Map<String, Object> updateOrderStrategy(HttpServletRequest request, @RequestParam Map<String, String> map) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            Manager manager = (Manager) request.getSession(true).getAttribute("manager");
+            if (manager == null || manager.getManagerId() == null) {
+                //不存在
+                throw new Exception("未登录");
+            }
+
+            String json = map.get("jsonData");
+            JsonParser jsonParser = new JacksonJsonParser();
+            List list = jsonParser.parseList(json);
+
+            orderBlService.saveNewOrderSettlementStrategy(new ArrayList<>(list), manager);
+            result.put("result", true);
+        } catch (Exception e) {
+            result.put("info", e.getMessage());
+        } finally {
+            return result;
+        }
+    }
 }
+

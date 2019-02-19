@@ -1,5 +1,6 @@
 package com.kodomo.yummy.entity;
 
+import com.kodomo.yummy.entity.entity_enum.UserState;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -37,6 +38,8 @@ public class Restaurant {
     private UserState state;//商家状态
     @Column(name = "register_time", updatable = false, columnDefinition = "timestamp default current_timestamp()")
     private Date registerTime;
+    @Column(nullable = false, columnDefinition = "double default 0")
+    private Double balance;
 
     @ManyToMany(targetEntity = RestaurantType.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "_relationship_restaurant_to_type",
@@ -59,6 +62,9 @@ public class Restaurant {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;//多对一单向
+
+    @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private Set<Order> orders;
 
     /**
      * 用String表示营业时间
@@ -115,5 +121,10 @@ public class Restaurant {
     public Double getLng() {
         if (location == null) return null;
         return location.getLng();
+    }
+
+    public double getOrderQuantity() {
+        if (orders == null) return 0;
+        return orders.size();
     }
 }

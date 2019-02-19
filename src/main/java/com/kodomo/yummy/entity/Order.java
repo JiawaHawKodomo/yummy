@@ -44,12 +44,19 @@ public class Order {
      * 该订单生效的满减策略
      */
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "strategy_id")
-    private RestaurantStrategy strategy;
+    @JoinColumn(name = "restaurant_strategy_id")
+    private RestaurantStrategy restaurantStrategy;
+
+    /**
+     * 该订单生效的结算策略
+     */
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "order_settlement_strategy_id")
+    private OrderSettlementStrategy orderSettlementStrategy;
 
     public double getDiscount() {
-        if (strategy == null || strategy.getDiscount() == null) return 0;
-        return strategy.getDiscount();
+        if (restaurantStrategy == null || restaurantStrategy.getDiscount() == null) return 0;
+        return restaurantStrategy.getDiscount();
     }
 
     public double getTotalPriceBeforeDiscount() {
@@ -71,7 +78,8 @@ public class Order {
                 ", customer=" + customer.getEmail() +
                 ", restaurant=" + restaurant.getRestaurantId() +
                 ", details=" + details +
-                ", strategy=" + strategy +
+                ", restaurantStrategy=" + restaurantStrategy +
+                ", orderSettlementStrategy=" + orderSettlementStrategy +
                 '}';
     }
 }

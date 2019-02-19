@@ -5,7 +5,7 @@ import com.kodomo.yummy.dao.ManagerDao;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.entity.UserState;
+import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.UnupdatableException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;

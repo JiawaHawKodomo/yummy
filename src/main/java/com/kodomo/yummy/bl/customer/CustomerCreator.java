@@ -4,7 +4,7 @@ import com.kodomo.yummy.bl.util.MailHelper;
 import com.kodomo.yummy.bl.util.ValidatingHelper;
 import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.entity.UserState;
+import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
