@@ -8,7 +8,7 @@ package com.kodomo.yummy.entity.entity_enum;
  */
 public enum UserState {
 
-    UNACTIVATED("未激活"), ACTIVATED("已激活"), UNSUBSCRIBED("已注销"), NOT_APPROVED("未通过审批");
+    UNACTIVATED("未激活"), ACTIVATED("已激活"), CLOSED("已注销"), NOT_APPROVED("未通过审批");
 
     private final String text;
 

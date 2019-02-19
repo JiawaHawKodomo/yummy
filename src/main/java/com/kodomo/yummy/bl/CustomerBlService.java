@@ -26,4 +26,11 @@ public interface CustomerBlService {
      */
     boolean activate(String code);
 
+    /**
+     * 根据email查询customer
+     *
+     * @param email email
+     * @return entity
+     */
+    Customer getCustomerEntityByEmail(String email);
 }

@@ -38,7 +38,7 @@ public class Restaurant {
     private UserState state;//商家状态
     @Column(name = "register_time", updatable = false, columnDefinition = "timestamp default current_timestamp()")
     private Date registerTime;
-    @Column(nullable = false, columnDefinition = "double default 0")
+    @Column(nullable = false, columnDefinition = "double default 0", insertable = false)
     private Double balance;
 
     @ManyToMany(targetEntity = RestaurantType.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})

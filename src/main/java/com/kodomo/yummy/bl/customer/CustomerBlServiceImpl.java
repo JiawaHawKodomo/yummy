@@ -64,4 +64,15 @@ public class CustomerBlServiceImpl implements CustomerBlService {
             return false;
         }
     }
+
+    /**
+     * 根据email查询customer
+     *
+     * @param email email
+     * @return entity
+     */
+    @Override
+    public Customer getCustomerEntityByEmail(String email) {
+        return customerDao.findById(email).orElse(null);
+    }
 }

@@ -1,6 +1,7 @@
 package com.kodomo.yummy.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,7 +10,8 @@ import javax.persistence.*;
  * @author Shuaiyu Yao
  * @create 2019-02-16 10:04
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "location_info")
 public class Location {
@@ -27,6 +29,9 @@ public class Location {
     private Double lat;//纬度
     private Double lng;//经度
     private String note;
+    @Column(name = "is_in_use", columnDefinition = "boolean default true", insertable = false)
+    private Boolean isInUse;//正在使用
+    private String telephone;//收餐电话, 如果不被用到则为null
 
     private static final double EARTH_RADIUS = 6378137.0;//赤道半径(单位m)
 
@@ -79,5 +84,19 @@ public class Location {
 
     public String getInfo() {
         return city + blockInfo + pointInfo + note;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "locationId=" + locationId +
+                ", city='" + city + '\'' +
+                ", blockInfo='" + blockInfo + '\'' +
+                ", pointInfo='" + pointInfo + '\'' +
+                ", lat=" + lat +
+                ", lng=" + lng +
+                ", note='" + note + '\'' +
+                ", telephone='" + telephone + '\'' +
+                '}';
     }
 }

@@ -22,7 +22,7 @@ public class Customer {
     private String telephone;
     @Column(name = "state", nullable = false, columnDefinition = "integer default 0")
     private UserState state;
-    @Column(nullable = false, columnDefinition = "double default 0")
+    @Column(nullable = false, columnDefinition = "double default 0", insertable = false)
     private Double balance;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH})

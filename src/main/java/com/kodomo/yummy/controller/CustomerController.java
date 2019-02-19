@@ -5,10 +5,8 @@ import com.kodomo.yummy.entity.Customer;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -49,7 +47,7 @@ public class CustomerController {
                 result.put("result", false);
                 result.put("info", "账号或密码不正确");
             } else {
-                request.getSession().setAttribute("customer", customer);
+                request.getSession().setAttribute("customer", customer.getEmail());
                 result.put("result", true);
             }
         } catch (ParamErrorException e) {
@@ -61,15 +59,38 @@ public class CustomerController {
         return result;
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        request.getSession(true).setAttribute("customer", null);
+        return "redirect:/";
+    }
+
     /**
      * 选择地址
      *
      * @return
      */
     @GetMapping("/place")
-    public String place() {
+    public String place(HttpServletRequest request, Model model) {
+        String email = (String) request.getSession(true).getAttribute("customer");
+        Customer customer = customerBlService.getCustomerEntityByEmail(email);
+        model.addAttribute("customer", customer);
         return "customer/place";
     }
 
+    /**
+     * 个人信息
+     *
+     * @param request
+     * @param model
+     * @return
+     */
+    @GetMapping("/info")
+    public String info(HttpServletRequest request, Model model) {
+        String sessionCustomer = (String) request.getSession(true).getAttribute("customer");
+        Customer customer = customerBlService.getCustomerEntityByEmail(sessionCustomer);
+        model.addAttribute("customer", customer);
+        return "customer/info";
+    }
 
 }

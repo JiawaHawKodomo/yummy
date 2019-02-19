@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 个人信息</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+<th:block th:if="${customer}==null">
+    出错了
+</th:block>
+<th:block th:if="${customer}!=null">
+    <div th:replace="customer/head"></div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <!--/*@thymesVar id="isSelf" type="java.lang.Boolean"*/-->
+        <p>确认/修改信息</p>
+        <table>
+            <tr>
+                <td>邮箱</td>
+                <td th:text="${customer.getEmail()}"></td>
+            </tr>
+            <tr>
+                <td>昵称</td>
+                <td>
+                    <label><input th:value="${customer.getName()}" id="info-name-input"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>余额</td>
+                <td th:text="${customer.getBalance()}+'元'"></td>
+            </tr>
+            <tr>
+                <td>电话</td>
+                <td>
+                    <label><input th:value="${customer.getTelephone()}" id="info-telephone-input"></label>
+                </td>
+            </tr>
+        </table>
+        <button id="info-update-button">提交</button>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <p>密码修改</p>
+        <table>
+            <tr>
+                <td>当前密码</td>
+                <td><label for="old-password-input"></label><input type="password" id="old-password-input"></td>
+            </tr>
+            <tr>
+                <td>新密码</td>
+                <td><label for="new-password-input"></label><input type="password" id="new-password-input"></td>
+            </tr>
+            <tr>
+                <td>重复输入新密码</td>
+                <td><label for="new-password-input2"></label><input type="password" id="new-password-input2"></td>
+            </tr>
+        </table>
+        <button id="password-update-button">提交</button>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <p>添加/删除地址</p>
+        <table>
+            <tr>
+                <td>城市</td>
+                <td>地址信息</td>
+                <td>地址备注</td>
+                <td>操作</td>
+            </tr>
+            <tr th:each="location:${customer.getLocations()}">
+                <td th:text="${location.getCity()}"></td>
+                <td th:text="${location.getBlockInfo()}+' '+${location.getPointInfo()}"></td>
+                <td th:text="${location.getNote()}"></td>
+                <td>
+                    <button th:value="${location.getLocationId()}">删除</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <p>用户注销</p>
+        <div style="color: red">注: 账号注销后不可恢复, 不能再进行任何处理, 余额无法退还, 请谨慎处理</div>
+        <div>
+            请输入密码:<label>
+            <input type="password" id="cancellation-password-input">
+        </label>
+        </div>
+        <button id="cancellation-button">确定注销</button>
+    </div>
+</th:block>
+<script th:src="@{/js/customerInfo.js}"></script>
+</body>
+</html>
