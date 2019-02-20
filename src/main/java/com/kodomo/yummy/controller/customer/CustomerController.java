@@ -110,6 +110,6 @@ public class CustomerController {
         String sessionCustomer = (String) request.getSession(true).getAttribute("customer");
         Customer customer = customerBlService.getCustomerEntityByEmail(sessionCustomer);
         model.addAttribute("customer", customer);
-        return "customer/order";
+        return "customer/orders";
     }
 }

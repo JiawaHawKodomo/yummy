@@ -1,8 +1,10 @@
 package com.kodomo.yummy.bl.order;
 
 import com.kodomo.yummy.bl.OrderBlService;
+import com.kodomo.yummy.dao.OrderDao;
 import com.kodomo.yummy.dao.OrderSettlementStrategyDao;
 import com.kodomo.yummy.entity.Manager;
+import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.OrderSettlementStrategy;
 import com.kodomo.yummy.entity.OrderSettlementStrategyDetail;
 import com.kodomo.yummy.entity.entity_enum.OrderSettlementStrategyType;
@@ -21,10 +23,12 @@ import java.util.*;
 public class OrderBlServiceImpl implements OrderBlService {
 
     private final OrderSettlementStrategyDao orderSettlementStrategyDao;
+    private final OrderDao orderDao;
 
     @Autowired
-    public OrderBlServiceImpl(OrderSettlementStrategyDao orderSettlementStrategyDao) {
+    public OrderBlServiceImpl(OrderSettlementStrategyDao orderSettlementStrategyDao, OrderDao orderDao) {
         this.orderSettlementStrategyDao = orderSettlementStrategyDao;
+        this.orderDao = orderDao;
     }
 
     @Override
@@ -62,5 +66,17 @@ public class OrderBlServiceImpl implements OrderBlService {
             orderSettlementStrategyDao.save(oldStrategy);
         }
         orderSettlementStrategyDao.save(newStrategy);
+    }
+
+    /**
+     * 根据id查找Order
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Order getOrderById(Integer id) {
+        if (id == null) return null;
+        return orderDao.findById(id).orElse(null);
     }
 }

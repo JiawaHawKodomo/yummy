@@ -38,4 +38,13 @@ public class RestaurantStrategy {
     public boolean isValidAt(Date date) {
         return startDate != null && !startDate.after(date) && (endDate == null || date.before(endDate));
     }
+
+    /**
+     * 文字信息,满xx减xx
+     *
+     * @return
+     */
+    public String getText() {
+        return "满" + getGreaterThan() + "减" + getDiscount();
+    }
 }

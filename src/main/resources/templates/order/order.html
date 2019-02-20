@@ -1,0 +1,64 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <p>订单信息</p>
+    <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.Order"*/-->
+    <table>
+        <tr>
+            <th>订单编号</th>
+            <td th:text="${order.getOrderId()}"></td>
+        </tr>
+        <tr>
+            <th>订单状态</th>
+            <td th:text="${order.getState().getText()}"></td>
+        </tr>
+        <tr>
+            <th>订餐人</th>
+            <td>
+                <ul th:with="customer0=${order.getCustomer()}">
+                    <li th:text="${customer0.getEmail()}"></li>
+                    <li th:text="${customer0.getName()}"></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>商家</th>
+            <td><a th:href="/restaurant/${order.getRestaurant().getRestaurantId()}"
+                   th:text="${order.getRestaurant().getName()}"></a></td>
+        </tr>
+        <tr th:with="location=${order.getLocation()}">
+            <th>收餐地址</th>
+            <td>
+                <ul>
+                    <li th:text="${location.getCity()}"></li>
+                    <li th:text="${location.getBlockInfo()}+' '+${location.getPointInfo()}"></li>
+                    <li th:text="${location.getNote()}"></li>
+                    <li th:text="'电话:'+${location.getTelephone()}"></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th>商品明细</th>
+            <td>
+                <table>
+                    <tr th:each="detail:${order.getDetails()}">
+                        <td th:text="${detail.getOffering().getName()}"></td>
+                        <td th:text="'×'+${detail.getQuantity()}"></td>
+                        <td th:text="${detail.getTotalPrice()}+'元'"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <th>满减策略</th>
+            <td th:text="${order.getRestaurantStrategy().getText()}"></td>
+        </tr>
+        <tr>
+            <th>最后金额</th>
+            <td th:text="${order.getTotalPriceAfterDiscount()}"></td>
+        </tr>
+    </table>
+    <p>订单记录追踪</p>
+    <ul>
+        <li th:each="log:${order.getLogs()}"
+            th:text="${log.getDate()}+' '+${log.getToState().getText()}"></li>
+    </ul>
+</div>

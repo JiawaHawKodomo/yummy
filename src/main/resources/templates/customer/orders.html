@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 我的订单</title>
+</head>
+<body>
+<!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+<th:block th:if="${customer}==null">
+    出错了
+</th:block>
+<th:block th:if="${customer}!=null">
+    <div th:replace="customer/head"></div>
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+    <th:block th:if="${customer.getOngoingOrders().size()}!=0">
+        <div>
+            <p>进行中的订单:</p>
+            <div style="display: flex;">
+                <div th:each="order:${customer.getOngoingOrders()}"
+                     style="border: 2px solid black;width: 300px;height: 300px">
+                    <p th:text="'餐厅:'+${order.getRestaurant().getName()}"></p>
+                    <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
+                    <ul th:with="first=${order.getDetailsByPrice().get(0)}">
+                        <li th:text="${first.getOffering().getName()}+'×'+${first.getQuantity()}"></li>
+                        <li th:if="${order.getDetails().size()}>1">...</li>
+                    </ul>
+                    <button th:value="${order.getOrderId()}">查看详情</button>
+                </div>
+            </div>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+
+    <th:block th:if="${customer.getUnpaidOrders().size()}!=0">
+        <div>
+            <p>待支付的订单:</p>
+            <div style="display: flex;">
+                <div th:each="order:${customer.getUnpaidOrders()}"
+                     style="border: 2px solid black;width: 300px;height: 300px">
+                    <p th:text="'餐厅:'+${order.getRestaurant().getName()}"></p>
+                    <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
+                    <ul th:with="first=${order.getDetailsByPrice().get(0)}">
+                        <li th:text="${first.getOffering().getName()}+'×'+${first.getQuantity()}"></li>
+                        <li th:if="${order.getDetails().size()}>1">...</li>
+                    </ul>
+                    <button th:value="${order.getOrderId()}">查看详情</button>
+                </div>
+            </div>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+
+    <th:block th:if="${customer.getUnpaidOrders().size()}!=0">
+        <div>
+            <p>待支付的订单:</p>
+            <div style="display: flex;">
+                <div th:each="order:${customer.getUnpaidOrders()}"
+                     style="border: 2px solid black;width: 300px;height: 300px">
+                    <p th:text="'餐厅:'+${order.getRestaurant().getName()}"></p>
+                    <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
+                    <ul th:with="first=${order.getDetailsByPrice().get(0)}">
+                        <li th:text="${first.getOffering().getName()}+'×'+${first.getQuantity()}"></li>
+                        <li th:if="${order.getDetails().size()}>1">...</li>
+                    </ul>
+                    <button th:value="${order.getOrderId()}">查看详情</button>
+                </div>
+            </div>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+</th:block>
+</body>
+</html>

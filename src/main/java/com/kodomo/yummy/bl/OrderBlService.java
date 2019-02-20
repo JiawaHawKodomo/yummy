@@ -1,6 +1,7 @@
 package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.entity.Manager;
+import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.OrderSettlementStrategy;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 
@@ -26,4 +27,12 @@ public interface OrderBlService {
      * @param jsonMap 前端json
      */
     void saveNewOrderSettlementStrategy(List<Map<String, String>> jsonMap, Manager manager) throws ParamErrorException;
+
+    /**
+     * 根据id查找Order
+     *
+     * @param id
+     * @return
+     */
+    Order getOrderById(Integer id);
 }

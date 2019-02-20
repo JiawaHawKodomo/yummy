@@ -1,12 +1,12 @@
 package com.kodomo.yummy.entity;
 
+import com.kodomo.yummy.entity.entity_enum.OrderState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -71,5 +71,59 @@ public class Customer {
         if (locationId == null) return false;
         return getLocations().stream().map(l -> l.getLocationId().equals(locationId))
                 .reduce((a, b) -> a || b).orElse(false);
+    }
+
+    /**
+     * 获得未支付的订单, 按时间倒序
+     *
+     * @return set
+     */
+    @NotNull
+    public List<Order> getUnpaidOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(o -> o.getState() == OrderState.UNPAID)
+                .sorted(Comparator.comparing(Order::getTheLastUpdateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获得进行中的订单, 按时间倒序
+     *
+     * @return
+     */
+    @NotNull
+    public List<Order> getOngoingOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(o -> o.getState() == OrderState.ONGOING)
+                .sorted(Comparator.comparing(Order::getTheLastUpdateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获得历史订单, 按时间倒序
+     *
+     * @return
+     */
+    @NotNull
+    public List<Order> getIdleOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(o -> o.getState() == OrderState.CANCELLED || o.getState() == OrderState.DONE)
+                .sorted(Comparator.comparing(Order::getTheLastUpdateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据id获取order实体
+     *
+     * @param id
+     * @return
+     */
+    public Order getOrderByOrderId(Integer id) {
+        if (id == null) return null;
+        for (Order order : getOrders()) {
+            if (id.equals(order.getOrderId()))
+                return order;
+        }
+        return null;
     }
 }
