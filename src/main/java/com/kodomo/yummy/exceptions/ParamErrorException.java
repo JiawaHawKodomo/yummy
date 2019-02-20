@@ -1,12 +1,32 @@
 package com.kodomo.yummy.exceptions;
 
+import javax.validation.constraints.NotNull;
 import java.security.PrivilegedActionException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
  * @create 2019-02-16 14:53
  */
 public class ParamErrorException extends Exception {
+
+    private List<String> errorFields;
+
+    public ParamErrorException(String... fields) {
+        errorFields = new ArrayList<>(Arrays.asList(fields));
+    }
+
+    public ParamErrorException(List<String> fields) {
+        errorFields = new ArrayList<>(fields);
+    }
+
+    @NotNull
+    public String getErrorFieldsInfo() {
+        if (errorFields == null) return "";
+        return errorFields.stream().reduce((a, b) -> a + "," + b).orElse("");
+    }
 
     /**
      * Constructs a new exception with {@code null} as its detail message.

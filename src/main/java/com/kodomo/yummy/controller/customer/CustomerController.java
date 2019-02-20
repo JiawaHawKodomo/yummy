@@ -1,9 +1,10 @@
-package com.kodomo.yummy.controller;
+package com.kodomo.yummy.controller.customer;
 
 import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
+
+    @Value("${lbs.key}")
+    private String lbsKey;
 
     private final CustomerBlService customerBlService;
 
@@ -81,16 +85,31 @@ public class CustomerController {
     /**
      * 个人信息
      *
-     * @param request
+     * @param request request
      * @param model
-     * @return
+     * @return a
      */
     @GetMapping("/info")
     public String info(HttpServletRequest request, Model model) {
+        model.addAttribute("lbsKey", lbsKey);
         String sessionCustomer = (String) request.getSession(true).getAttribute("customer");
         Customer customer = customerBlService.getCustomerEntityByEmail(sessionCustomer);
         model.addAttribute("customer", customer);
         return "customer/info";
     }
 
+    /**
+     * 订单页
+     *
+     * @param request request
+     * @param model   model
+     * @return a
+     */
+    @GetMapping("/order")
+    public String order(HttpServletRequest request, Model model) {
+        String sessionCustomer = (String) request.getSession(true).getAttribute("customer");
+        Customer customer = customerBlService.getCustomerEntityByEmail(sessionCustomer);
+        model.addAttribute("customer", customer);
+        return "customer/order";
+    }
 }

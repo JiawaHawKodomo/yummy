@@ -1,5 +1,6 @@
 package com.kodomo.yummy.bl.restaurant;
 
+import com.kodomo.yummy.bl.location.LocationHelper;
 import com.kodomo.yummy.bl.util.ValidatingHelper;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.dao.RestaurantTypeDao;
@@ -7,12 +8,14 @@ import com.kodomo.yummy.entity.Location;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.RestaurantType;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,12 +30,14 @@ public class RestaurantCreator {
     private final ValidatingHelper validatingHelper;
     private final RestaurantDao restaurantDao;
     private final RestaurantTypeDao restaurantTypeDao;
+    private final LocationHelper locationHelper;
 
     @Autowired
-    public RestaurantCreator(ValidatingHelper validatingHelper, RestaurantDao restaurantDao, RestaurantTypeDao restaurantTypeDao) {
+    public RestaurantCreator(ValidatingHelper validatingHelper, RestaurantDao restaurantDao, RestaurantTypeDao restaurantTypeDao, LocationHelper locationHelper) {
         this.validatingHelper = validatingHelper;
         this.restaurantDao = restaurantDao;
         this.restaurantTypeDao = restaurantTypeDao;
+        this.locationHelper = locationHelper;
     }
 
     /**
@@ -51,33 +56,33 @@ public class RestaurantCreator {
      * @param addressNote addressNote
      * @return restaurant对象
      */
-    Restaurant createNewRestaurantForDatabase(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException {
-        StringBuilder errorInfo = new StringBuilder();
+    Restaurant createNewRestaurantForDatabase(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedPrimaryKeyException {
+        List<String> errorField = new ArrayList<>();
         if (name == null || name.equals("")) {
-            errorInfo.append("名称填写错误").append(System.lineSeparator());
+            errorField.add("名称");
         }
         if (password == null || password.equals("")) {
-            errorInfo.append("密码格式错误").append(System.lineSeparator());
+            errorField.add("密码");
         }
         if (!validatingHelper.isTelephone(tel)) {
-            errorInfo.append("电话号码填写错误").append(System.lineSeparator());
+            errorField.add("电话号码");
         }
         Time[] times = new Time[0];
         try {
             times = formatTimes(time);
         } catch (Exception e) {
-            errorInfo.append("营业时间填写错误").append(System.lineSeparator());
+            errorField.add("营业时间");
         }
         if (type == null || type.equals("")) {
-            errorInfo.append("类别填写错误").append(System.lineSeparator());
+            errorField.add("类别");
         }
         if (city == null || city.equals("") || lat == null || lng == null || block == null || block.equals("") || point == null || point.equals("")) {
-            errorInfo.append("地点选择错误").append(System.lineSeparator());
+            errorField.add("地点");
         }
 
-        if (!errorInfo.toString().equals("")) {
+        if (!errorField.isEmpty()) {
             //有异常
-            throw new ParamErrorException(errorInfo.toString());
+            throw new ParamErrorException(errorField);
         }
 
         //填装信息
@@ -102,20 +107,14 @@ public class RestaurantCreator {
         restaurant.setTypes(set);
         restaurant.setNote(note);
 
-        Location location = new Location();
-        location.setCity(city);
-        location.setLat(lat);
-        location.setLng(lng);
-        location.setBlockInfo(block);
-        location.setPointInfo(point);
-        location.setNote(addressNote);
+        Location location = locationHelper.createLocation(block, point, note, city, tel, lat, lng);
         restaurant.setLocation(location);
 
         //存储
         try {
             restaurant = restaurantDao.save(restaurant);
         } catch (Exception e) {
-            throw new ParamErrorException("该电话号码已注册");
+            throw new DuplicatedPrimaryKeyException("该电话号码已注册");
         }
         return restaurant;
     }

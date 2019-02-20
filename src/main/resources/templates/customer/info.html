@@ -27,7 +27,9 @@
             <tr>
                 <td>昵称</td>
                 <td>
-                    <label><input th:value="${customer.getName()}" id="info-name-input"></label>
+                    <label><input th:value="${customer.getName()}"
+                                  th:disabled="${customer.getState()}==UserState.ACTIVATED"
+                                  id="info-name-input"></label>
                 </td>
             </tr>
             <tr>
@@ -37,11 +39,18 @@
             <tr>
                 <td>电话</td>
                 <td>
-                    <label><input th:value="${customer.getTelephone()}" id="info-telephone-input"></label>
+                    <label><input th:value="${customer.getTelephone()}"
+                                  th:disabled="${customer.getState()}==UserState.ACTIVATED"
+                                  id="info-telephone-input"></label>
                 </td>
             </tr>
+            <tr>
+                <td>状态</td>
+                <td th:text="${customer.getState().getText()}"></td>
+            </tr>
         </table>
-        <button id="info-update-button">提交</button>
+        <button id="info-update-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">提交</button>
+        <span id="info-update-info" style="color: red"></span>
     </div>
 
     <!--黑线-->
@@ -52,41 +61,82 @@
         <table>
             <tr>
                 <td>当前密码</td>
-                <td><label for="old-password-input"></label><input type="password" id="old-password-input"></td>
+                <td><label for="old-password-input"></label><input type="password" id="old-password-input"
+                                                                   th:disabled="${customer.getState()}==UserState.ACTIVATED">
+                </td>
             </tr>
             <tr>
                 <td>新密码</td>
-                <td><label for="new-password-input"></label><input type="password" id="new-password-input"></td>
+                <td><label for="new-password-input"></label><input type="password" id="new-password-input"
+                                                                   th:disabled="${customer.getState()}==UserState.ACTIVATED">
+                </td>
             </tr>
             <tr>
                 <td>重复输入新密码</td>
-                <td><label for="new-password-input2"></label><input type="password" id="new-password-input2"></td>
+                <td><label for="new-password-input2"></label><input type="password" id="new-password-input2"
+                                                                    th:disabled="${customer.getState()}==UserState.ACTIVATED">
+                </td>
             </tr>
         </table>
-        <button id="password-update-button">提交</button>
+        <button id="password-update-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">提交</button>
+        <span id="password-update-info" style="color: red"></span>
     </div>
 
     <!--黑线-->
     <div style="height: 2px;width: 100%;background: black"></div>
 
-    <div>
-        <p>添加/删除地址</p>
-        <table>
+    <div th:if="${customer.getValidLocation().size()}!=0">
+        <p>删除地址</p>
+        <table border="1 black" cellpadding="5">
             <tr>
                 <td>城市</td>
                 <td>地址信息</td>
                 <td>地址备注</td>
+                <td>取餐电话</td>
                 <td>操作</td>
             </tr>
-            <tr th:each="location:${customer.getLocations()}">
+            <tr th:each="location:${customer.getValidLocation()}">
                 <td th:text="${location.getCity()}"></td>
                 <td th:text="${location.getBlockInfo()}+' '+${location.getPointInfo()}"></td>
                 <td th:text="${location.getNote()}"></td>
+                <td th:text="${location.getTelephone()}"></td>
                 <td>
-                    <button th:value="${location.getLocationId()}">删除</button>
+                    <button th:value="${location.getLocationId()}"
+                            th:disabled="${customer.getState()}==UserState.ACTIVATED"
+                            class="delete-location-button">删除
+                    </button>
                 </td>
             </tr>
         </table>
+        <span id="delete-location-info" style="color: red"></span>
+        <p></p>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </div>
+
+    <div>
+        <p>新建地址</p>
+        <table>
+            <tr>
+                <td>地址备注</td>
+                <td><label><input id="create-location-note"
+                                  th:disabled="${customer.getState()}==UserState.ACTIVATED"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>取餐电话</td>
+                <td><label><input id="create-location-telephone" th:value="${customer.getTelephone()}"
+                                  th:disabled="${customer.getState()}==UserState.ACTIVATED">*</label></td>
+            </tr>
+        </table>
+        <!--/*@thymesVar id="lbsKey" type="String"*/-->
+        <iframe id="mapPage" width="500px" height="500px" frameborder=0
+                th:src="'https://apis.map.qq.com/tools/locpicker?search=1&type=1&key='+${lbsKey}+'&referer=myapp'">
+        </iframe>
+        <div>
+            <button id="create-location-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">提交</button>
+            <span id="create-location-info" style="color: red"></span>
+        </div>
     </div>
 
     <!--黑线-->
@@ -100,7 +150,8 @@
             <input type="password" id="cancellation-password-input">
         </label>
         </div>
-        <button id="cancellation-button">确定注销</button>
+        <button id="cancellation-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">确定注销</button>
+        <span id="cancellation-info" style="color: red"></span>
     </div>
 </th:block>
 <script th:src="@{/js/customerInfo.js}"></script>

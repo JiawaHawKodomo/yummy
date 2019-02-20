@@ -4,6 +4,7 @@ import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -30,7 +31,7 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     }
 
     @Override
-    public Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException {
+    public Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedPrimaryKeyException {
         return restaurantCreator.createNewRestaurantForDatabase(name, password, tel, time, type, note, city, lat, lng, block, point, addressNote);
     }
 

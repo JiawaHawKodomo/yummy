@@ -61,8 +61,8 @@ public class CustomerCreator {
         }
 
         //发送验证邮件
-        mailHelper.sendMail(email, activatePrefix + getActivatingCode(customer));
-
+        mailHelper.sendMail(email, "<html lang='zh-CN'><head><meta charset='utf-8'>"
+                + "</head><body><a href='" + activatePrefix + getActivatingCode(customer) + "'>点击此处激活</a></body></html>");
         return customer;
     }
 

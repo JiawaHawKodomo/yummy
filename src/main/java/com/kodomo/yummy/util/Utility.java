@@ -19,6 +19,9 @@ public class Utility {
      * @return 64位加密后的密码
      */
     public static String getSHA256Str(String str) {
+        if (str == null)
+            return null;
+
         MessageDigest messageDigest;
         String encdeStr = "";
         try {

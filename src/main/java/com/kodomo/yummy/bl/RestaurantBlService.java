@@ -2,6 +2,7 @@ package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public interface RestaurantBlService {
      * @return 餐厅实体对象
      * @throws ParamErrorException 参数错误,创建失败
      */
-    Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException;
+    Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedPrimaryKeyException;
 
     /**
      * 登录

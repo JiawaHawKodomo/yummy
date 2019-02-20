@@ -17,7 +17,7 @@ spring:
 yummy-system:
   min-payment: 0.01
   pay-time: 15
-  activating-link: localhost/activate/
+  activating-link: http://localhost/activate/
   super-manager:
     id: root
     #123456

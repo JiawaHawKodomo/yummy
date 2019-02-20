@@ -6,4 +6,7 @@
     <a th:href="@{/customer/place}">点餐</a>
     <a th:href="@{/customer/info}">个人信息</a>
     <a th:href="@{/customer/order}">我的订单</a>
+    <th:block th:if="${customer.getState()}==UserState.UNACTIVATED">
+        还未激活, 请先激活才能进行其他操作
+    </th:block>
 </div>

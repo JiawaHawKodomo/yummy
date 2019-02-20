@@ -4,6 +4,7 @@ function login() {
     const email = $('#customer-email-input').val();
     const password = $('#customer-password-input').val();
 
+    $('#login-tip').text('请稍候, 登录中......');
     $.ajax({
         type: 'post',
         url: '/customer/login',

@@ -1,6 +1,7 @@
 package com.kodomo.yummy.entity;
 
 import com.kodomo.yummy.config.StaticConfig;
+import com.kodomo.yummy.entity.entity_enum.OrderState;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,12 +22,13 @@ import java.util.Set;
 public class Order {
 
     @Id
+    @Column(name = "order_id")
     @GeneratedValue(generator = "generator_odr")
     @GenericGenerator(name = "generator_odr", strategy = "native")
     private Integer orderId;
 
-    @Column(nullable = false, columnDefinition = "timestamp default current_timestamp()")
-    private Date date;
+    @Column(nullable = false, insertable = false, columnDefinition = "integer default 0")
+    private OrderState state;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "customer_email")
@@ -43,6 +45,9 @@ public class Order {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Set<OrderDetail> details;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
+    private Set<OrderLog> logs;
 
     /**
      * 该订单生效的满减策略
@@ -72,18 +77,5 @@ public class Order {
         double tmp = getTotalPriceBeforeDiscount() - getDiscount();
         double min = StaticConfig.getMinPayment();
         return tmp < min ? min : tmp;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "orderId=" + orderId +
-                ", date=" + date +
-                ", customer=" + customer.getEmail() +
-                ", restaurant=" + restaurant.getRestaurantId() +
-                ", details=" + details +
-                ", restaurantStrategy=" + restaurantStrategy +
-                ", orderSettlementStrategy=" + orderSettlementStrategy +
-                '}';
     }
 }

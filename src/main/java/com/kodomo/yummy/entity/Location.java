@@ -21,15 +21,18 @@ public class Location {
     @GeneratedValue(generator = "generator_lct")
     @GenericGenerator(name = "generator_lct", strategy = "native")
     private Integer locationId;
+    @Column(nullable = false)
     private String city;
-    @Column(name = "block_info")
+    @Column(name = "block_info", nullable = false)
     private String blockInfo;
-    @Column(name = "point_info")
+    @Column(name = "point_info", nullable = false)
     private String pointInfo;
+    @Column(nullable = false)
     private Double lat;//纬度
+    @Column(nullable = false)
     private Double lng;//经度
     private String note;
-    @Column(name = "is_in_use", columnDefinition = "boolean default true", insertable = false)
+    @Column(name = "is_in_use", columnDefinition = "boolean default true", insertable = false, nullable = false)
     private Boolean isInUse;//正在使用
     private String telephone;//收餐电话, 如果不被用到则为null
 

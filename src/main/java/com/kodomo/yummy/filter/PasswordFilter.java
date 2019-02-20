@@ -23,11 +23,18 @@ public class PasswordFilter extends HttpFilter {
 
     @Override
     public void doFilter(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        String password = servletRequest.getParameter("password");
-        if (password != null) {
-            //有密码, 自动转换为SHA-256加密
-            ParameterChangableRequest newRequest = new ParameterChangableRequest(servletRequest);
-            newRequest.addParameter("password", Utility.getSHA256Str(password));
+        ParameterChangableRequest newRequest = new ParameterChangableRequest(servletRequest);
+        boolean hasPassword = false;
+
+        for (String key : servletRequest.getParameterMap().keySet()) {
+            if (key.toLowerCase().contains("password")) {
+                //有密码, 自动转换为SHA-256加密
+                hasPassword = true;
+                newRequest.addParameter(key, Utility.getSHA256Str(servletRequest.getParameter(key)));
+            }
+        }
+
+        if (hasPassword) {
             filterChain.doFilter(newRequest, servletResponse);
             return;
         }

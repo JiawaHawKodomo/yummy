@@ -2,6 +2,7 @@ package com.kodomo.yummy.controller;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,14 +44,11 @@ public class RestaurantController {
 
     @PostMapping("/login")
     @ResponseBody
-    public Map<String, Object> login(HttpServletRequest request) {
-        String id = request.getParameter("id");
-        String password = request.getParameter("password");
-
+    public Map<String, Object> login(HttpServletRequest request, @RequestParam("id") String id, @RequestParam("password") String password) {
         Map<String, Object> result = new HashMap<>();
         Restaurant restaurant = restaurantBlService.login(id, password);
         if (restaurant != null) {
-            request.getSession(true).setAttribute("restaurant", restaurant);
+            request.getSession(true).setAttribute("restaurant", restaurant.getRestaurantId());
             result.put("result", true);
         } else {
             result.put("result", false);
@@ -72,30 +70,29 @@ public class RestaurantController {
 
     @PostMapping("/register")
     @ResponseBody
-    public Map<String, Object> register(HttpServletRequest request) {
-        String name = request.getParameter("name");
-        String password = request.getParameter("password");
-        String tel = request.getParameter("tel");
-        String time = request.getParameter("time");
-        String type = request.getParameter("type");
-        String note = request.getParameter("note");
-        String city = request.getParameter("city");
-        Double lat = Double.valueOf(request.getParameter("lat"));
-        Double lng = Double.valueOf(request.getParameter("lng"));
-        String block = request.getParameter("poiaddress");
-        String point = request.getParameter("poiname");
-        String addressNote = request.getParameter("addressNote");
+    public Map<String, Object> register(HttpServletRequest request, @RequestParam("name") String name,
+                                        @RequestParam("password") String password,
+                                        @RequestParam("tel") String tel,
+                                        @RequestParam("time") String time,
+                                        @RequestParam("type") String type,
+                                        @RequestParam("note") String note,
+                                        @RequestParam("city") String city,
+                                        @RequestParam("lat") Double lat, @RequestParam("lng") Double lng,
+                                        @RequestParam("poiaddress") String block,
+                                        @RequestParam("poiname") String point,
+                                        @RequestParam("addressNote") String addressNote) {
 
         Map<String, Object> result = new HashMap<>();
         try {
             Restaurant restaurant = restaurantBlService.registerRestaurant(name, password, tel, time, type, note, city, lat, lng, block, point, addressNote);
             result.put("result", true);
-            result.put("restaurant", restaurant);
+            result.put("restaurant", restaurant.getRestaurantId());
             //添加session信息
             request.getSession().setAttribute("restaurant", restaurant);
         } catch (ParamErrorException e) {
-            result.put("result", false);
-            result.put("info", e.getMessage().replaceAll(System.lineSeparator(), "<br/>"));
+            result.put("info", "以下信息填写错误:" + e.getErrorFieldsInfo());
+        } catch (DuplicatedPrimaryKeyException e) {
+            result.put("info", "该电话已经被注册");
         }
         return result;
     }

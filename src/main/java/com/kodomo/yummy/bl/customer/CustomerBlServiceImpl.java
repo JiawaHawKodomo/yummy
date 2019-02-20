@@ -1,9 +1,14 @@
 package com.kodomo.yummy.bl.customer;
 
 import com.kodomo.yummy.bl.CustomerBlService;
+import com.kodomo.yummy.bl.location.LocationHelper;
+import com.kodomo.yummy.bl.util.ValidatingHelper;
 import com.kodomo.yummy.dao.CustomerDao;
+import com.kodomo.yummy.dao.LocationDao;
 import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.entity.Location;
+import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +21,17 @@ public class CustomerBlServiceImpl implements CustomerBlService {
 
     private final CustomerDao customerDao;
     private final CustomerCreator customerCreator;
+    private final LocationHelper locationHelper;
+    private final ValidatingHelper validatingHelper;
+    private final LocationDao locationDao;
 
     @Autowired
-    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator) {
+    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao) {
         this.customerDao = customerDao;
         this.customerCreator = customerCreator;
+        this.locationHelper = locationHelper;
+        this.validatingHelper = validatingHelper;
+        this.locationDao = locationDao;
     }
 
     /**
@@ -35,12 +46,12 @@ public class CustomerBlServiceImpl implements CustomerBlService {
         Customer customer = customerDao.findById(email).orElse(null);
         if (customer != null) {
             //寻找到customer
-            if (password.equals(customer.getPassword())) {
+            if (!password.equals(customer.getPassword()) || customer.getState() == UserState.CLOSED) {
                 //验证成功
-                return customer;
+                return null;
             } else {
                 //验证失败
-                return null;
+                return customer;
             }
         } else {
             //未找到账号信息, 自动注册
@@ -74,5 +85,165 @@ public class CustomerBlServiceImpl implements CustomerBlService {
     @Override
     public Customer getCustomerEntityByEmail(String email) {
         return customerDao.findById(email).orElse(null);
+    }
+
+    /**
+     * 修改客户信息
+     *
+     * @param email     email
+     * @param name      name
+     * @param telephone telephone
+     */
+    @Override
+    public void updateCustomerInfo(String email, String name, String telephone) throws ParamErrorException, UserNotExistsException, UnupdatableException {
+        if (email == null || name == null || telephone == null || name.equals("") || telephone.equals("")) {
+            //参数不正确
+            throw new ParamErrorException();
+        }
+
+        Customer customer = customerDao.findById(email).orElse(null);
+        if (customer == null) {
+            //用户不存在
+            throw new UserNotExistsException();
+        }
+
+        if (customer.getState() != UserState.ACTIVATED) {
+            //用户状态不正确
+            throw new UnupdatableException(customer.getState());
+        }
+
+        customer.setName(name);
+        customer.setTelephone(telephone);
+        customerDao.save(customer);
+    }
+
+    /**
+     * 修改客户密码
+     *
+     * @param email    email
+     * @param password password
+     */
+    @Override
+    public void updateCustomerPassword(String email, String old, String password) throws ParamErrorException, UserNotExistsException, UnupdatableException, PasswordErrorException {
+        if (email == null || old == null || old.equals("") || password == null || password.equals("")) {
+            //参数不正确
+            throw new ParamErrorException();
+        }
+
+        Customer customer = customerDao.findById(email).orElse(null);
+        if (customer == null) {
+            //用户不存在
+            throw new UserNotExistsException();
+        }
+
+        if (customer.getState() != UserState.ACTIVATED) {
+            //用户状态不正确
+            throw new UnupdatableException(customer.getState());
+        }
+
+        if (!old.equals(customer.getPassword())) {
+            //旧密码不正确
+            throw new PasswordErrorException();
+        }
+
+        customer.setPassword(password);
+        customerDao.save(customer);
+    }
+
+    /**
+     * 创建用户地址信息
+     *
+     * @param email     email
+     * @param block     block
+     * @param point     point
+     * @param note      note
+     * @param city      city
+     * @param telephone telephone
+     * @param lat       lat
+     * @param lng       lng
+     */
+    @Override
+    public void addLocationForCustomer(String email, String block, String point, String note, String city, String telephone, Double lat, Double lng) throws ParamErrorException, UserNotExistsException, UnupdatableException {
+        if (email == null || !validatingHelper.isTelephone(telephone)) {
+            //参数错误
+            throw new ParamErrorException();
+        }
+
+        Location location = locationHelper.createLocation(block, point, note, city, telephone, lat, lng);
+        Customer customer = customerDao.findById(email).orElse(null);
+        if (customer == null) {
+            //用户不存在
+            throw new UserNotExistsException();
+        }
+        if (customer.getState() != UserState.ACTIVATED) {
+            //用户状态不正确
+            throw new UnupdatableException(customer.getState());
+        }
+
+        //添加地址信息
+        customer.addLocation(location);
+        customerDao.save(customer);
+    }
+
+    /**
+     * 删除用户地址信息, 将地址改为无法使用, 在数据库中保留
+     *
+     * @param email      email
+     * @param locationId locationId
+     */
+    @Override
+    public void deleteLocationForCustomer(String email, Integer locationId) throws ParamErrorException, UserNotExistsException, UnupdatableException, NoSuchAttributeException {
+        if (email == null || locationId == null) {
+            throw new ParamErrorException();
+        }
+
+        Customer customer = customerDao.findById(email).orElse(null);
+        if (customer == null) {
+            //用户不存在
+            throw new UserNotExistsException();
+        }
+        if (customer.getState() != UserState.ACTIVATED) {
+            //用户状态不正确
+            throw new UnupdatableException(customer.getState());
+        }
+        if (!customer.hasLocation(locationId)) {
+            //没有该地址
+            throw new NoSuchAttributeException();
+        }
+
+        Location location = locationDao.findById(locationId).orElse(null);
+        if (location != null) {
+            location.setIsInUse(false);
+            locationDao.save(location);
+        }
+    }
+
+    /**
+     * 注销账号
+     *
+     * @param email    email
+     * @param password password
+     */
+    @Override
+    public void closeCustomer(String email, String password) throws ParamErrorException, UserNotExistsException, UnupdatableException, PasswordErrorException {
+        if (email == null || password == null) {
+            throw new ParamErrorException();
+        }
+        Customer customer = customerDao.findById(email).orElse(null);
+        if (customer == null) {
+            //用户不存在
+            throw new UserNotExistsException();
+        }
+        if (customer.getState() != UserState.ACTIVATED) {
+            //用户状态不正确
+            throw new UnupdatableException(customer.getState());
+        }
+        if (!password.equals(customer.getPassword())) {
+            //密码不正确
+            throw new PasswordErrorException();
+        }
+        //设置账号
+        customer.setState(UserState.CLOSED);
+        customerDao.save(customer);
     }
 }

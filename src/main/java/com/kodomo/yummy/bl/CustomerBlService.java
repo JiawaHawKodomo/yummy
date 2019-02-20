@@ -1,7 +1,7 @@
 package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.exceptions.*;
 
 /**
  * @author Shuaiyu Yao
@@ -33,4 +33,63 @@ public interface CustomerBlService {
      * @return entity
      */
     Customer getCustomerEntityByEmail(String email);
+
+    /**
+     * 修改客户信息
+     *
+     * @param email     email
+     * @param name      name
+     * @param telephone telephone
+     * @throws ParamErrorException    输入参数不正确
+     * @throws UserNotExistsException 用户不存在
+     * @throws UnupdatableException   用户状态不正确
+     */
+    void updateCustomerInfo(String email, String name, String telephone) throws ParamErrorException, UserNotExistsException, UnupdatableException;
+
+    /**
+     * 修改客户密码
+     *
+     * @param email    email
+     * @param password password
+     * @throws ParamErrorException    输入参数不正确
+     * @throws UserNotExistsException 用户不存在
+     * @throws UnupdatableException   用户状态不正确
+     * @throws PasswordErrorException 旧密码不正确
+     */
+    void updateCustomerPassword(String email, String old, String password) throws ParamErrorException, UserNotExistsException, UnupdatableException, PasswordErrorException;
+
+    /**
+     * 创建用户地址信息
+     *
+     * @param email     email
+     * @param block     block
+     * @param point     point
+     * @param note      note
+     * @param city      city
+     * @param telephone telephone
+     * @param lat       lat
+     * @param lng       lng
+     */
+    void addLocationForCustomer(String email, String block, String point, String note, String city, String telephone, Double lat, Double lng) throws ParamErrorException, UserNotExistsException, UnupdatableException;
+
+    /**
+     * 删除用户地址信息, 将地址改为无法使用, 在数据库中保留
+     *
+     * @param email      email
+     * @param locationId locationId
+     * @throws ParamErrorException      id错误
+     * @throws UserNotExistsException   用户不存在
+     * @throws UnupdatableException     用户状态不正确
+     * @throws NoSuchAttributeException 没有该location
+     */
+    void deleteLocationForCustomer(String email, Integer locationId) throws ParamErrorException, UserNotExistsException, UnupdatableException, NoSuchAttributeException;
+
+    /**
+     * 注销账号
+     *
+     * @param email    email
+     * @param password password
+     */
+    void closeCustomer(String email, String password) throws ParamErrorException, UserNotExistsException, UnupdatableException, PasswordErrorException;
 }
+

@@ -50,7 +50,7 @@ public class MailHelper {
             // 设置邮件标题
             message.setSubject("Yummy! 激活");
             // 设置邮件内容
-            message.setText(content);
+            message.setContent(content, "text/html;charset=utf-8");
             // 得到邮差对象
             Transport transport = session.getTransport();
             // 连接自己的邮箱账户
