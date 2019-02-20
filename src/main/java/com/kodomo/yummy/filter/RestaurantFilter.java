@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
@@ -21,11 +23,21 @@ import java.io.IOException;
 @WebFilter(urlPatterns = "/restaurant/*", filterName = "restaurant_filter")
 public class RestaurantFilter extends HttpFilter {
 
+    private static List<String> shielded = new ArrayList<String>() {{
+        add("/restaurant/login");
+        add("/restaurant/register");
+        add("/restaurant/index");
+    }};
+
+    private boolean isUnderShield(String uri) {
+        return shielded.stream().map(uri::startsWith).reduce((a, b) -> a || b).orElse(false);
+    }
+
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpSession session = request.getSession(true);
         String uri = request.getRequestURI();
-        if (request.getRequestURI().startsWith("/restaurant") && !uri.contains("login") && !uri.contains("register")) {
+        if (uri.startsWith("/restaurant") && !isUnderShield(uri)) {
             if (session.getAttribute("restaurant") == null) {
                 response.sendRedirect("/restaurant/login");
             } else {

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 商家信息</title>
+</head>
+<body th:with="self=${session.restaurant}">
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<th:block th:if="${restaurant}==null">
+    出错了
+</th:block>
+<th:block th:if="${restaurant}!=null">
+    <!--是自己登录-->
+    <th:block th:if="${restaurant.getRestaurantId().equals(self)}">
+        <th:block th:replace="restaurant/head"/>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+
+    <h2 th:text="${restaurant.getName()}"></h2>
+
+</th:block>
+</body>
+</html>

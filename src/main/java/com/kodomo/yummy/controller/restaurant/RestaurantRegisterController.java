@@ -1,4 +1,4 @@
-package com.kodomo.yummy.controller;
+package com.kodomo.yummy.controller.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.entity.Restaurant;
@@ -16,56 +16,25 @@ import java.util.Map;
 
 /**
  * @author Shuaiyu Yao
- * @create 2019-02-17 11:19
- */
-@Controller
+ * @create 2019-02-20 19:36
+ **/
 @RequestMapping("/restaurant")
-public class RestaurantController {
+@Controller
+public class RestaurantRegisterController {
 
     @Value("${lbs.key}")
     private String lbsKey;
-
     private final RestaurantBlService restaurantBlService;
 
     @Autowired
-    public RestaurantController(RestaurantBlService restaurantBlService) {
+    public RestaurantRegisterController(RestaurantBlService restaurantBlService) {
         this.restaurantBlService = restaurantBlService;
-    }
-
-    @GetMapping
-    public String restaurant() {
-        return "restaurant/restaurantInfo";
-    }
-
-    @GetMapping("/login")
-    public String restaurantLogin() {
-        return "restaurant/restaurantLogin";
-    }
-
-    @PostMapping("/login")
-    @ResponseBody
-    public Map<String, Object> login(HttpServletRequest request, @RequestParam("id") String id, @RequestParam("password") String password) {
-        Map<String, Object> result = new HashMap<>();
-        Restaurant restaurant = restaurantBlService.login(id, password);
-        if (restaurant != null) {
-            request.getSession(true).setAttribute("restaurant", restaurant.getRestaurantId());
-            result.put("result", true);
-        } else {
-            result.put("result", false);
-        }
-        return result;
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request) {
-        request.getSession(true).setAttribute("restaurant", null);
-        return "redirect:/";
     }
 
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("lbsKey", lbsKey);
-        return "restaurant/restaurantRegister";
+        return "restaurant/register";
     }
 
     @PostMapping("/register")
@@ -96,4 +65,5 @@ public class RestaurantController {
         }
         return result;
     }
+
 }

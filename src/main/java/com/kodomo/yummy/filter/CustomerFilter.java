@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
@@ -20,10 +22,19 @@ import java.io.IOException;
 @WebFilter(urlPatterns = "/customer/*", filterName = "customer_login_filter")
 public class CustomerFilter extends HttpFilter {
 
+    private static List<String> shielded = new ArrayList<String>() {{
+        add("/customer/login");
+    }};
+
+    private boolean isUnderShield(String uri) {
+        return shielded.stream().map(uri::startsWith).reduce((a, b) -> a || b).orElse(false);
+    }
+
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String url = request.getRequestURI();
         HttpSession session = request.getSession(true);
-        if (request.getRequestURI().startsWith("/customer/") && !request.getRequestURI().contains("login")) {
+        if (url.startsWith("/customer/") && !isUnderShield(url)) {
             if (session.getAttribute("customer") == null) {
                 response.sendRedirect("/customer/login");
             } else {

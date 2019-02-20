@@ -75,4 +75,16 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
             return new ArrayList<>();
         }
     }
+
+    /**
+     * id查询餐厅
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Restaurant getRestaurantById(Integer id) {
+        if (id == null) return null;
+        return restaurantDao.findById(id).orElse(null);
+    }
 }

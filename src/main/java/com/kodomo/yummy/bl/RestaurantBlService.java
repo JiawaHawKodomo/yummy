@@ -48,4 +48,12 @@ public interface RestaurantBlService {
      * @return list
      */
     List<Restaurant> getRestaurantByState(UserState state);
+
+    /**
+     * id查询餐厅
+     *
+     * @param id
+     * @return
+     */
+    Restaurant getRestaurantById(Integer id);
 }
