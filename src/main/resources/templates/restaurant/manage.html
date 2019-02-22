@@ -1,10 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 管理店铺</title>
+    <script th:src="@{/js/tool/jquery.js}"></script>
+    <style>
+        .offering-div {
+            border: 1px #3d3d3d solid;
+            margin: 5px
+        }
+    </style>
 </head>
 <body>
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<th:block th:if="${restaurant}==null">
+    出错了
+</th:block>
+<th:block th:if="${restaurant}!=null">
+    <th:block th:replace="restaurant/head"/>
 
+    <div>
+        <h3>分类管理</h3>
+        <table id="type-table" border="1" cellspacing="0" cellpadding="5">
+            <tr>
+                <th>分类名称</th>
+                <th>操作
+                    <button id="type-add-button">添加</button>
+                </th>
+            </tr>
+            <tr th:each="type:${restaurant.getOfferingTypeByOrder()}" class="type-tr"
+                th:value="${type.getOfferingTypeId()}">
+                <td>
+                    <input class="type-name-input" th:value="${type.getName()}">
+                </td>
+                <td>
+                    <button class="type-up-button">↑</button>
+                    <button class="type-down-button">↓</button>
+                    <button class="type-delete-button">删除</button>
+                </td>
+            </tr>
+        </table>
+        <button id="type-save-button">保存</button>
+        <span style="color: red" id="type-info"></span>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <h3>商品管理</h3>
+        <div id="offering-info" style="color: red"></div>
+        <div style="display: flex">
+            <div>
+                <ul>
+                    <li>商品分类</li>
+                    <li th:each="type:${restaurant.getOfferingTypeByOrder()}">
+                        <label class="offering-type-select-label">
+                            <input type="radio" class="offering-type-radio" name="type"
+                                   th:value="${type.getOfferingTypeId()}">
+                            <th:block th:text="${type.getName()}"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label style="color: red">
+                            <input type="radio" id="offering-non-type-radio" name="type">
+                            无类别商品
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div style="background: black;width: 2px;height: auto; margin: 10px"></div>
+            <div>
+                <button id="offering-add-button">添加菜品</button>
+                <div th:each="offering:${restaurant.getValidOffering()}"
+                     style="display: none;"
+                     class="offering-div"
+                     th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}"
+                     th:value="${offering.getOfferingId()}">
+                    <div><label>名称:<input th:value="${offering.getName()}" class="offering-name-input"></label>
+                    </div>
+                    <div>
+                        <label>价格:<input th:value="${offering.getPrice()}" class="offering-price-input">元</label></div>
+                    <div>
+                        <label>备注:<input placeholder="客户可以看到你的备注" class="offering-note-input"></label></div>
+                    <div>
+                        分类:
+                        <div th:each="myType:${offering.getOfferingTypes()}" class="offering-type-div">
+                            <select class="offering-type-select">
+                                <option th:each="theType:${restaurant.getOfferingTypes()}"
+                                        th:selected="${myType.getOfferingTypeId().equals(theType.getOfferingTypeId())}"
+                                        th:value="${theType.getOfferingTypeId()}"
+                                        th:text="${theType.getName()}"
+                                        class="offering-type-option">
+                                </option>
+                            </select>
+                            <button class="offering-type-remove-button">×</button>
+                        </div>
+
+                        <button class="offering-type-add-button">添加到新的类型</button>
+                    </div>
+                    <button class="offering-save-button">保存</button>
+                    <button class="offering-delete-button">删除商品</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <h3>满减策略管理</h3>
+        <div>
+            <table cellspacing="0" border="1" cellpadding="3" id="strategy-table">
+                <tr>
+                    <th>满</th>
+                    <th>减</th>
+                    <th>操作
+                        <button id="strategy-add-button">添加</button>
+                    </th>
+                </tr>
+                <tr th:each="strategy:${restaurant.getRestaurantValidStrategyByAmount()}"
+                    class="strategy-tr"
+                    th:value="${strategy.getStrategyId()}">
+                    <td th:text="${strategy.getGreaterThan()}" class="strategy-m-td"></td>
+                    <td th:text="${strategy.getDiscount()}" class="strategy-n-td"></td>
+                    <td>
+                        <button class="strategy-delete-button">删除</button>
+                    </td>
+                </tr>
+            </table>
+            <button id="strategy-save-button">保存</button>
+            <span id="strategy-info" style="color: "></span>
+        </div>
+    </div>
+</th:block>
+<script th:src="@{/js/restaurantManage.js}"></script>
 </body>
 </html>

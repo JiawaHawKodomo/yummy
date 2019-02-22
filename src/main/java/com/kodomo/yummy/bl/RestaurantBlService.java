@@ -1,9 +1,11 @@
 package com.kodomo.yummy.bl;
 
+import com.kodomo.yummy.controller.vo.OfferingTypeVo;
+import com.kodomo.yummy.controller.vo.OfferingVo;
+import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
-import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.exceptions.*;
 
 import java.util.List;
 
@@ -56,4 +58,52 @@ public interface RestaurantBlService {
      * @return
      */
     Restaurant getRestaurantById(Integer id);
+
+    /**
+     * 修改餐厅的餐品类型
+     *
+     * @param rid
+     * @param newTypes
+     */
+    void updateRestaurantOfferingType(Integer rid, List<OfferingTypeVo> newTypes) throws ParamErrorException, UserNotExistsException, DuplicatedPrimaryKeyException, UnupdatableException;
+
+    /**
+     * 保存餐品信息
+     *
+     * @param rid
+     * @param vo
+     */
+    void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException;
+
+    /**
+     * 删除商品信息
+     *
+     * @param rid
+     * @param offeringId
+     * @throws ParamErrorException      参数为null
+     * @throws NoSuchAttributeException 不存在该商品
+     * @throws UnupdatableException     餐厅不正确
+     * @throws DatabaseUnknownException 数据库未知错误
+     */
+    void deleteOffering(Integer rid, Integer offeringId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException, DatabaseUnknownException;
+
+    /**
+     * 添加满减策略
+     *
+     * @param rid rid
+     * @param vos vos
+     */
+    void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException, DatabaseUnknownException;
+
+    /**
+     * 删除满减策略
+     *
+     * @param rid
+     * @param strategyId
+     * @throws ParamErrorException      参数为null
+     * @throws NoSuchAttributeException 没有该策略
+     * @throws UnupdatableException     不是自己的策略, 无法修改
+     * @throws DatabaseUnknownException 数据库 错误
+     */
+    void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws DatabaseUnknownException, NoSuchAttributeException, ParamErrorException, UnupdatableException;
 }

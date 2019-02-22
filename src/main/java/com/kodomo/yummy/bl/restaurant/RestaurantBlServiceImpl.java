@@ -1,18 +1,24 @@
 package com.kodomo.yummy.bl.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
+import com.kodomo.yummy.controller.vo.OfferingTypeVo;
+import com.kodomo.yummy.controller.vo.OfferingVo;
+import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
+import com.kodomo.yummy.dao.OfferingDao;
 import com.kodomo.yummy.dao.RestaurantDao;
+import com.kodomo.yummy.dao.RestaurantStrategyDao;
+import com.kodomo.yummy.entity.Offering;
+import com.kodomo.yummy.entity.OfferingType;
 import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.RestaurantStrategy;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
-import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Shuaiyu Yao
@@ -23,11 +29,17 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
 
     private final RestaurantCreator restaurantCreator;
     private final RestaurantDao restaurantDao;
+    private final OfferingDao offeringDao;
+    private final OfferingCreator offeringCreator;
+    private final RestaurantStrategyBlService restaurantStrategyBlService;
 
     @Autowired
-    public RestaurantBlServiceImpl(RestaurantCreator restaurantCreator, RestaurantDao restaurantDao) {
+    public RestaurantBlServiceImpl(RestaurantCreator restaurantCreator, RestaurantDao restaurantDao, OfferingDao offeringDao, OfferingCreator offeringCreator, RestaurantStrategyBlService restaurantStrategyBlService) {
         this.restaurantCreator = restaurantCreator;
         this.restaurantDao = restaurantDao;
+        this.offeringDao = offeringDao;
+        this.offeringCreator = offeringCreator;
+        this.restaurantStrategyBlService = restaurantStrategyBlService;
     }
 
     @Override
@@ -86,5 +98,146 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     public Restaurant getRestaurantById(Integer id) {
         if (id == null) return null;
         return restaurantDao.findById(id).orElse(null);
+    }
+
+    /**
+     * 修改餐厅的餐品类型
+     */
+    @Override
+    public void updateRestaurantOfferingType(Integer rid, List<OfferingTypeVo> newTypes) throws ParamErrorException, UserNotExistsException, DuplicatedPrimaryKeyException, UnupdatableException {
+        if (rid == null || newTypes == null) {
+            throw new ParamErrorException();//参数错误
+        }
+
+        Restaurant restaurant = restaurantDao.findById(rid).orElse(null);
+        if (restaurant == null) {
+            throw new UserNotExistsException();//餐厅实体不存在
+        }
+
+        if (restaurant.getState() != UserState.ACTIVATED) {
+            //状态不对
+            throw new UnupdatableException(restaurant.getState());
+        }
+
+        //处理新set
+        Set<OfferingType> newSet = new HashSet<>();
+        for (int i = 0; i < newTypes.size(); i++) {
+            OfferingTypeVo vo = newTypes.get(i);
+            if (vo.getName() == null || vo.getName().equals("")) {
+                throw new ParamErrorException();
+            }
+
+            OfferingType oldType = restaurant.getOfferingTypeById(vo.getId());
+            if (oldType == null) {
+                OfferingType type = new OfferingType();
+                type.setName(vo.getName());
+                type.setSequenceNumber(i);
+                newSet.add(type);
+            } else {
+                oldType.setName(vo.getName());
+                oldType.setSequenceNumber(i);
+                newSet.add(oldType);
+            }
+        }
+
+        restaurant.setOfferingTypes(newSet);
+        try {
+            restaurantDao.save(restaurant);
+        } catch (Exception e) {
+            throw new DuplicatedPrimaryKeyException();
+        }
+    }
+
+    /**
+     * 保存餐品信息
+     *
+     * @param rid
+     * @param vo
+     */
+    @Override
+    public void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException {
+        if (rid == null || vo == null) {
+            throw new ParamErrorException();
+        }
+
+        Restaurant restaurant = restaurantDao.findById(rid).orElse(null);
+        if (restaurant == null) {
+            throw new UserNotExistsException();//用户不存在
+        }
+
+        if (restaurant.getState() != UserState.ACTIVATED) {
+            throw new UnupdatableException(restaurant.getState());//状态不对
+        }
+
+        Offering newOffering = offeringCreator.getNewOfferingForDatabase(vo, restaurant);
+        try {
+            offeringDao.save(newOffering);
+            //处理旧餐品信息
+            if (vo.getId() != null) {
+                Offering oldOffering = offeringDao.findById(vo.getId()).orElse(null);
+                if (oldOffering != null) {
+                    oldOffering.setEndTime(new Date());
+                    offeringDao.save(oldOffering);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除商品信息
+     *
+     * @param rid
+     * @param offeringId
+     */
+    @Override
+    public void deleteOffering(Integer rid, Integer offeringId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException, DatabaseUnknownException {
+        if (rid == null || offeringId == null) {
+            throw new ParamErrorException("餐厅, 商品");
+        }
+
+        Offering offering = offeringDao.findById(offeringId).orElse(null);
+        if (offering == null) {
+            throw new NoSuchAttributeException();//没有该商品
+        }
+
+        if (offering.getRestaurantId() == null || !offering.getRestaurantId().equals(rid)) {
+            throw new UnupdatableException();//拥有商品的餐厅不是该餐厅
+        }
+
+        //设置结束时间, 数据库中保留
+        offering.setEndTime(new Date());
+        try {
+            offeringDao.save(offering);
+        } catch (Exception e) {
+            throw new DatabaseUnknownException(e);
+        }
+    }
+
+    /**
+     * 添加满减策略
+     *
+     * @param rid rid
+     * @param vos vos
+     */
+    @Override
+    public void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException, DatabaseUnknownException {
+        restaurantStrategyBlService.addRestaurantStrategy(rid, vos);
+    }
+
+    /**
+     * 删除满减策略
+     *
+     * @param rid
+     * @param strategyId
+     * @throws ParamErrorException      参数为null
+     * @throws NoSuchAttributeException 没有该策略
+     * @throws UnupdatableException     不是自己的策略, 无法修改
+     * @throws DatabaseUnknownException 数据库 错误
+     */
+    @Override
+    public void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws DatabaseUnknownException, NoSuchAttributeException, ParamErrorException, UnupdatableException {
+        restaurantStrategyBlService.deleteRestaurantStrategy(rid, strategyId);
     }
 }

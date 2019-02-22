@@ -4,11 +4,11 @@ import com.kodomo.yummy.entity.entity_enum.UserState;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Shuaiyu Yao
@@ -45,23 +45,21 @@ public class Restaurant {
     @JoinTable(name = "_relationship_restaurant_to_type",
             joinColumns = {@JoinColumn(name = "restaurant_id")},
             inverseJoinColumns = {@JoinColumn(name = "type_id")})
-    private Set<RestaurantType> types;//多对多双向
+    private Set<RestaurantType> types;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Set<OfferingType> offeringTypes;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
-    private Set<Offering> offerings;//一对多双向
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "restaurant")
+    private Set<Offering> offerings;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
-    private Set<RestaurantStrategy> strategies;//一对多单向
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY, mappedBy = "restaurant")
+    private Set<RestaurantStrategy> strategies;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "location_id", nullable = false)
-    private Location location;//多对一单向
+    private Location location;
 
     @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private Set<Order> orders;
@@ -83,48 +81,140 @@ public class Restaurant {
      * @return
      */
     public String getTypeByString() {
-        if (types == null) return "-";
+        if (getTypes() == null) return "-";
         return new ArrayList<>(types).stream().map(RestaurantType::getContent)
                 .reduce((a, b) -> a + "/" + b).orElse("-");
     }
 
     public String getLocationInfo() {
-        if (location == null) return null;
-        return location.getInfo();
+        if (getLocation() == null) return null;
+        return getLocation().getInfo();
     }
 
     public String getCity() {
-        if (location == null) return null;
-        return location.getCity();
+        if (getLocation() == null) return null;
+        return getLocation().getCity();
     }
 
     public String getBlockInfo() {
-        if (location == null) return null;
-        return location.getBlockInfo();
+        if (getLocation() == null) return null;
+        return getLocation().getBlockInfo();
     }
 
     public String getPointInfo() {
-        if (location == null) return null;
-        return location.getPointInfo();
+        if (getLocation() == null) return null;
+        return getLocation().getPointInfo();
     }
 
     public String getLocationNote() {
-        if (location == null) return null;
-        return location.getNote();
+        if (getLocation() == null) return null;
+        return getLocation().getNote();
     }
 
     public Double getLat() {
-        if (location == null) return null;
-        return location.getLat();
+        if (getLocation() == null) return null;
+        return getLocation().getLat();
     }
 
     public Double getLng() {
-        if (location == null) return null;
-        return location.getLng();
+        if (getLocation() == null) return null;
+        return getLocation().getLng();
     }
 
     public double getOrderQuantity() {
-        if (orders == null) return 0;
-        return orders.size();
+        if (getOrders() == null) return 0;
+        return getOrders().size();
+    }
+
+    /**
+     * 按金额获取有效的strategy
+     *
+     * @return
+     */
+    @NotNull
+    public List<RestaurantStrategy> getRestaurantValidStrategyByAmount() {
+        if (getStrategies() == null) return new ArrayList<>();
+        return getStrategies().stream().filter(RestaurantStrategy::isValidNow)
+                .sorted(Comparator.comparingDouble(RestaurantStrategy::getDiscount))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取有效商品
+     *
+     * @return
+     */
+    @NotNull
+    public List<Offering> getValidOffering() {
+        if (getOfferings() == null) return new ArrayList<>();
+        return getOfferings().stream().filter(Offering::isOnSale)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据名字查找查询
+     *
+     * @return
+     */
+    public OfferingType getOfferingTypeById(Integer id) {
+        if (getOfferingTypes() == null || id == null) return null;
+        for (OfferingType type : getOfferingTypes()) {
+            if (id.equals(type.getOfferingTypeId())) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 根据顺序取商品类型列表
+     *
+     * @return
+     */
+    @NotNull
+    public List<OfferingType> getOfferingTypeByOrder() {
+        if (getOfferingTypes() == null) return new ArrayList<>();
+        return getOfferingTypes().stream().sorted(Comparator.comparingInt(OfferingType::getSequenceNumber))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取无类别餐品
+     *
+     * @return
+     */
+    @NotNull
+    public List<Offering> getNontypeOfferings() {
+        if (getOfferings() == null) return new ArrayList<>();
+        return getOfferings().stream().filter(o -> o.getOfferingTypes().size() == 0)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 根据id查找strategy
+     *
+     * @param strategyId
+     * @return
+     */
+    public RestaurantStrategy getRestaurantStrategyById(Integer strategyId) {
+        if (getStrategies() == null || strategyId == null) return null;
+        for (RestaurantStrategy strategy : getStrategies()) {
+            if (strategyId.equals(strategy.getStrategyId())) {
+                return strategy;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 餐厅满减策略的文字说明
+     *
+     * @return
+     */
+    @NotNull
+    public String getRestaurantStrategyText() {
+        if (getRestaurantValidStrategyByAmount() == null) return "无";
+        return getRestaurantValidStrategyByAmount().stream().map(RestaurantStrategy::getText)
+                .reduce((a, b) -> a + "," + b).orElse("无");
     }
 }

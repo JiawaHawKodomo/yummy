@@ -1,6 +1,8 @@
 package com.kodomo.yummy.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,7 +14,8 @@ import java.util.Date;
  * @author Shuaiyu Yao
  * @create 2019-02-13 15:36
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "restaurant_strategy")
 public class RestaurantStrategy {
@@ -31,6 +34,10 @@ public class RestaurantStrategy {
     @Column(name = "end_date")
     private Date endDate;
 
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
     public boolean isValidNow() {
         return isValidAt(new Date());
     }
@@ -45,6 +52,26 @@ public class RestaurantStrategy {
      * @return
      */
     public String getText() {
+        if (getGreaterThan() == null || getDiscount() == null) {
+            return "";
+        }
         return "满" + getGreaterThan() + "减" + getDiscount();
+    }
+
+    public Integer getRestaurantId() {
+        if (getRestaurant() == null) return null;
+        return getRestaurant().getRestaurantId();
+    }
+
+    @Override
+    public String toString() {
+        return "RestaurantStrategy{" +
+                "strategyId=" + strategyId +
+                ", greaterThan=" + greaterThan +
+                ", discount=" + discount +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", restaurant=" + restaurant.getRestaurantId() +
+                '}';
     }
 }

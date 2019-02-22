@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * @author Shuaiyu Yao
@@ -28,7 +29,8 @@ public class Offering {
     private Double price;
     private String note;//商家备注
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
     @Column(name = "start_time", columnDefinition = "timestamp default current_timestamp()", updatable = false)
@@ -41,6 +43,11 @@ public class Offering {
     @Column(name = "end_time")
     private Date endTime;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST})
+    @JoinTable(name = "_relationship_type_to_offering",
+            joinColumns = {@JoinColumn(name = "offering_id")},
+            inverseJoinColumns = {@JoinColumn(name = "offering_type_id")})
+    private Set<OfferingType> offeringTypes;
 
     /**
      * 是否正在销售
@@ -62,4 +69,26 @@ public class Offering {
                 ", endTime=" + endTime +
                 '}';
     }
+
+    public String getOfferingTypeJoinBy(String s) {
+        if (offeringTypes == null) return "";
+        return offeringTypes.stream().map(t -> t.getOfferingTypeId().toString())
+                .reduce((a, b) -> a + s + b).orElse(s);
+    }
+
+    /**
+     * 判断是否无类别
+     *
+     * @return
+     */
+    public boolean isNonTyped() {
+        return getOfferingTypes() == null || getOfferingTypes().size() == 0;
+    }
+
+    public Integer getRestaurantId() {
+        if (getRestaurant() == null) return null;
+        return getRestaurant().getRestaurantId();
+    }
 }
+
+

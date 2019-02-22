@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 商家信息</title>
+    <script th:src="@{/js/tool/jquery.js}"></script>
 </head>
 <body th:with="self=${session.restaurant}">
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
@@ -10,15 +11,84 @@
     出错了
 </th:block>
 <th:block th:if="${restaurant}!=null">
-    <!--是自己登录-->
+    <!--餐厅登录-->
     <th:block th:if="${restaurant.getRestaurantId().equals(self)}">
         <th:block th:replace="restaurant/head"/>
-        <!--黑线-->
-        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+
+    <!--客户登录-->
+    <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+    <th:block th:if="${customer}!=null">
+        <th:block th:replace="customer/head"/>
     </th:block>
 
     <h2 th:text="${restaurant.getName()}"></h2>
 
+    <div>
+        <div>
+            <h4>满减优惠</h4>
+            <div th:text="${restaurant.getRestaurantStrategyText()}">
+            </div>
+        </div>
+
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+
+        <div>
+            <h4>菜品信息</h4>
+            <div style="display: flex">
+                <div>
+                    <ul>
+                        <li>商品分类</li>
+                        <li th:each="type:${restaurant.getOfferingTypeByOrder()}">
+                            <label class="offering-type-select-label">
+                                <input type="radio" class="offering-type-radio" name="type"
+                                       th:value="${type.getOfferingTypeId()}">
+                                <th:block th:text="${type.getName()}"/>
+                            </label>
+                        </li>
+                        <li>
+                            <label style="color: red">
+                                <input type="radio" id="offering-non-type-radio" name="type">
+                                无类别商品
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div style="background: black;width: 2px;height: auto; margin: 10px"></div>
+                <div>
+                    <div th:each="offering:${restaurant.getValidOffering()}"
+                         style="display: none; background: #d3d3d3 ;min-width: 200px; width: auto; margin: 10px"
+                         class="offering-div"
+                         th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}"
+                         th:value="${offering.getOfferingId()}">
+                        <div style="display: flex;justify-content: space-around">
+                            <div><h3 th:text="${offering.getName()}" class="offering-name-h3"></h3></div>
+                            <div><h3 th:text="${offering.getPrice()}"
+                                     class="offering-price-h3"></h3>
+                            </div>
+                        </div>
+                        <div><label th:text="${offering.getNote()}" style="color: #333333"></label></div>
+                        <div th:if="${customer}!=null">
+                            <button class="offering-add-button">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: black;width: 100%;min-height: 100px;position: absolute;bottom: 0;color: white;">
+            <h3>已选:</h3>
+            <table cellpadding="20" cellspacing="5" id="offering-selected-table">
+
+            </table>
+            <button>提交订单</button>
+            <span>总价: </span>
+            <span id="offering-total-price-span"></span>
+        </div>
+    </div>
 </th:block>
+
+<script th:src="@{/js/restaurantInfo.js}"></script>
 </body>
 </html>

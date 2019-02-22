@@ -57,7 +57,7 @@ public class RestaurantRegisterController {
             result.put("result", true);
             result.put("restaurant", restaurant.getRestaurantId());
             //添加session信息
-            request.getSession().setAttribute("restaurant", restaurant);
+            request.getSession().setAttribute("restaurant", restaurant.getRestaurantId());
         } catch (ParamErrorException e) {
             result.put("info", "以下信息填写错误:" + e.getErrorFieldsInfo());
         } catch (DuplicatedPrimaryKeyException e) {

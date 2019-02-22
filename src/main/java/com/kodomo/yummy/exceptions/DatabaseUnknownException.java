@@ -1,39 +1,31 @@
 package com.kodomo.yummy.exceptions;
 
-import javax.validation.constraints.NotNull;
 import java.security.PrivilegedActionException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Shuaiyu Yao
- * @create 2019-02-16 14:53
+ * @create 2019-02-22 11:04
  */
-public class ParamErrorException extends Exception {
-
-    private List<String> errorFields;
-
-    public ParamErrorException(String... fields) {
-        errorFields = new ArrayList<>(Arrays.asList(fields));
-    }
-
-    public ParamErrorException(List<String> fields) {
-        errorFields = new ArrayList<>(fields);
-    }
-
-    @NotNull
-    public String getErrorFieldsInfo() {
-        if (errorFields == null) return "";
-        return errorFields.stream().reduce((a, b) -> a + "," + b).orElse("");
-    }
+public class DatabaseUnknownException extends Exception{
 
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public ParamErrorException() {
+    public DatabaseUnknownException() {
+    }
+
+    /**
+     * Constructs a new exception with the specified detail message.  The
+     * cause is not initialized, and may subsequently be initialized by
+     * a call to {@link #initCause}.
+     *
+     * @param message the detail message. The detail message is saved for
+     *                later retrieval by the {@link #getMessage()} method.
+     */
+    public DatabaseUnknownException(String message) {
+        super(message);
     }
 
     /**
@@ -50,7 +42,7 @@ public class ParamErrorException extends Exception {
      *                unknown.)
      * @since 1.4
      */
-    public ParamErrorException(String message, Throwable cause) {
+    public DatabaseUnknownException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -68,7 +60,7 @@ public class ParamErrorException extends Exception {
      *              unknown.)
      * @since 1.4
      */
-    public ParamErrorException(Throwable cause) {
+    public DatabaseUnknownException(Throwable cause) {
         super(cause);
     }
 
@@ -86,7 +78,7 @@ public class ParamErrorException extends Exception {
      *                           be writable
      * @since 1.7
      */
-    public ParamErrorException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public DatabaseUnknownException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

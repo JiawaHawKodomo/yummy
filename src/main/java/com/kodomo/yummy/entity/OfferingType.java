@@ -3,6 +3,7 @@ package com.kodomo.yummy.entity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -16,19 +17,18 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "offering_type",
-        indexes = {@Index(name = "name_restaurant", columnList = "name,restaurant_id", unique = true)})
+        indexes = {@Index(name = "name_restaurant", columnList = "restaurant_id,name", unique = true)})
 public class OfferingType {
 
     @Id
     @Column(name = "offering_type_id")
+    @GeneratedValue(generator = "generator_oft")
+    @GenericGenerator(name = "generator_oft", strategy = "native")
     private Integer offeringTypeId;
     @Column(nullable = false)
     private String name;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST})
-    @JoinTable(name = "_relationship_type_to_offering",
-            joinColumns = {@JoinColumn(name = "offering_type_id")},
-            inverseJoinColumns = {@JoinColumn(name = "offering_id")})
+    @Column(nullable = false, name = "sequence_number")
+    private Integer sequenceNumber;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "offeringTypes")
     private Set<Offering> offerings;
-
 }
