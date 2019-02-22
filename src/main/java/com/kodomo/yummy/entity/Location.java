@@ -36,10 +36,14 @@ public class Location {
     private Boolean isInUse;//正在使用
     private String telephone;//收餐电话, 如果不被用到则为null
 
-    private static final double EARTH_RADIUS = 6378137.0;//赤道半径(单位m)
+    private static final double EARTH_RADIUS = 6378.137;//赤道半径(单位m)
+
+    public Integer distanceBetweenByMeter(Location location) {
+        return (int) (distanceBetween(location) * 1000);
+    }
 
     /**
-     * 返回两个地址的距离, 用米表示
+     * 返回两个地址的距离, 用km表示
      *
      * @param location
      * @return
@@ -86,7 +90,7 @@ public class Location {
     }
 
     public String getInfo() {
-        return city + blockInfo + pointInfo + note;
+        return city + blockInfo + pointInfo + " " + note;
     }
 
     @Override

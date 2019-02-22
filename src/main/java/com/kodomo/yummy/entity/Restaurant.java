@@ -86,8 +86,9 @@ public class Restaurant {
                 .reduce((a, b) -> a + "/" + b).orElse("-");
     }
 
+    @NotNull
     public String getLocationInfo() {
-        if (getLocation() == null) return null;
+        if (getLocation() == null) return "";
         return getLocation().getInfo();
     }
 
@@ -216,5 +217,32 @@ public class Restaurant {
         if (getRestaurantValidStrategyByAmount() == null) return "无";
         return getRestaurantValidStrategyByAmount().stream().map(RestaurantStrategy::getText)
                 .reduce((a, b) -> a + "," + b).orElse("无");
+    }
+
+    /**
+     * 判断餐厅是否匹配关键字
+     *
+     * @param keyWord
+     * @return 匹配关键字的信息, 如果完全不匹配则返回null
+     */
+    public String isMatched(String keyWord) {
+        if (keyWord == null) return null;
+
+        //餐厅名称
+        List<String> matchInfo = new ArrayList<>();
+        if (getName() != null && getName().contains(keyWord)) {
+            matchInfo.add("餐厅名称:" + getName());
+        }
+
+        //菜品名称
+        if (getValidOffering() != null) {
+            getValidOffering().forEach(offering -> {
+                if (offering.getName() != null && offering.getName().contains(keyWord)) {
+                    matchInfo.add("菜品:" + offering.getName());
+                }
+            });
+        }
+
+        return matchInfo.stream().reduce((a, b) -> a + "," + b).orElse(null);
     }
 }

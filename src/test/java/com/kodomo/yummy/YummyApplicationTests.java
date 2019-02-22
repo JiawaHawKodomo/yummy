@@ -6,6 +6,7 @@ import com.kodomo.yummy.dao.OrderSettlementStrategyDao;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.OrderSettlementStrategy;
 import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.util.Utility;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,8 @@ public class YummyApplicationTests {
 
     @Test
     public void contextLoads() {
-        OrderSettlementStrategy strategy = orderBlService.getCurrentOrderSettlementStrategy();
-        System.out.println(strategy);
+        List<Restaurant> restaurants = restaurantDao.getRestaurantWithinSquare(35.60413, 115.24712, 5.0);
+        System.out.println(restaurants.size());
     }
 }
 

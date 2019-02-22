@@ -18,7 +18,7 @@
 
     <div>
         <!--/*@thymesVar id="isSelf" type="java.lang.Boolean"*/-->
-        <p>确认/修改信息</p>
+        <h3>确认/修改信息</h3>
         <table>
             <tr>
                 <td>邮箱</td>
@@ -57,7 +57,7 @@
     <div style="height: 2px;width: 100%;background: black"></div>
 
     <div>
-        <p>密码修改</p>
+        <h3>密码修改</h3>
         <table>
             <tr>
                 <td>当前密码</td>
@@ -86,7 +86,7 @@
     <div style="height: 2px;width: 100%;background: black"></div>
 
     <div th:if="${customer.getValidLocation().size()}!=0">
-        <p>删除地址</p>
+        <h3>删除地址</h3>
         <table border="1 black" cellpadding="5">
             <tr>
                 <td>城市</td>
@@ -115,7 +115,7 @@
     </div>
 
     <div>
-        <p>新建地址</p>
+        <h3>新建地址</h3>
         <table>
             <tr>
                 <td>地址备注</td>
@@ -143,7 +143,7 @@
     <div style="height: 2px;width: 100%;background: black"></div>
 
     <div>
-        <p>用户注销</p>
+        <h3>用户注销</h3>
         <div style="color: red">注: 账号注销后不可恢复, 不能再进行任何处理, 余额无法退还, 请谨慎处理</div>
         <div>
             请输入密码:<label>

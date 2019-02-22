@@ -7,10 +7,13 @@ import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.dao.LocationDao;
 import com.kodomo.yummy.entity.Customer;
 import com.kodomo.yummy.entity.Location;
+import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
@@ -24,14 +27,16 @@ public class CustomerBlServiceImpl implements CustomerBlService {
     private final LocationHelper locationHelper;
     private final ValidatingHelper validatingHelper;
     private final LocationDao locationDao;
+    private final CustomerPlaceBlService customerPlaceBlService;
 
     @Autowired
-    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao) {
+    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao, CustomerPlaceBlService customerPlaceBlService) {
         this.customerDao = customerDao;
         this.customerCreator = customerCreator;
         this.locationHelper = locationHelper;
         this.validatingHelper = validatingHelper;
         this.locationDao = locationDao;
+        this.customerPlaceBlService = customerPlaceBlService;
     }
 
     /**
@@ -245,5 +250,10 @@ public class CustomerBlServiceImpl implements CustomerBlService {
         //设置账号
         customer.setState(UserState.CLOSED);
         customerDao.save(customer);
+    }
+
+    @Override
+    public List<Restaurant> getRestaurantWithinDistributionDistance(String email, Integer locationId) throws ParamErrorException, NoSuchAttributeException, UserNotExistsException {
+        return customerPlaceBlService.getRestaurantWithinDistributionDistance(email, locationId);
     }
 }

@@ -68,9 +68,23 @@ public class Customer {
      * @return boolean
      */
     public boolean hasLocation(Integer locationId) {
-        if (locationId == null) return false;
-        return getLocations().stream().map(l -> l.getLocationId().equals(locationId))
-                .reduce((a, b) -> a || b).orElse(false);
+        return getLocationById(locationId) != null;
+    }
+
+    /**
+     * 根据locationId查找有效地址
+     *
+     * @param locationId
+     * @return
+     */
+    public Location getLocationById(Integer locationId) {
+        if (locationId == null) return null;
+        for (Location location : getValidLocation()) {
+            if (locationId.equals(location.getLocationId())) {
+                return location;
+            }
+        }
+        return null;
     }
 
     /**

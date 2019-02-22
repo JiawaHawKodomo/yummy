@@ -33,4 +33,12 @@ public class Utility {
         }
         return encdeStr;
     }
+
+    public static double latitudeByDistance(double distance) {
+        return distance / 111.0;
+    }
+
+    public static double longitudeByDisrance(double distance, double latitude) {
+        return distance / (111.0 * Math.cos(Math.abs(latitude) / 180.0 * Math.PI));
+    }
 }

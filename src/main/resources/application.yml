@@ -16,8 +16,11 @@ spring:
 
 yummy-system:
   min-payment: 0.01
+  #pay-time: minuit
   pay-time: 15
   activating-link: http://localhost/activate/
+  #max-distribution-distance: km
+  max-distribution-distance: 5
   super-manager:
     id: root
     #123456

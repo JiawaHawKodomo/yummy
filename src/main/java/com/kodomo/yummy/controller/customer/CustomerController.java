@@ -69,18 +69,6 @@ public class CustomerController {
         return "redirect:/";
     }
 
-    /**
-     * 选择地址
-     *
-     * @return
-     */
-    @GetMapping("/place")
-    public String place(HttpServletRequest request, Model model) {
-        String email = (String) request.getSession(true).getAttribute("customer");
-        Customer customer = customerBlService.getCustomerEntityByEmail(email);
-        model.addAttribute("customer", customer);
-        return "customer/place";
-    }
 
     /**
      * 个人信息

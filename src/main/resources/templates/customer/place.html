@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>Yummy! 选择餐厅</title>
     <script th:src="@{/js/tool/jquery.js}"></script>
+    <style>
+        .restaurant-a, .restaurant-a:hover, .restaurant-a:link, .restaurant-a:visited {
+            text-decoration: none;
+            color: black;
+        }
+
+        em {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
@@ -12,18 +22,60 @@
 </th:block>
 <th:block th:if="${customer}!=null">
     <div th:replace="customer/head"></div>
+    <div>
+        <h3>选择地址</h3>
+        <th:block th:if="${customer.getLocations().size()}==0">
+            <p style="color: red">您当前没有填写地址信息, 请进入
+                <a th:href="@{/customer/info}">个人信息</a>
+                填写</p>
+        </th:block>
+        <ul>
+            <li th:each="location:${customer.getLocations()}">
+                <label>
+                    <!--/*@thymesVar id="locationId" type="java.lang.Integer"*/-->
+                    <input type="radio" name="location" th:value="${location.getLocationId()}"
+                           class="location-select-radio"
+                           th:checked="${location.getLocationId().equals(locationId)}">
+                    <th:block th:text="${location.getInfo()}"/>
+                </label>
+            </li>
+        </ul>
+    </div>
 
     <!--黑线-->
     <div style="height: 2px;width: 100%;background: black"></div>
 
     <div>
-        <p>选择地址</p>
-        <label th:each="location:${customer.getLocations()}">
-            <input type="radio" name="location" th:value="${location.getLocationId()}">
-            <th:block th:text="${location.getInfo()}"/>
-        </label>
+        <h3>搜索</h3>
+        <!--/*@thymesVar id="keyWord" type="java.lang.String"*/-->
+        <input id="search-input" style="width: 50%" placeholder="请先选择地址再搜索"
+               th:value="${keyWord}==null?'':${keyWord}">
+        <div></div>
+        <button id="search-button">搜索</button>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <h3>选择餐厅</h3>
+        <div style="width: 70%; margin: 20px">
+            <!--/*@thymesVar id="resultRestaurants" type="java.util.List"*/-->
+            <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+            <a th:each="restaurant:${resultRestaurants}"
+               th:href="@{/customer/ordering/}+${restaurant.getRestaurantId()}"
+               class="restaurant-a">
+                <div style="background: #c6c6c6">
+                    <h3 th:text="${restaurant.getName()}"></h3>
+                    <p th:text="${restaurant.getLocationInfo()}+' 距您'
+                    +${restaurant.getLocation().distanceBetweenByMeter(customer.getLocationById(locationId))}+'米'"></p>
+                    <p th:text="${restaurant.isMatched(keyWord)}" class="restaurant-search-tip"></p>
+                </div>
+            </a>
+        </div>
     </div>
 </th:block>
 
+<script th:src="@{/js/customerPlace.js}"></script>
 </body>
 </html>

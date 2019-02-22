@@ -1,7 +1,10 @@
 package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.entity.Customer;
+import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.exceptions.*;
+
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
@@ -91,5 +94,17 @@ public interface CustomerBlService {
      * @param password password
      */
     void closeCustomer(String email, String password) throws ParamErrorException, UserNotExistsException, UnupdatableException, PasswordErrorException;
+
+    /**
+     * 查找范围内的餐厅
+     *
+     * @param email      email
+     * @param locationId locationId
+     * @return
+     * @throws ParamErrorException      传入参数为null
+     * @throws NoSuchAttributeException 没有该地址
+     * @throws UserNotExistsException   没有该customer
+     */
+    List<Restaurant> getRestaurantWithinDistributionDistance(String email, Integer locationId) throws ParamErrorException, NoSuchAttributeException, UserNotExistsException;
 }
 

@@ -34,7 +34,10 @@ public interface OrderSettlementStrategyDao extends JpaRepository<OrderSettlemen
                 public Predicate toPredicate(Root<OrderSettlementStrategy> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                     return criteriaBuilder.and(
                             criteriaBuilder.lessThanOrEqualTo(root.get("startTime").as(Date.class), date),
-                            criteriaBuilder.greaterThanOrEqualTo(root.get("endTime").as(Date.class), date)
+                            criteriaBuilder.or(
+                                    criteriaBuilder.greaterThanOrEqualTo(root.get("endTime").as(Date.class), date),
+                                    criteriaBuilder.isNull(root.get("endTime").as(Date.class))
+                            )
                     );
                 }
             }).orElse(null);
