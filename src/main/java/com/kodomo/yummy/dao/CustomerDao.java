@@ -1,6 +1,7 @@
 package com.kodomo.yummy.dao;
 
 import com.kodomo.yummy.entity.Customer;
+import com.kodomo.yummy.util.Utility;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomerDao extends JpaRepository<Customer, String> {
 
+    default Customer find(String id) {
+        return findById(Utility.string(id)).orElse(null);
+    }
 }

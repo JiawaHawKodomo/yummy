@@ -3,8 +3,10 @@ package com.kodomo.yummy.controller;
 import com.kodomo.yummy.bl.ManagementBlService;
 import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.bl.RestaurantBlService;
+import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UnupdatableException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,7 @@ public class ManagementController {
 
         Manager manager = managementBlService.login(id, password);
         if (manager != null) {
-            request.getSession(true).setAttribute("manager", manager);
+            request.getSession(true).setAttribute("manager", manager.getManagerId());
             result.put("result", true);
         }
         return result;
@@ -121,26 +123,24 @@ public class ManagementController {
 
     @PostMapping("/orderStrategy")
     @ResponseBody
-    public Map<String, Object> updateOrderStrategy(HttpServletRequest request, @RequestParam Map<String, String> map) {
+    public Map<String, Object> updateOrderStrategy(HttpServletRequest request,
+                                                   @RequestBody List<OrderSettlementStrategyVo> vos) {
         Map<String, Object> result = new HashMap<>();
-        try {
-            Manager manager = (Manager) request.getSession(true).getAttribute("manager");
-            if (manager == null || manager.getManagerId() == null) {
-                //不存在
-                throw new Exception("未登录");
-            }
-
-            String json = map.get("jsonData");
-            JsonParser jsonParser = new JacksonJsonParser();
-            List list = jsonParser.parseList(json);
-
-            orderBlService.saveNewOrderSettlementStrategy(new ArrayList<>(list), manager);
-            result.put("result", true);
-        } catch (Exception e) {
-            result.put("info", e.getMessage());
-        } finally {
+        String managerId = (String) request.getSession(true).getAttribute("manager");
+        if (managerId == null) {
+            result.put("info", "请先登录");
             return result;
         }
+
+        try {
+            orderBlService.saveNewOrderSettlementStrategy(vos, managerId);
+            result.put("result", true);
+        } catch (ParamErrorException e) {
+            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
+        } catch (UserNotExistsException e) {
+            result.put("info", "管理员不存在");
+        }
+        return result;
     }
 }
 

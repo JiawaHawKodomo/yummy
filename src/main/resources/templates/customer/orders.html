@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 我的订单</title>
+    <style>
+        .order-div {
+            margin: 20px;
+            padding: 10px;
+            border: 2px solid black;
+            width: 300px;
+        }
+    </style>
 </head>
 <body>
 <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
@@ -18,14 +26,14 @@
             <p>进行中的订单:</p>
             <div style="display: flex;">
                 <div th:each="order:${customer.getOngoingOrders()}"
-                     style="border: 2px solid black;width: 300px;height: 300px">
-                    <p th:text="'餐厅:'+${order.getRestaurant().getName()}"></p>
+                     class="order-div">
+                    <h4 th:text="${order.getRestaurant().getName()}"></h4>
                     <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
                     <ul th:with="first=${order.getDetailsByPrice().get(0)}">
-                        <li th:text="${first.getOffering().getName()}+'×'+${first.getQuantity()}"></li>
-                        <li th:if="${order.getDetails().size()}>1">...</li>
+                        <li th:each="detail:${order.getDetailsByPrice()}"
+                            th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
                     </ul>
-                    <button th:value="${order.getOrderId()}">查看详情</button>
+                    <a th:href="@{/customer/order/}+${order.getOrderId()}">查看详情</a>
                 </div>
             </div>
         </div>
@@ -35,17 +43,17 @@
 
     <th:block th:if="${customer.getUnpaidOrders().size()}!=0">
         <div>
-            <p>待支付的订单:</p>
+            <h3>待支付的订单:</h3>
             <div style="display: flex;">
                 <div th:each="order:${customer.getUnpaidOrders()}"
-                     style="border: 2px solid black;width: 300px;height: 300px">
-                    <p th:text="'餐厅:'+${order.getRestaurant().getName()}"></p>
+                     class="order-div">
+                    <h4 th:text="${order.getRestaurant().getName()}"></h4>
                     <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
                     <ul th:with="first=${order.getDetailsByPrice().get(0)}">
-                        <li th:text="${first.getOffering().getName()}+'×'+${first.getQuantity()}"></li>
-                        <li th:if="${order.getDetails().size()}>1">...</li>
+                        <li th:each="detail:${order.getDetailsByPrice()}"
+                            th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
                     </ul>
-                    <button th:value="${order.getOrderId()}">查看详情</button>
+                    <a th:href="@{/customer/order/}+${order.getOrderId()}">查看详情</a>
                 </div>
             </div>
         </div>
@@ -53,19 +61,19 @@
         <div style="height: 2px;width: 100%;background: black"></div>
     </th:block>
 
-    <th:block th:if="${customer.getUnpaidOrders().size()}!=0">
+    <th:block th:if="${customer.getIdleOrders().size()}!=0">
         <div>
-            <p>待支付的订单:</p>
+            <p>过去的订单:</p>
             <div style="display: flex;">
-                <div th:each="order:${customer.getUnpaidOrders()}"
-                     style="border: 2px solid black;width: 300px;height: 300px">
-                    <p th:text="'餐厅:'+${order.getRestaurant().getName()}"></p>
+                <div th:each="order:${customer.getIdleOrders()}"
+                     class="order-div">
+                    <h4 th:text="${order.getRestaurant().getName()}"></h4>
                     <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
                     <ul th:with="first=${order.getDetailsByPrice().get(0)}">
-                        <li th:text="${first.getOffering().getName()}+'×'+${first.getQuantity()}"></li>
-                        <li th:if="${order.getDetails().size()}>1">...</li>
+                        <li th:each="detail:${order.getDetailsByPrice()}"
+                            th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
                     </ul>
-                    <button th:value="${order.getOrderId()}">查看详情</button>
+                    <a th:href="@{/customer/order/}+${order.getOrderId()}">查看详情</a>
                 </div>
             </div>
         </div>

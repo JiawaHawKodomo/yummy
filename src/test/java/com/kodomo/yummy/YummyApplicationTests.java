@@ -45,8 +45,7 @@ public class YummyApplicationTests {
 
     @Test
     public void contextLoads() {
-        List<Restaurant> restaurants = restaurantDao.getRestaurantWithinSquare(35.60413, 115.24712, 5.0);
-        System.out.println(restaurants.size());
+        System.out.println(restaurantDao.findById(Utility.integer(null)).orElse(null));
     }
 }
 

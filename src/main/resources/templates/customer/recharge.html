@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 充值页面</title>
+    <script th:src="@{/js/tool/jquery.js}"></script>
+</head>
+<body>
+<th:block>
+    <div th:replace="customer/head"></div>
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <h3>充值</h3>
+        <input id="recharge-amount-input">
+        <button id="recharge-button">提交</button>
+        <span id="recharge-info" style="color: red"></span>
+    </div>
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <h3>充值记录</h3>
+        <table cellpadding="20">
+            <tr>
+                <th>时间</th>
+                <th>金额</th>
+            </tr>
+            <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+            <tr th:each="log:${customer.getRechargeLogsByTimeDesc()}">
+                <td th:text="${log.getTime()}"></td>
+                <th th:text="${log.getAmount()}"></th>
+            </tr>
+        </table>
+    </div>
+</th:block>
+<script th:src="@{/js/customerRecharge.js}"></script>
+</body>
+</html>

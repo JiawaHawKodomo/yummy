@@ -63,7 +63,7 @@
             <!--/*@thymesVar id="resultRestaurants" type="java.util.List"*/-->
             <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
             <a th:each="restaurant:${resultRestaurants}"
-               th:href="@{/customer/ordering/}+${restaurant.getRestaurantId()}"
+               th:href="@{/customer/ordering/}+${restaurant.getRestaurantId()}+'?location_id='+${locationId}"
                class="restaurant-a">
                 <div style="background: #c6c6c6">
                     <h3 th:text="${restaurant.getName()}"></h3>

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Shuaiyu Yao
@@ -19,6 +20,10 @@ import java.util.List;
  */
 @Repository
 public interface RestaurantDao extends JpaRepository<Restaurant, Integer>, JpaSpecificationExecutor<Restaurant> {
+
+    default Restaurant find(Integer id) {
+        return findById(Utility.integer(id)).orElse(null);
+    }
 
     default List<Restaurant> getRestaurantWithinSquare(Double lat, Double lng, Double distanceToSide) {
         try {

@@ -55,7 +55,12 @@ public class RestaurantController {
      * @return
      */
     @GetMapping("/index/{rid}")
-    public String restaurant(@PathVariable("rid") Integer rid, Model model) {
+    public String restaurant(HttpServletRequest request, @PathVariable("rid") Integer rid, Model model) {
+        if (request.getSession(true).getAttribute("customer") != null) {
+            //顾客
+            return "redirect:/customer/ordering/" + rid;
+        }
+
         Restaurant restaurant = restaurantBlService.getRestaurantById(rid);
         model.addAttribute("restaurant", restaurant);
         return "restaurant/info";

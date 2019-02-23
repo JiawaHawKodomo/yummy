@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.Order"*/-->
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 订单详情</title>
+    <script th:href="@{/js/tool/jquery.js}"></script>
+    <meta name="orderId" th:content="${order.getOrderId()}">
 </head>
 <body>
 <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
-<!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.Order"*/-->
-<th:block th:if="${customer}==null||${order}==null">
+<th:block th:if="${customer eq null||order eq null}">
     出错了
 </th:block>
-<th:block th:if="${customer}!=null&&${order}!=null">
+<th:block th:if="${customer ne null&&order ne null}">
     <th:block th:replace="customer/head"/>
 
     <!--黑线-->
@@ -20,15 +22,19 @@
     <div style="height: 2px;width: 100%;background: black"></div>
 
     <div>
-        <p>操作:</p>
-        <!--/*@thymesVar id="OrderState" type="com.kodomo.yummy.entity.entity_enum.OrderState"*/-->
-        <button th:text="'付款:当前余额'+${customer.getBalance()}" id="pay-button"
-                th:if="${order.getState()==OrderState.UNPAID}"></button>
-        <button id="confirm-button" th:if="${order.getState()}==OrderState.ONGOING">确认收货</button>
-        <button id="cancel-button"
-                th:if="${order.getState()==OrderState.UNPAID||order.getState()==OrderState.ONGOING}">取消订单
-        </button>
+        <h3>操作:</h3>
+        <div>
+            <button id="pay-button"
+                    th:if="${order.isUnpaid()}">付款
+            </button>
+            <button id="confirm-button" th:if="${order.isOngoing()}">确认收货</button>
+            <button id="cancel-button"
+                    th:if="${order.isUnpaid()||order.isOngoing()}">取消订单
+            </button>
+        </div>
+        <span id="order-operation-info" style="color: red"></span>
     </div>
 </th:block>
+<script th:href="@{/js/customerOrderInfo.js}"></script>
 </body>
 </html>

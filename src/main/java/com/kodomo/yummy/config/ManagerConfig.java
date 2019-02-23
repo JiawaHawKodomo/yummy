@@ -1,13 +1,20 @@
 package com.kodomo.yummy.config;
 
+import com.kodomo.yummy.bl.ManagementBlService;
+import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.dao.ManagerDao;
+import com.kodomo.yummy.dao.OrderSettlementStrategyDao;
 import com.kodomo.yummy.entity.Manager;
+import com.kodomo.yummy.entity.OrderSettlementStrategy;
+import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.exceptions.UserNotExistsException;
 import com.kodomo.yummy.util.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 
 /**
  * 自动插入超级管理员
@@ -23,11 +30,13 @@ public class ManagerConfig {
     @Value("${yummy-system.super-manager.password}")
     private String superManagerPassword;
 
-    private final ManagerDao managerDao;
+    private final ManagementBlService managementBlService;
+    private final OrderBlService orderBlService;
 
     @Autowired
-    public ManagerConfig(ManagerDao managerDao) {
-        this.managerDao = managerDao;
+    public ManagerConfig(ManagementBlService managementBlService, OrderBlService orderBlService) {
+        this.managementBlService = managementBlService;
+        this.orderBlService = orderBlService;
     }
 
     /**
@@ -35,10 +44,22 @@ public class ManagerConfig {
      */
     @PostConstruct
     public void createManager() {
-        Manager manager = new Manager();
-        manager.setManagerId(superManagerId);
-        manager.setPassword(superManagerPassword);
+        Manager manager = managementBlService.register(superManagerId, superManagerPassword);
+        //检查默认的策略
+        checkDefaultOrderStrategy(manager.getManagerId());
+    }
 
-        managerDao.save(manager);
+    /**
+     * 插入默认策略
+     */
+    private void checkDefaultOrderStrategy(String managerId) {
+        OrderSettlementStrategy currentStrategy = orderBlService.getCurrentOrderSettlementStrategy();
+        if (currentStrategy == null) {
+            //插入默认策略
+            try {
+                orderBlService.saveNewOrderSettlementStrategy(new ArrayList<>(), managerId);
+            } catch (ParamErrorException | UserNotExistsException ignored) {
+            }
+        }
     }
 }

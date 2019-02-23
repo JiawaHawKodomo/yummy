@@ -2,6 +2,8 @@ package com.kodomo.yummy.entity;
 
 import com.kodomo.yummy.entity.entity_enum.OrderState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.exceptions.LackOfBalanceException;
+import com.kodomo.yummy.exceptions.ParamErrorException;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -36,6 +38,9 @@ public class Customer {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "customer")
     private Set<Order> orders;//一对多双向
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "customer")
+    private Set<CustomerRechargeLog> rechargeLogs;
 
     /**
      * 添加location
@@ -139,5 +144,57 @@ public class Customer {
                 return order;
         }
         return null;
+    }
+
+    /**
+     * 增加余额
+     *
+     * @param amount
+     */
+    public void increaceBalance(Double amount) throws ParamErrorException {
+        if (amount == null || amount <= 0) {
+            throw new ParamErrorException("金额");
+        }
+
+        if (getBalance() == null) setBalance(amount);
+        setBalance(getBalance() + amount);
+    }
+
+    /**
+     * 减少余额
+     *
+     * @param amount
+     */
+    public void reduceBalance(Double amount) throws ParamErrorException, LackOfBalanceException {
+        if (amount == null || amount <= 0) {
+            throw new ParamErrorException("金额");
+        }
+
+        if (getBalance() == null || getBalance() < amount) {
+            throw new LackOfBalanceException(getBalance());
+        }
+
+        setBalance(getBalance() - amount);
+    }
+
+    /**
+     * 判断状态是否可用
+     *
+     * @return
+     */
+    public boolean isEnable() {
+        return getState() == UserState.ACTIVATED;
+    }
+
+    /**
+     * 按时间倒序, 充值记录
+     * @return
+     */
+    @NotNull
+    public List<CustomerRechargeLog> getRechargeLogsByTimeDesc() {
+        if (getRechargeLogs() == null) return new ArrayList<>();
+        return getRechargeLogs().stream()
+                .sorted((a, b) -> (int) (b.getTime().getTime() - a.getTime().getTime()))
+                .collect(Collectors.toList());
     }
 }

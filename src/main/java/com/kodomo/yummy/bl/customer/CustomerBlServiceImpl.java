@@ -4,8 +4,10 @@ import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.bl.location.LocationHelper;
 import com.kodomo.yummy.bl.util.ValidatingHelper;
 import com.kodomo.yummy.dao.CustomerDao;
+import com.kodomo.yummy.dao.CustomerRechargeLogDao;
 import com.kodomo.yummy.dao.LocationDao;
 import com.kodomo.yummy.entity.Customer;
+import com.kodomo.yummy.entity.CustomerRechargeLog;
 import com.kodomo.yummy.entity.Location;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
@@ -13,7 +15,9 @@ import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Shuaiyu Yao
@@ -28,15 +32,17 @@ public class CustomerBlServiceImpl implements CustomerBlService {
     private final ValidatingHelper validatingHelper;
     private final LocationDao locationDao;
     private final CustomerPlaceBlService customerPlaceBlService;
+    private final CustomerRechargeLogDao customerRechargeLogDao;
 
     @Autowired
-    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao, CustomerPlaceBlService customerPlaceBlService) {
+    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao, CustomerPlaceBlService customerPlaceBlService, CustomerRechargeLogDao customerRechargeLogDao) {
         this.customerDao = customerDao;
         this.customerCreator = customerCreator;
         this.locationHelper = locationHelper;
         this.validatingHelper = validatingHelper;
         this.locationDao = locationDao;
         this.customerPlaceBlService = customerPlaceBlService;
+        this.customerRechargeLogDao = customerRechargeLogDao;
     }
 
     /**
@@ -255,5 +261,56 @@ public class CustomerBlServiceImpl implements CustomerBlService {
     @Override
     public List<Restaurant> getRestaurantWithinDistributionDistance(String email, Integer locationId) throws ParamErrorException, NoSuchAttributeException, UserNotExistsException {
         return customerPlaceBlService.getRestaurantWithinDistributionDistance(email, locationId);
+    }
+
+    /**
+     * @param email      email
+     * @param locationId locationId
+     * @param keyWord    搜索关键字
+     * @return
+     * @throws ParamErrorException      传入参数为null
+     * @throws NoSuchAttributeException 没有该地址
+     * @throws UserNotExistsException   没有该customer
+     */
+    @Override
+    public List<Restaurant> getSearchedRestaurant(String email, Integer locationId, String keyWord) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException {
+        return customerPlaceBlService.getSearchedRestaurant(email, locationId, keyWord);
+    }
+
+    /**
+     * 充值
+     *
+     * @param customerEmail email
+     * @param amount        数值
+     */
+    @Override
+    public void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException, DatabaseUnknownException {
+        if (customerEmail == null) {
+            throw new ParamErrorException("用户");
+        }
+        if (amount == null || amount <= 0) {
+            throw new ParamErrorException("数额");
+        }
+
+        Customer customer = customerDao.find(customerEmail);
+        if (customer == null) {
+            throw new UserNotExistsException();
+        }
+
+        if (!customer.isEnable()) {
+            throw new UnupdatableException(customer.getState());
+        }
+
+        customer.increaceBalance(amount);
+        try {
+            customerDao.save(customer);
+            //添加充值记录
+            CustomerRechargeLog log = new CustomerRechargeLog();
+            log.setCustomer(customer);
+            log.setAmount(amount);
+            customerRechargeLogDao.save(log);
+        } catch (Exception e) {
+            throw new DatabaseUnknownException(e);
+        }
     }
 }

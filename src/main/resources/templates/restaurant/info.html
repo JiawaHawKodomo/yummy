@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>Yummy! 商家信息</title>
     <script th:src="@{/js/tool/jquery.js}"></script>
+    <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+    <meta th:each="strategy:${restaurant.getRestaurantValidStrategyByAmount()}"
+          th:content="${strategy.getGreaterThan()}+'-'+${strategy.getDiscount()}"
+          name="strategy">
+    <meta name="restaurantId" th:content="${restaurant.getRestaurantId()}">
+    <style>
+        .offering-div:hover {
+            cursor: crosshair;
+        }
+    </style>
 </head>
 <body th:with="self=${session.restaurant}">
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
@@ -20,6 +30,27 @@
     <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
     <th:block th:if="${customer}!=null">
         <th:block th:replace="customer/head"/>
+        <div>
+            <h4>地址</h4>
+            <th:block th:if="${customer.getLocations().size()}==0">
+                <p style="color: red">您当前没有填写地址信息, 请进入
+                    <a th:href="@{/customer/info}">个人信息</a>
+                    填写</p>
+            </th:block>
+            <ul>
+                <li th:each="location:${customer.getLocations()}">
+                    <label>
+                        <!--/*@thymesVar id="locationId" type="java.lang.Integer"*/-->
+                        <input type="radio" name="location" th:value="${location.getLocationId()}"
+                               class="location-select-radio"
+                               th:checked="${location.getLocationId().equals(locationId)}">
+                        <th:block th:text="${location.getInfo()}"/>
+                    </label>
+                </li>
+            </ul>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
     </th:block>
 
     <h2 th:text="${restaurant.getName()}"></h2>
@@ -69,23 +100,29 @@
                             </div>
                         </div>
                         <div><label th:text="${offering.getNote()}" style="color: #333333"></label></div>
-                        <div th:if="${customer}!=null">
-                            <button class="offering-add-button">+</button>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div style="background: black;width: 100%;min-height: 100px;position: absolute;bottom: 0;color: white;">
-            <h3>已选:</h3>
-            <table cellpadding="20" cellspacing="5" id="offering-selected-table">
+        <th:block th:if="${customer}!=null">
+            <div style="position: absolute;bottom: 0;width: 100%;">
+                <button id="offering-selected-toggle-button" style="width: 100%">↓</button>
+                <div style="background: black;min-height: 100px;color: white"
+                     id="offering-selected-div">
+                    <h3>已选:</h3>
+                    <table id="offering-selected-table">
 
-            </table>
-            <button>提交订单</button>
-            <span>总价: </span>
-            <span id="offering-total-price-span"></span>
-        </div>
+                    </table>
+                    <button id="offering-submit-button">提交订单</button>
+                    <span>总价: </span>
+                    <span id="offering-total-before-price-span" style="text-decoration: line-through"></span>
+                    <span id="offering-total-price-span">0</span>
+                    <span>元</span>
+                    <span style="color: red" id="offering-submit-info"></span>
+                </div>
+            </div>
+        </th:block>
     </div>
 </th:block>
 

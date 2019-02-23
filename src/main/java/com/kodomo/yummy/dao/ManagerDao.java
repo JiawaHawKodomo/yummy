@@ -1,6 +1,7 @@
 package com.kodomo.yummy.dao;
 
 import com.kodomo.yummy.entity.Manager;
+import com.kodomo.yummy.util.Utility;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ManagerDao extends JpaRepository<Manager, String> {
 
+    default Manager find(String id) {
+        return findById(Utility.string(id)).orElse(null);
+    }
 }

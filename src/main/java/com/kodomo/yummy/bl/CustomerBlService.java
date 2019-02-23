@@ -106,5 +106,24 @@ public interface CustomerBlService {
      * @throws UserNotExistsException   没有该customer
      */
     List<Restaurant> getRestaurantWithinDistributionDistance(String email, Integer locationId) throws ParamErrorException, NoSuchAttributeException, UserNotExistsException;
+
+    /**
+     * @param email      email
+     * @param locationId locationId
+     * @param keyWord    搜索关键字
+     * @return
+     * @throws ParamErrorException      传入参数为null
+     * @throws NoSuchAttributeException 没有该地址
+     * @throws UserNotExistsException   没有该customer
+     */
+    List<Restaurant> getSearchedRestaurant(String email, Integer locationId, String keyWord) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException;
+
+    /**
+     * 充值
+     *
+     * @param customerEmail email
+     * @param amount        数值
+     */
+    void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException, DatabaseUnknownException;
 }
 

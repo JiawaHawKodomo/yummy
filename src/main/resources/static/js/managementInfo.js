@@ -53,12 +53,12 @@ $('#strategy-save-button').on('click', function () {
         result.push(o);
     });
 
-    console.log(JSON.stringify(result));
     $.ajax({
         type: 'post',
         url: '/management/orderStrategy',
         dataType: 'json',
-        data: {"jsonData": JSON.stringify(result)},
+        contentType: 'application/json;charsetset=UTF-8',
+        data: JSON.stringify(result),
         success: function (data) {
             console.log(data);
             const infoDiv = $('#strategy-info-div');

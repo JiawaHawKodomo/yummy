@@ -1,7 +1,7 @@
 <div xmlns:th="http://www.thymeleaf.org">
-    <p>订单信息</p>
+    <h3>订单信息</h3>
     <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.Order"*/-->
-    <table>
+    <table border="1" cellpadding="5">
         <tr>
             <th>订单编号</th>
             <td th:text="${order.getOrderId()}"></td>
@@ -21,7 +21,7 @@
         </tr>
         <tr>
             <th>商家</th>
-            <td><a th:href="/restaurant/${order.getRestaurant().getRestaurantId()}"
+            <td><a th:href="@{/restaurant/index/}+${order.getRestaurant().getRestaurantId()}"
                    th:text="${order.getRestaurant().getName()}"></a></td>
         </tr>
         <tr th:with="location=${order.getLocation()}">
@@ -56,7 +56,7 @@
             <td th:text="${order.getTotalPriceAfterDiscount()}"></td>
         </tr>
     </table>
-    <p>订单记录追踪</p>
+    <h3>订单记录追踪</h3>
     <ul>
         <li th:each="log:${order.getLogs()}"
             th:text="${log.getDate()}+' '+${log.getToState().getText()}"></li>

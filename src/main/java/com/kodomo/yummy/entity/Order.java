@@ -46,7 +46,7 @@ public class Order {
     @JoinColumn(name = "order_id")
     private Set<OrderDetail> details;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "order")
     private Set<OrderLog> logs;
 
     /**
@@ -100,5 +100,13 @@ public class Order {
             if (b == null) return a;
             return a.getTime() < b.getTime() ? b : a;
         }).orElse(new Date(0));
+    }
+
+    public boolean isUnpaid() {
+        return getState() == OrderState.UNPAID;
+    }
+
+    public boolean isOngoing() {
+        return getState() == OrderState.ONGOING;
     }
 }

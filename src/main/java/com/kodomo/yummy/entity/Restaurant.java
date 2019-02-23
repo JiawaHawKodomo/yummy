@@ -245,4 +245,24 @@ public class Restaurant {
 
         return matchInfo.stream().reduce((a, b) -> a + "," + b).orElse(null);
     }
+
+    /**
+     * 计算获得适配的最佳餐厅满减策略
+     *
+     * @param money
+     * @return 均不满足则返回null
+     */
+    public RestaurantStrategy getAppliedRestaurantStrategy(Double money) {
+        if (money == null || getRestaurantValidStrategyByAmount() == null) return null;
+        double discount = 0;
+        RestaurantStrategy result = null;
+        for (RestaurantStrategy strategy : getRestaurantValidStrategyByAmount()) {
+            if (strategy.getGreaterThan() == null || strategy.getDiscount() == null) continue;
+            if (strategy.getGreaterThan() >= money && discount < strategy.getDiscount()) {
+                discount = strategy.getDiscount();
+                result = strategy;
+            }
+        }
+        return result;
+    }
 }

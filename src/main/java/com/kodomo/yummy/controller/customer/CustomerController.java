@@ -87,17 +87,37 @@ public class CustomerController {
     }
 
     /**
-     * 订单页
+     * 充值
      *
-     * @param request request
-     * @param model   model
-     * @return a
+     * @return
      */
-    @GetMapping("/order")
-    public String order(HttpServletRequest request, Model model) {
-        String sessionCustomer = (String) request.getSession(true).getAttribute("customer");
-        Customer customer = customerBlService.getCustomerEntityByEmail(sessionCustomer);
+    @GetMapping("/recharge")
+    public String recharge(HttpServletRequest request, Model model) {
+        String customerEmail = (String) request.getSession(true).getAttribute("customer");
+        Customer customer = customerBlService.getCustomerEntityByEmail(customerEmail);
         model.addAttribute("customer", customer);
-        return "customer/orders";
+        return "customer/recharge";
+    }
+
+    @ResponseBody
+    @PostMapping("/recharge")
+    public Map<String, Object> recharge(HttpServletRequest request,
+                                        @RequestParam("amount") Double amount) {
+        Map<String, Object> result = new HashMap<>();
+        String customerEmail = (String) request.getSession(true).getAttribute("customer");
+
+        try {
+            customerBlService.recharge(customerEmail, amount);
+            result.put("result", true);
+        } catch (ParamErrorException e) {
+            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+        } catch (UserNotExistsException e) {
+            result.put("info", "用户不存在");
+        } catch (UnupdatableException e) {
+            result.put("info", "当前状态无法充值:" + e.getCurrentStateText());
+        } catch (DatabaseUnknownException e) {
+            result.put("info", "数据库错误:" + e.getMessage());
+        }
+        return result;
     }
 }
