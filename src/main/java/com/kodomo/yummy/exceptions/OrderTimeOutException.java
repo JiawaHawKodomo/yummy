@@ -1,19 +1,30 @@
 package com.kodomo.yummy.exceptions;
 
 import java.security.PrivilegedActionException;
+import java.util.Date;
 
 /**
  * @author Shuaiyu Yao
- * @create 2019-02-22 11:04
+ * @create 2019-02-25 8:12
  */
-public class DatabaseUnknownException extends Exception{
+public class OrderTimeOutException extends Exception {
+
+    private Date createTime;
+
+    public OrderTimeOutException(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
 
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public DatabaseUnknownException() {
+    public OrderTimeOutException() {
     }
 
     /**
@@ -24,7 +35,7 @@ public class DatabaseUnknownException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public DatabaseUnknownException(String message) {
+    public OrderTimeOutException(String message) {
         super(message);
     }
 
@@ -42,7 +53,7 @@ public class DatabaseUnknownException extends Exception{
      *                unknown.)
      * @since 1.4
      */
-    public DatabaseUnknownException(String message, Throwable cause) {
+    public OrderTimeOutException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -60,7 +71,7 @@ public class DatabaseUnknownException extends Exception{
      *              unknown.)
      * @since 1.4
      */
-    public DatabaseUnknownException(Throwable cause) {
+    public OrderTimeOutException(Throwable cause) {
         super(cause);
     }
 
@@ -78,7 +89,7 @@ public class DatabaseUnknownException extends Exception{
      *                           be writable
      * @since 1.7
      */
-    public DatabaseUnknownException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public OrderTimeOutException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

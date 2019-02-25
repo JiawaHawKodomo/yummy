@@ -114,8 +114,6 @@ public class CustomerOrderController {
             result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
             result.put("info", "用户不存在:" + e.getMessage());
-        } catch (DatabaseUnknownException e) {
-            result.put("info", "数据库错误:" + e.getMessage());
         } catch (UnupdatableException e) {
             result.put("info", "状态不正确, 无法创建订单, 当前状态:" + e.getCurrentStateText());
         }
@@ -160,10 +158,9 @@ public class CustomerOrderController {
         return path;
     }
 
-    //todo
     @ResponseBody
-    @PostMapping("/order/pay")
-    public Map<String, Object> orderPay(HttpServletRequest request, @RequestParam("orderId") Integer orderId) {
+    @RequestMapping(value = "/order/pay", method = RequestMethod.PUT)
+    public Map<String, Object> orderPay(HttpServletRequest request, @RequestParam("orderId") Integer orderId, @RequestParam("password") String password) {
         Map<String, Object> result = new HashMap<>();
         String email = (String) request.getSession(true).getAttribute("customer");
         if (email == null) {
@@ -171,12 +168,29 @@ public class CustomerOrderController {
             return result;
         }
 
+        try {
+            orderBlService.payOrder(email, password, orderId);
+            result.put("result", true);
+        } catch (ParamErrorException e) {
+            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+        } catch (UserNotExistsException e) {
+            result.put("info", "用户不存在:" + email);
+        } catch (NoSuchAttributeException e) {
+            result.put("info", "不存在该订单");
+        } catch (OrderTimeOutException e) {
+            result.put("info", "该订单已超时, 无法完成支付, 订单创建时间:" + e.getCreateTime());
+        } catch (LackOfBalanceException e) {
+            result.put("info", "余额不足, 请充值后重试");
+        } catch (UnupdatableException e) {
+            result.put("info", "订单状态不正确,无法支付");
+        } catch (PasswordErrorException e) {
+            result.put("info", "密码不正确");
+        }
         return result;
     }
 
-    //todo
     @ResponseBody
-    @PostMapping("/order/confirm")
+    @RequestMapping(value = "/order/confirm", method = RequestMethod.PUT)
     public Map<String, Object> orderConfirm(HttpServletRequest request, @RequestParam("orderId") Integer orderId) {
         Map<String, Object> result = new HashMap<>();
         String email = (String) request.getSession(true).getAttribute("customer");
@@ -185,12 +199,23 @@ public class CustomerOrderController {
             return result;
         }
 
+        try {
+            orderBlService.confirmOrder(email, orderId);
+            result.put("result", true);
+        } catch (ParamErrorException e) {
+            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+        } catch (UserNotExistsException e) {
+            result.put("info", "用户不存在");
+        } catch (NoSuchAttributeException e) {
+            result.put("info", "订单不存在");
+        } catch (UnupdatableException e) {
+            result.put("info", "订单状态不正确, 无法确认, 当前状态:" + e.getCurrentStateText());
+        }
         return result;
     }
 
-    //todo
     @ResponseBody
-    @PostMapping("/order/cancel")
+    @RequestMapping(value = "/order/cancel", method = RequestMethod.PUT)
     public Map<String, Object> orderCancel(HttpServletRequest request, @RequestParam("orderId") Integer orderId) {
         Map<String, Object> result = new HashMap<>();
         String email = (String) request.getSession(true).getAttribute("customer");
@@ -199,6 +224,18 @@ public class CustomerOrderController {
             return result;
         }
 
+        try {
+            orderBlService.customerCancelOrder(email, orderId);
+            result.put("result", true);
+        } catch (ParamErrorException e) {
+            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+        } catch (UserNotExistsException e) {
+            result.put("info", "用户不存在");
+        } catch (NoSuchAttributeException e) {
+            result.put("info", "订单不存在");
+        } catch (UnupdatableException e) {
+            result.put("info", "订单状态不正确, 无法取消, 当前状态:" + e.getCurrentStateText());
+        }
         return result;
     }
 }

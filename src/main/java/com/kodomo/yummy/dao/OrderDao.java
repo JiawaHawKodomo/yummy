@@ -12,5 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderDao extends JpaRepository<Order, Integer> {
 
-    
+    default Order find(Integer id) {
+        if (id == null) return null;
+        return findById(id).orElse(null);
+    }
 }

@@ -6,18 +6,13 @@ import com.kodomo.yummy.bl.util.ValidatingHelper;
 import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.dao.CustomerRechargeLogDao;
 import com.kodomo.yummy.dao.LocationDao;
-import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.entity.CustomerRechargeLog;
-import com.kodomo.yummy.entity.Location;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.*;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Shuaiyu Yao
@@ -284,7 +279,7 @@ public class CustomerBlServiceImpl implements CustomerBlService {
      * @param amount        数值
      */
     @Override
-    public void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException, DatabaseUnknownException {
+    public void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException {
         if (customerEmail == null) {
             throw new ParamErrorException("用户");
         }
@@ -302,15 +297,11 @@ public class CustomerBlServiceImpl implements CustomerBlService {
         }
 
         customer.increaceBalance(amount);
-        try {
-            customerDao.save(customer);
-            //添加充值记录
-            CustomerRechargeLog log = new CustomerRechargeLog();
-            log.setCustomer(customer);
-            log.setAmount(amount);
-            customerRechargeLogDao.save(log);
-        } catch (Exception e) {
-            throw new DatabaseUnknownException(e);
-        }
+        customerDao.save(customer);
+        //添加充值记录
+        CustomerRechargeLog log = new CustomerRechargeLog();
+        log.setCustomer(customer);
+        log.setAmount(amount);
+        customerRechargeLogDao.save(log);
     }
 }

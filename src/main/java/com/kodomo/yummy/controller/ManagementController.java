@@ -3,6 +3,7 @@ package com.kodomo.yummy.controller;
 import com.kodomo.yummy.bl.ManagementBlService;
 import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.bl.RestaurantBlService;
+import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.entity_enum.UserState;
@@ -10,14 +11,11 @@ import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UnupdatableException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +76,7 @@ public class ManagementController {
     public String management(Model model) {
         model.addAttribute("unactivatedRestaurant", restaurantBlService.getRestaurantByState(UserState.UNACTIVATED));
         model.addAttribute("currentOrderSettlementStrategy", orderBlService.getCurrentOrderSettlementStrategy());
+        model.addAttribute("currentOrderRefundStrategy", orderBlService.getCurrentOrderRefundStrategy());
         return "management/managementInfo";
     }
 
@@ -139,6 +138,28 @@ public class ManagementController {
             result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
             result.put("info", "管理员不存在");
+        }
+        return result;
+    }
+
+    @PostMapping("/orderRefundStrategy")
+    @ResponseBody
+    public Map<String, Object> updateOrderRefundStrategy(HttpServletRequest request,
+                                                         @RequestBody List<OrderRefundStrategyVo> vos) {
+        Map<String, Object> result = new HashMap<>();
+        String managerId = (String) request.getSession(true).getAttribute("manager");
+        if (managerId == null) {
+            result.put("info", "请先登录");
+            return result;
+        }
+
+        try {
+            orderBlService.saveNewOrderRefundStrategy(vos, managerId);
+            result.put("result", true);
+        } catch (UserNotExistsException e) {
+            result.put("info", "管理员不存在");
+        } catch (ParamErrorException e) {
+            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
         }
         return result;
     }

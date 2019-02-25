@@ -124,6 +124,6 @@ public interface CustomerBlService {
      * @param customerEmail email
      * @param amount        数值
      */
-    void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException, DatabaseUnknownException;
+    void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException;
 }
 

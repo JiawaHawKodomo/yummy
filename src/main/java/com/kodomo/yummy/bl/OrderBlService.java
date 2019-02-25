@@ -1,17 +1,14 @@
 package com.kodomo.yummy.bl;
 
+import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderVo;
-import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.Order;
+import com.kodomo.yummy.entity.OrderRefundStrategy;
 import com.kodomo.yummy.entity.OrderSettlementStrategy;
-import com.kodomo.yummy.exceptions.DatabaseUnknownException;
-import com.kodomo.yummy.exceptions.ParamErrorException;
-import com.kodomo.yummy.exceptions.UnupdatableException;
-import com.kodomo.yummy.exceptions.UserNotExistsException;
+import com.kodomo.yummy.exceptions.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Shuaiyu Yao
@@ -27,10 +24,24 @@ public interface OrderBlService {
     OrderSettlementStrategy getCurrentOrderSettlementStrategy();
 
     /**
-     * 保存新的订单结算策略
+     * 获取当前订单退款策略
      *
+     * @return
+     */
+    OrderRefundStrategy getCurrentOrderRefundStrategy();
+
+    /**
+     * 保存新的订单结算策略
      */
     void saveNewOrderSettlementStrategy(List<OrderSettlementStrategyVo> vos, String managerId) throws ParamErrorException, UserNotExistsException;
+
+    /**
+     * 保存新的订单退款策略
+     *
+     * @param vos
+     * @param managerId
+     */
+    void saveNewOrderRefundStrategy(List<OrderRefundStrategyVo> vos, String managerId) throws UserNotExistsException, ParamErrorException;
 
     /**
      * 根据id查找Order
@@ -47,5 +58,39 @@ public interface OrderBlService {
      * @param vo    vo
      * @return
      */
-    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, DatabaseUnknownException, UnupdatableException;
+    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException;
+
+    /**
+     * 支付订单
+     *
+     * @param email   email
+     * @param orderId orderId
+     * @throws ParamErrorException      参数错误
+     * @throws UserNotExistsException   customer不存在
+     * @throws NoSuchAttributeException 订单不存在
+     * @throws UnupdatableException     订单状态不正确
+     * @throws OrderTimeOutException    订单超时
+     * @throws LackOfBalanceException   余额不足
+     */
+    void payOrder(String email, String password, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, OrderTimeOutException, LackOfBalanceException, UnupdatableException, PasswordErrorException;
+
+    /**
+     * 确认订单
+     *
+     * @param email   email
+     * @param orderId orderId
+     * @throws ParamErrorException      参数不正确
+     * @throws UserNotExistsException   customer不存在
+     * @throws NoSuchAttributeException 订单不存在
+     * @throws UnupdatableException     订单状态不正确
+     */
+    void confirmOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
+
+    /**
+     * 取消订单
+     *
+     * @param email
+     * @param orderId
+     */
+    void customerCancelOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
 }

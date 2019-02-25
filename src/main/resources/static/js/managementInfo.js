@@ -1,6 +1,6 @@
 const registerResponseInfo = $('#manager-register-info');
 const strategyTable = $('#strategy-table');
-registerStrategyRemove();
+const refundStrategyTable = $('#refund-strategy-table');
 
 $('.restaurant-pass-button').on('click', function () {
     const id = $(this).attr('id').split('-')[2];
@@ -12,11 +12,30 @@ $('.restaurant-no-pass-button').on('click', function () {
     tryToApprove(id, false);
 });
 
-function registerStrategyRemove() {
-    $('.strategy-remove-button').on('click', function () {
-        $(this).parent().parent().remove();
-    });
-}
+$('.refund-strategy-remove-button').on('click', function () {
+    $(this).parents('.refund-strategy-tr').remove();
+});
+
+$('.strategy-remove-button').on('click', function () {
+    $(this).parents('.strategy-tr').remove();
+});
+
+$('#refund-strategy-add-button').on('click', function () {
+    refundStrategyTable.append(
+        $('<tr></tr>').attr('class', 'refund-strategy-tr').append(
+            $('<td></td>').append($('<input>').attr('class', 'refund-strategy-more-input'))
+        ).append(
+            $('<td></td>').append($('<input>').attr('class', 'refund-strategy-less-input'))
+        ).append(
+            $('<td></td>').append($('<input>').attr('class', 'refund-strategy-rate-input'))
+        ).append(
+            $('<td></td>').append($('<button></button>').text('删除').attr('class', 'refund-strategy-remove-button')
+                .on('click', function () {
+                    $(this).parents('.refund-strategy-tr').remove();
+                }))
+        )
+    )
+});
 
 $('#strategy-add-button').on('click', function () {
     //添加一行
@@ -30,11 +49,12 @@ $('#strategy-add-button').on('click', function () {
         ).append(
             $('<td></td>').append($('<input>').attr('class', 'strategy-rate-input'))
         ).append(
-            $('<td></td>').append($('<button></button>').text('删除').attr('class', 'strategy-remove-button'))
+            $('<td></td>').append($('<button></button>').text('删除').attr('class', 'strategy-remove-button')
+                .on('click', function () {
+                    $(this).parents('.strategy-tr').remove();
+                }))
         )
     );
-    //重新注册
-    registerStrategyRemove();
 });
 
 //保存策略结果
@@ -62,6 +82,36 @@ $('#strategy-save-button').on('click', function () {
         success: function (data) {
             console.log(data);
             const infoDiv = $('#strategy-info-div');
+            if (data.result) {
+                infoDiv.text('成功');
+            } else {
+                infoDiv.text('失败:' + data.info);
+            }
+        }
+    })
+});
+
+//保存退款策略结果
+$('#refund-strategy-save-button').on('click', function () {
+    var result = [];
+    $('.refund-strategy-tr').each(function () {
+        const e = $(this);
+        result.push({
+            more: e.find('.refund-strategy-more-input').val(),
+            less: e.find('.refund-strategy-less-input').val(),
+            rate: e.find('.refund-strategy-rate-input').val()
+        })
+    });
+
+    $.ajax({
+        type: 'post',
+        url: '/management/orderRefundStrategy',
+        dataType: 'json',
+        contentType: 'application/json;charsetset=UTF-8',
+        data: JSON.stringify(result),
+        success: function (data) {
+            console.log(data);
+            const infoDiv = $('#refund-strategy-info-div');
             if (data.result) {
                 infoDiv.text('成功');
             } else {

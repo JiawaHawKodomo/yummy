@@ -28,6 +28,7 @@ yummy-system:
   order-settlement-default:
     city: 0.1
     order-quantity: 0.1
+  order-refund-default: 0.5
 
 lbs:
   key: HYVBZ-QI7C5-EBFIA-QJMEN-DAVT2-S7B4Q

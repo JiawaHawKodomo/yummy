@@ -12,7 +12,7 @@
 <!--黑线-->
 <div style="height: 2px;width: 100%;background: black"></div>
 <div>
-    <p>添加管理员</p>
+    <h3>添加管理员</h3>
     <table>
         <tr>
             <th>账号:</th>
@@ -35,7 +35,7 @@
 <div style="height: 2px;width: 100%;background: black"></div>
 
 <div>
-    <p>审批餐厅</p>
+    <h3>审批餐厅</h3>
     <table border="2" cellpadding="5">
         <tr>
             <th>餐厅编号</th>
@@ -72,12 +72,11 @@
     </table>
 </div>
 
-<p/>
 <!--黑线-->
 <div style="height: 2px;width: 100%;background: black"></div>
 
 <div>
-    <p>制定订单结算策略</p>
+    <h3>制定订单结算策略</h3>
     <div style="color: red">注: 对于阈值一栏, 如果类型为城市, 则表示在该城市执行</div>
     <!--/*@thymesVar id="currentOrderSettlementStrategy" type="com.kodomo.yummy.entity.OrderSettlementStrategy"*/-->
     <div th:unless="${currentOrderSettlementStrategy}!=null" style="color: red">
@@ -109,6 +108,42 @@
     </table>
     <button id="strategy-save-button">保存</button>
     <div id="strategy-info-div" style="color: red"></div>
+</div>
+
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+
+<div>
+    <h3>制定订单退款策略</h3>
+    <!--/*@thymesVar id="currentOrderRefundStrategy" type="com.kodomo.yummy.entity.OrderRefundStrategy"*/-->
+    <div th:unless="${currentOrderRefundStrategy}!=null" style="color: red">
+        无法找到当前策略, 请新建策略
+    </div>
+
+    <div style="color: red">注: 单位为分钟</div>
+    <table id="refund-strategy-table" border="2 solid" cellpadding="5">
+        <tr>
+            <th>大于等于时间</th>
+            <th>小于时间</th>
+            <th>退款比例</th>
+            <th>操作
+                <button id="refund-strategy-add-button">添加</button>
+            </th>
+        </tr>
+
+        <th:block th:if="${currentOrderRefundStrategy}!=null">
+            <tr th:each="strategy:${currentOrderRefundStrategy.getDetails()}" class="refund-strategy-tr">
+                <td><input th:value="${strategy.getMoreThanOrEquals()}" class="refund-strategy-more-input"></td>
+                <td><input th:value="${strategy.getLessThan()}" class="refund-strategy-less-input"></td>
+                <td><input th:value="${strategy.getRefundRate()}" class="refund-strategy-rate-input"></td>
+                <td>
+                    <button class="refund-strategy-remove-button">删除</button>
+                </td>
+            </tr>
+        </th:block>
+    </table>
+    <button id="refund-strategy-save-button">保存</button>
+    <div id="refund-strategy-info-div" style="color: red"></div>
 </div>
 
 <script th:src="@{/js/managementInfo.js}"></script>

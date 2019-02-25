@@ -1,6 +1,8 @@
 package com.kodomo.yummy.entity;
 
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.exceptions.LackOfBalanceException;
+import com.kodomo.yummy.exceptions.ParamErrorException;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -258,11 +260,42 @@ public class Restaurant {
         RestaurantStrategy result = null;
         for (RestaurantStrategy strategy : getRestaurantValidStrategyByAmount()) {
             if (strategy.getGreaterThan() == null || strategy.getDiscount() == null) continue;
-            if (strategy.getGreaterThan() >= money && discount < strategy.getDiscount()) {
+            if (strategy.getGreaterThan() <= money && discount < strategy.getDiscount()) {
                 discount = strategy.getDiscount();
                 result = strategy;
             }
         }
         return result;
+    }
+
+    /**
+     * 增加余额
+     *
+     * @param amount
+     */
+    public void increaceBalance(Double amount) throws ParamErrorException {
+        if (amount == null || amount <= 0) {
+            throw new ParamErrorException("金额");
+        }
+
+        if (getBalance() == null) setBalance(amount);
+        setBalance(getBalance() + amount);
+    }
+
+    /**
+     * 减少余额
+     *
+     * @param amount
+     */
+    public void reduceBalance(Double amount) throws ParamErrorException, LackOfBalanceException {
+        if (amount == null || amount <= 0) {
+            throw new ParamErrorException("金额");
+        }
+
+        if (getBalance() == null || getBalance() < amount) {
+            throw new LackOfBalanceException(getBalance());
+        }
+
+        setBalance(getBalance() - amount);
     }
 }

@@ -14,6 +14,14 @@ import javax.annotation.PostConstruct;
 @Component
 public class StaticConfig {
 
+    @Value("${yummy-system.order-settlement-default.city}")
+    private double orderSettlementDefaultCity;
+    @Value("${yummy-system.order-settlement-default.order-quantity}")
+    private double orderSettlementDefaultOrderQuantity;
+
+    @Value("${yummy-system.order-refund-default}")
+    private double orderRefundDefaultRate;
+
     @Value("${yummy-system.min-payment}")
     private double minPayment;
     @Value("${yummy-system.max-distribution-distance}")
@@ -32,5 +40,17 @@ public class StaticConfig {
 
     public static double getMaxDistributionDistance() {
         return instance.maxDistributionDistance;
+    }
+
+    public static double getOrderSettlementDefaultCity() {
+        return instance.orderSettlementDefaultCity;
+    }
+
+    public static double getOrderSettlementDefaultOrderQuantity() {
+        return instance.orderSettlementDefaultOrderQuantity;
+    }
+
+    public static double getOrderRefundDefaultRate() {
+        return instance.orderRefundDefaultRate;
     }
 }

@@ -10,6 +10,11 @@
             border: 2px solid black;
             width: 300px;
         }
+
+        .order-div-table {
+            display: flex;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -23,10 +28,11 @@
     <div style="height: 2px;width: 100%;background: black"></div>
     <th:block th:if="${customer.getOngoingOrders().size()}!=0">
         <div>
-            <p>进行中的订单:</p>
-            <div style="display: flex;">
+            <h3>进行中的订单:</h3>
+            <div class="order-div-table">
                 <div th:each="order:${customer.getOngoingOrders()}"
                      class="order-div">
+                    <div th:text="${order.getOrderStateText()}"></div>
                     <h4 th:text="${order.getRestaurant().getName()}"></h4>
                     <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
                     <ul th:with="first=${order.getDetailsByPrice().get(0)}">
@@ -44,9 +50,10 @@
     <th:block th:if="${customer.getUnpaidOrders().size()}!=0">
         <div>
             <h3>待支付的订单:</h3>
-            <div style="display: flex;">
+            <div class="order-div-table">
                 <div th:each="order:${customer.getUnpaidOrders()}"
                      class="order-div">
+                    <div th:text="${order.getOrderStateText()}"></div>
                     <h4 th:text="${order.getRestaurant().getName()}"></h4>
                     <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
                     <ul th:with="first=${order.getDetailsByPrice().get(0)}">
@@ -63,10 +70,11 @@
 
     <th:block th:if="${customer.getIdleOrders().size()}!=0">
         <div>
-            <p>过去的订单:</p>
-            <div style="display: flex;">
+            <h3>过去的订单:</h3>
+            <div class="order-div-table">
                 <div th:each="order:${customer.getIdleOrders()}"
                      class="order-div">
+                    <div th:text="${order.getOrderStateText()}"></div>
                     <h4 th:text="${order.getRestaurant().getName()}"></h4>
                     <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
                     <ul th:with="first=${order.getDetailsByPrice().get(0)}">

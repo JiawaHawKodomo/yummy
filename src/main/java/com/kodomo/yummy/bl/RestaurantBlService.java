@@ -83,9 +83,8 @@ public interface RestaurantBlService {
      * @throws ParamErrorException      参数为null
      * @throws NoSuchAttributeException 不存在该商品
      * @throws UnupdatableException     餐厅不正确
-     * @throws DatabaseUnknownException 数据库未知错误
      */
-    void deleteOffering(Integer rid, Integer offeringId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException, DatabaseUnknownException;
+    void deleteOffering(Integer rid, Integer offeringId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException;
 
     /**
      * 添加满减策略
@@ -93,7 +92,7 @@ public interface RestaurantBlService {
      * @param rid rid
      * @param vos vos
      */
-    void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException, DatabaseUnknownException;
+    void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException;
 
     /**
      * 删除满减策略
@@ -103,7 +102,6 @@ public interface RestaurantBlService {
      * @throws ParamErrorException      参数为null
      * @throws NoSuchAttributeException 没有该策略
      * @throws UnupdatableException     不是自己的策略, 无法修改
-     * @throws DatabaseUnknownException 数据库 错误
      */
-    void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws DatabaseUnknownException, NoSuchAttributeException, ParamErrorException, UnupdatableException;
+    void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws NoSuchAttributeException, ParamErrorException, UnupdatableException;
 }

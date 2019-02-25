@@ -35,7 +35,7 @@ public class RestaurantStrategyBlService {
      * @param rid rid
      * @param vos vos
      */
-    void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException, DatabaseUnknownException {
+    void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException {
         if (rid == null || vos == null) {
             throw new ParamErrorException();
         }
@@ -47,11 +47,7 @@ public class RestaurantStrategyBlService {
 
         for (RestaurantStrategyVo vo : vos) {
             RestaurantStrategy newStrategy = createRestaurantStrategyForDatabase(vo, restaurant);
-            try {
-                restaurantStrategyDao.save(newStrategy);
-            } catch (Exception e) {
-                throw new DatabaseUnknownException(e);
-            }
+            restaurantStrategyDao.save(newStrategy);
         }
     }
 
@@ -63,9 +59,8 @@ public class RestaurantStrategyBlService {
      * @throws ParamErrorException      参数为null
      * @throws NoSuchAttributeException 没有该策略
      * @throws UnupdatableException     不是自己的策略, 无法修改
-     * @throws DatabaseUnknownException 数据库 错误
      */
-    void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException, DatabaseUnknownException {
+    void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException {
         if (rid == null || strategyId == null) {
             throw new ParamErrorException();
         }
@@ -79,11 +74,7 @@ public class RestaurantStrategyBlService {
         }
 
         strategy.setEndDate(new Date());//使时间结束
-        try {
-            restaurantStrategyDao.save(strategy);
-        } catch (Exception e) {
-            throw new DatabaseUnknownException(e);
-        }
+        restaurantStrategyDao.save(strategy);
     }
 
     /**

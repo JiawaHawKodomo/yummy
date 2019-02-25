@@ -5,6 +5,7 @@ import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.dao.ManagerDao;
 import com.kodomo.yummy.dao.OrderSettlementStrategyDao;
 import com.kodomo.yummy.entity.Manager;
+import com.kodomo.yummy.entity.OrderRefundStrategy;
 import com.kodomo.yummy.entity.OrderSettlementStrategy;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
@@ -46,19 +47,35 @@ public class ManagerConfig {
     public void createManager() {
         Manager manager = managementBlService.register(superManagerId, superManagerPassword);
         //检查默认的策略
-        checkDefaultOrderStrategy(manager.getManagerId());
+        checkDefaultOrderSettlementStrategy(manager.getManagerId());
+        //检查默认订单退款策略
+        checkDefaultOrderRefundStrategy(manager.getManagerId());
     }
 
     /**
-     * 插入默认策略
+     * 插入默认订单结算策略
      */
-    private void checkDefaultOrderStrategy(String managerId) {
+    private void checkDefaultOrderSettlementStrategy(String managerId) {
         OrderSettlementStrategy currentStrategy = orderBlService.getCurrentOrderSettlementStrategy();
         if (currentStrategy == null) {
             //插入默认策略
             try {
                 orderBlService.saveNewOrderSettlementStrategy(new ArrayList<>(), managerId);
             } catch (ParamErrorException | UserNotExistsException ignored) {
+            }
+        }
+    }
+
+    /**
+     * 插入默认订单退款策略
+     */
+    private void checkDefaultOrderRefundStrategy(String managerId) {
+        OrderRefundStrategy currentStrategy = orderBlService.getCurrentOrderRefundStrategy();
+        if (currentStrategy == null) {
+            //插入默认策略
+            try {
+                orderBlService.saveNewOrderRefundStrategy(new ArrayList<>(), managerId);
+            } catch (UserNotExistsException | ParamErrorException ignored) {
             }
         }
     }

@@ -116,8 +116,6 @@ public class RestaurantManageController {
             result.put("info", "参数不正确");
         } catch (NoSuchAttributeException | UnupdatableException e) {
             result.put("info", "不存在该餐品");
-        } catch (DatabaseUnknownException e) {
-            result.put("info", "数据库未知错误:" + e.getMessage());
         }
         return result;
     }
@@ -147,8 +145,6 @@ public class RestaurantManageController {
             result.put("info", "参数不正确");
         } catch (UserNotExistsException e) {
             result.put("info", "该餐厅不存在");
-        } catch (DatabaseUnknownException e) {
-            result.put("info", "数据库错误:" + e.getMessage());
         }
         return result;
     }
@@ -174,8 +170,6 @@ public class RestaurantManageController {
         try {
             restaurantBlService.deleteRestaurantStrategy(rid, id);
             result.put("result", true);
-        } catch (DatabaseUnknownException e) {
-            result.put("info", "数据库错误:" + e.getMessage());
         } catch (NoSuchAttributeException | UnupdatableException e) {
             result.put("info", "不存在该策略, 无法删除");
         } catch (ParamErrorException e) {

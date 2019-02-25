@@ -115,8 +115,6 @@ public class CustomerController {
             result.put("info", "用户不存在");
         } catch (UnupdatableException e) {
             result.put("info", "当前状态无法充值:" + e.getCurrentStateText());
-        } catch (DatabaseUnknownException e) {
-            result.put("info", "数据库错误:" + e.getMessage());
         }
         return result;
     }

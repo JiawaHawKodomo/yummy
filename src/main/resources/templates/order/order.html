@@ -8,7 +8,7 @@
         </tr>
         <tr>
             <th>订单状态</th>
-            <td th:text="${order.getState().getText()}"></td>
+            <td th:text="${order.getOrderStateText()}"></td>
         </tr>
         <tr>
             <th>订餐人</th>
@@ -49,16 +49,26 @@
         </tr>
         <tr>
             <th>满减策略</th>
-            <td th:text="${order.getRestaurantStrategy().getText()}"></td>
+            <td th:text="${order.getRestaurantStrategyText()}"></td>
         </tr>
         <tr>
-            <th>最后金额</th>
+            <th>最终金额</th>
             <td th:text="${order.getTotalPriceAfterDiscount()}"></td>
         </tr>
+        <tr>
+            <th>配餐时长</th>
+            <td th:text="${order.getOngoingTime()}+'分钟'"></td>
+        </tr>
+        <th:block th:if="${order.isCanceled()}">
+            <tr>
+                <th>退款金额</th>
+                <td th:text="${order.getRefundAmount()}"></td>
+            </tr>
+        </th:block>
     </table>
     <h3>订单记录追踪</h3>
     <ul>
-        <li th:each="log:${order.getLogs()}"
-            th:text="${log.getDate()}+' '+${log.getToState().getText()}"></li>
+        <li th:each="log:${order.getLogsByTimeDesc()}"
+            th:text="${log.getDate()}+'  '+${log.getToState().getText()}"></li>
     </ul>
 </div>

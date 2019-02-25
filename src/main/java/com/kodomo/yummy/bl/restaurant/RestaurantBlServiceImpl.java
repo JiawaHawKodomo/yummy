@@ -6,11 +6,9 @@ import com.kodomo.yummy.controller.vo.OfferingVo;
 import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
 import com.kodomo.yummy.dao.OfferingDao;
 import com.kodomo.yummy.dao.RestaurantDao;
-import com.kodomo.yummy.dao.RestaurantStrategyDao;
 import com.kodomo.yummy.entity.Offering;
 import com.kodomo.yummy.entity.OfferingType;
 import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.entity.RestaurantStrategy;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,7 +190,7 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
      * @param offeringId
      */
     @Override
-    public void deleteOffering(Integer rid, Integer offeringId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException, DatabaseUnknownException {
+    public void deleteOffering(Integer rid, Integer offeringId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException {
         if (rid == null || offeringId == null) {
             throw new ParamErrorException("餐厅, 商品");
         }
@@ -208,11 +206,7 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
 
         //设置结束时间, 数据库中保留
         offering.setEndTime(new Date());
-        try {
-            offeringDao.save(offering);
-        } catch (Exception e) {
-            throw new DatabaseUnknownException(e);
-        }
+        offeringDao.save(offering);
     }
 
     /**
@@ -222,7 +216,7 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
      * @param vos vos
      */
     @Override
-    public void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException, DatabaseUnknownException {
+    public void addRestaurantStrategy(Integer rid, List<RestaurantStrategyVo> vos) throws ParamErrorException, UserNotExistsException {
         restaurantStrategyBlService.addRestaurantStrategy(rid, vos);
     }
 
@@ -234,10 +228,9 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
      * @throws ParamErrorException      参数为null
      * @throws NoSuchAttributeException 没有该策略
      * @throws UnupdatableException     不是自己的策略, 无法修改
-     * @throws DatabaseUnknownException 数据库 错误
      */
     @Override
-    public void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws DatabaseUnknownException, NoSuchAttributeException, ParamErrorException, UnupdatableException {
+    public void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws NoSuchAttributeException, ParamErrorException, UnupdatableException {
         restaurantStrategyBlService.deleteRestaurantStrategy(rid, strategyId);
     }
 }

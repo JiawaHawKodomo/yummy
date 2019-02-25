@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 订单详情</title>
-    <script th:href="@{/js/tool/jquery.js}"></script>
+    <script th:src="@{/js/tool/jquery.js}"></script>
     <meta name="orderId" th:content="${order.getOrderId()}">
 </head>
 <body>
@@ -24,6 +24,9 @@
     <div>
         <h3>操作:</h3>
         <div>
+            <div th:if="${order.isUnpaid()}">
+                <label>请输入密码<input id="pay-password-input" type="password"></label>
+            </div>
             <button id="pay-button"
                     th:if="${order.isUnpaid()}">付款
             </button>
@@ -35,6 +38,6 @@
         <span id="order-operation-info" style="color: red"></span>
     </div>
 </th:block>
-<script th:href="@{/js/customerOrderInfo.js}"></script>
+<script th:src="@{/js/customerOrderInfo.js}"></script>
 </body>
 </html>

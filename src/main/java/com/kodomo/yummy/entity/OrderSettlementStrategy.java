@@ -1,15 +1,11 @@
 package com.kodomo.yummy.entity;
 
-import com.kodomo.yummy.entity.entity_enum.OrderSettlementStrategyType;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.boot.json.JsonParser;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,10 +51,9 @@ public class OrderSettlementStrategy {
                 .collect(Collectors.groupingBy(OrderSettlementStrategyDetail::getType, Collectors.toList())).values()
                 .stream()
                 .mapToDouble(l -> l.stream().mapToDouble(
-                        d -> d.isValid(restaurant) ? d.getRate() : d.getDefaultRateValue()
-                        ).max().orElse(1)
-                ).map(d -> 1 - d)
-                .sum();
+                        d -> d.isValid(restaurant) ? d.getRate() : d.getOrderSettlementStrategyTypeDefaultValue()
+                        ).min().orElse(0)
+                ).sum();
         //计算
         return result;
     }

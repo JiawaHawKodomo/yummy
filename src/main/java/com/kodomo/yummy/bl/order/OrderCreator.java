@@ -4,7 +4,6 @@ import com.kodomo.yummy.controller.vo.OrderVo;
 import com.kodomo.yummy.dao.*;
 import com.kodomo.yummy.entity.*;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.DatabaseUnknownException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UnupdatableException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
@@ -45,7 +44,7 @@ public class OrderCreator {
      * @param vo
      * @return
      */
-    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, DatabaseUnknownException, UnupdatableException {
+    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException {
         if (email == null || vo == null) {
             throw new ParamErrorException();
         }
@@ -114,12 +113,7 @@ public class OrderCreator {
         order.setOrderSettlementStrategy(settlementStrategy);
 
         //保存到数据库
-        try {
-            order = orderDao.save(order);
-        } catch (Exception e) {
-            throw new DatabaseUnknownException(e);
-        }
-
+        order = orderDao.save(order);
         return order;
     }
 }

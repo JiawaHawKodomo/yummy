@@ -1,5 +1,6 @@
 package com.kodomo.yummy.exceptions;
 
+import com.kodomo.yummy.entity.entity_enum.OrderState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 
 import javax.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import java.security.PrivilegedActionException;
  **/
 public class UnupdatableException extends Exception {
 
-    private UserState state;
+    private String state;
 
 
     /**
@@ -24,13 +25,18 @@ public class UnupdatableException extends Exception {
 
     public UnupdatableException(UserState state) {
         this();
-        this.state = state;
+        this.state = state.getText();
+    }
+
+    public UnupdatableException(OrderState state) {
+        this();
+        this.state = state.getText();
     }
 
     @NotNull
     public String getCurrentStateText() {
         if (state == null) return "";
-        return state.getText();
+        return state;
     }
 
     /**

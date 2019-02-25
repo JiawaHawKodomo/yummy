@@ -27,12 +27,12 @@ public class OrderSettlementStrategyDetail {
     @Column(nullable = false)
     private Double rate;
 
-    public double getDefaultRateValue() {
-        if (type == null) return 1;
+    double getOrderSettlementStrategyTypeDefaultValue() {
+        if (type == null) return 0;
         return type.getDefaultValue();
     }
 
-    public boolean isValid(Restaurant restaurant) {
+    boolean isValid(Restaurant restaurant) {
         return type != null && type.isValid(key, restaurant);
     }
 }
