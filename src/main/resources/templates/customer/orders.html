@@ -24,22 +24,13 @@
 </th:block>
 <th:block th:if="${customer}!=null">
     <div th:replace="customer/head"></div>
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
     <th:block th:if="${customer.getOngoingOrders().size()}!=0">
         <div>
             <h3>进行中的订单:</h3>
             <div class="order-div-table">
                 <div th:each="order:${customer.getOngoingOrders()}"
                      class="order-div">
-                    <div th:text="${order.getOrderStateText()}"></div>
-                    <h4 th:text="${order.getRestaurant().getName()}"></h4>
-                    <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
-                    <ul th:with="first=${order.getDetailsByPrice().get(0)}">
-                        <li th:each="detail:${order.getDetailsByPrice()}"
-                            th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
-                    </ul>
-                    <a th:href="@{/customer/order/}+${order.getOrderId()}">查看详情</a>
+                    <th:block th:replace="order/generalOrder"/>
                 </div>
             </div>
         </div>
@@ -53,14 +44,7 @@
             <div class="order-div-table">
                 <div th:each="order:${customer.getUnpaidOrders()}"
                      class="order-div">
-                    <div th:text="${order.getOrderStateText()}"></div>
-                    <h4 th:text="${order.getRestaurant().getName()}"></h4>
-                    <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
-                    <ul th:with="first=${order.getDetailsByPrice().get(0)}">
-                        <li th:each="detail:${order.getDetailsByPrice()}"
-                            th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
-                    </ul>
-                    <a th:href="@{/customer/order/}+${order.getOrderId()}">查看详情</a>
+                    <th:block th:replace="order/generalOrder"/>
                 </div>
             </div>
         </div>
@@ -74,14 +58,7 @@
             <div class="order-div-table">
                 <div th:each="order:${customer.getIdleOrders()}"
                      class="order-div">
-                    <div th:text="${order.getOrderStateText()}"></div>
-                    <h4 th:text="${order.getRestaurant().getName()}"></h4>
-                    <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
-                    <ul th:with="first=${order.getDetailsByPrice().get(0)}">
-                        <li th:each="detail:${order.getDetailsByPrice()}"
-                            th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
-                    </ul>
-                    <a th:href="@{/customer/order/}+${order.getOrderId()}">查看详情</a>
+                    <th:block th:replace="order/generalOrder"/>
                 </div>
             </div>
         </div>

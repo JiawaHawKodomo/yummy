@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
  * @create 2019-02-22 17:44
  */
 @Component
-public class CustomerPlaceBlService {
+public class CustomerPlaceHelper {
 
     private final CustomerDao customerDao;
     private final RestaurantDao restaurantDao;
 
     @Autowired
-    public CustomerPlaceBlService(RestaurantDao restaurantDao, CustomerDao customerDao) {
+    public CustomerPlaceHelper(RestaurantDao restaurantDao, CustomerDao customerDao) {
         this.restaurantDao = restaurantDao;
         this.customerDao = customerDao;
     }

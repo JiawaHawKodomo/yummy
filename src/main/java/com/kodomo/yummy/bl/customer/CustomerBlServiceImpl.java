@@ -3,6 +3,7 @@ package com.kodomo.yummy.bl.customer;
 import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.bl.location.LocationHelper;
 import com.kodomo.yummy.bl.util.ValidatingHelper;
+import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.dao.CustomerRechargeLogDao;
 import com.kodomo.yummy.dao.LocationDao;
@@ -26,18 +27,20 @@ public class CustomerBlServiceImpl implements CustomerBlService {
     private final LocationHelper locationHelper;
     private final ValidatingHelper validatingHelper;
     private final LocationDao locationDao;
-    private final CustomerPlaceBlService customerPlaceBlService;
+    private final CustomerPlaceHelper customerPlaceHelper;
     private final CustomerRechargeLogDao customerRechargeLogDao;
+    private final CustomerStatisticsHelper customerStatisticsHelper;
 
     @Autowired
-    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao, CustomerPlaceBlService customerPlaceBlService, CustomerRechargeLogDao customerRechargeLogDao) {
+    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao, CustomerPlaceHelper customerPlaceHelper, CustomerRechargeLogDao customerRechargeLogDao, CustomerStatisticsHelper customerStatisticsHelper) {
         this.customerDao = customerDao;
         this.customerCreator = customerCreator;
         this.locationHelper = locationHelper;
         this.validatingHelper = validatingHelper;
         this.locationDao = locationDao;
-        this.customerPlaceBlService = customerPlaceBlService;
+        this.customerPlaceHelper = customerPlaceHelper;
         this.customerRechargeLogDao = customerRechargeLogDao;
+        this.customerStatisticsHelper = customerStatisticsHelper;
     }
 
     /**
@@ -255,7 +258,7 @@ public class CustomerBlServiceImpl implements CustomerBlService {
 
     @Override
     public List<Restaurant> getRestaurantWithinDistributionDistance(String email, Integer locationId) throws ParamErrorException, NoSuchAttributeException, UserNotExistsException {
-        return customerPlaceBlService.getRestaurantWithinDistributionDistance(email, locationId);
+        return customerPlaceHelper.getRestaurantWithinDistributionDistance(email, locationId);
     }
 
     /**
@@ -269,7 +272,7 @@ public class CustomerBlServiceImpl implements CustomerBlService {
      */
     @Override
     public List<Restaurant> getSearchedRestaurant(String email, Integer locationId, String keyWord) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException {
-        return customerPlaceBlService.getSearchedRestaurant(email, locationId, keyWord);
+        return customerPlaceHelper.getSearchedRestaurant(email, locationId, keyWord);
     }
 
     /**
@@ -303,5 +306,26 @@ public class CustomerBlServiceImpl implements CustomerBlService {
         log.setCustomer(customer);
         log.setAmount(amount);
         customerRechargeLogDao.save(log);
+    }
+
+    /**
+     * 获取统计数据列表
+     *
+     * @param email email
+     * @return
+     */
+    @Override
+    public List<OrderStatisticsInfoVo> getStatisticsInfos(String email) throws UserNotExistsException {
+        return customerStatisticsHelper.getStatisticsInfos(email);
+    }
+
+    @Override
+    public List<Order> getOrdersByRestaurantOfCustomer(String email, Integer rid) throws UserNotExistsException {
+        return customerStatisticsHelper.getOrdersByRestaurantOfCustomer(email, rid);
+    }
+
+    @Override
+    public List<Order> getOrdersByTimeOfCustomer(String email, String time, String timeFormat) throws UserNotExistsException {
+        return customerStatisticsHelper.getOrdersByTimeOfCustomer(email, time, timeFormat);
     }
 }

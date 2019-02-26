@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 我的统计</title>
+    <script th:src="@{/js/tool/echarts.js}"></script>
+    <script th:src="@{/js/tool/jquery.js}"></script>
+</head>
+<body>
+<!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+<th:block th:if="${customer}==null">
+    出错了
+</th:block>
+<th:block th:if="${customer}!=null">
+    <div th:replace="customer/head"></div>
+
+    <div>
+        <div style="width: 80%;height: 400px" id="diagram-time"></div>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <div style="width: 80%;height: 400px" id="diagram-money"></div>
+    </div>
+
+    <div>
+        <div style="width: 80%;height: 400px" id="diagram-money-month"></div>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <div style="width: 80%;height: 400px" id="diagram-restaurant"></div>
+    </div>
+</th:block>
+<script th:src="@{/js/customerStatistics.js}"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * @author Shuaiyu Yao
@@ -34,5 +35,10 @@ public class OrderSettlementStrategyDetail {
 
     boolean isValid(Restaurant restaurant) {
         return type != null && type.isValid(key, restaurant);
+    }
+
+    public String getText() {
+        if (type == null) return "-";
+        return type.getText() + ":" + key + ",比率:" + rate;
     }
 }

@@ -155,28 +155,9 @@ public class OrderBlServiceImpl implements OrderBlService {
         order.setState(OrderState.ONGOING);
 
         //数据库处理
-        //1. 存储customer
         customerDao.save(customer);
-
-        //2.存储订单, 出错卷回
-        try {
-            orderDao.save(order);
-        } catch (RuntimeException e) {
-            customer.increaceBalance(amount);
-            customerDao.save(customer);
-            throw e;
-        }
-
-        //3.存储订单日志, 出错卷回
-        try {
-            orderLogHelper.createOrderLog(order, OrderState.ONGOING);
-        } catch (RuntimeException e) {
-            order.setState(OrderState.UNPAID);
-            orderDao.save(order);
-            customer.increaceBalance(amount);
-            customerDao.save(customer);
-            throw e;
-        }
+        orderDao.save(order);
+        orderLogHelper.createOrderLog(order, OrderState.ONGOING);
     }
 
     /**
@@ -190,7 +171,7 @@ public class OrderBlServiceImpl implements OrderBlService {
      * @throws UnupdatableException     订单状态不正确
      */
     @Override
-    public void confirmOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException {
+    public void customerConfirmOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException {
         if (email == null || orderId == null) {
             throw new ParamErrorException();
         }
@@ -215,30 +196,37 @@ public class OrderBlServiceImpl implements OrderBlService {
         restaurant.increaceBalance(finalMoneyToRestaurant);
 
         //数据库处理
-        //1.订单
         orderDao.save(order);
+        restaurantDao.save(restaurant);
+        orderLogHelper.createOrderLog(order, OrderState.DONE);
+    }
 
-        //2.商家
-        try {
-            restaurantDao.save(restaurant);
-        } catch (RuntimeException e) {
-            order.setState(OrderState.ONGOING);
-            orderDao.save(order);
-            throw e;
+    @Override
+    public void restaurantConfirmOrder(Integer restaurantId, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException {
+        if (restaurantId == null || orderId == null) {
+            throw new ParamErrorException();
+        }
+        Restaurant restaurant = restaurantDao.find(restaurantId);
+        if (restaurant == null) {
+            throw new UserNotExistsException();
+        }
+        Order order = restaurant.getOrderById(orderId);
+        if (order == null) {
+            throw new NoSuchAttributeException();
         }
 
-        //3.订单记录
-        try {
-            orderLogHelper.createOrderLog(order, OrderState.DONE);
-        } catch (RuntimeException e) {
-            try {
-                restaurant.reduceBalance(finalMoneyToRestaurant);
-                order.setState(OrderState.ONGOING);
-                restaurantDao.save(restaurant);
-                orderDao.save(order);
-            } catch (LackOfBalanceException ignored) {
-            }
+        //状态判断
+        if (!order.isOngoing()) {
+            throw new UnupdatableException(order.getState());
         }
+        //订单处理, 计算后, 将钱款打到商家用户
+        order.setState(OrderState.DONE);
+        double finalMoneyToRestaurant = order.getFinalMoneyToRestaurant();
+        restaurant.increaceBalance(finalMoneyToRestaurant);
+        //数据库处理
+        orderDao.save(order);
+        restaurantDao.save(restaurant);
+        orderLogHelper.createOrderLog(order, OrderState.DONE);
     }
 
     /**
@@ -266,7 +254,7 @@ public class OrderBlServiceImpl implements OrderBlService {
             throw new UnupdatableException(order.getState());
         }
         OrderState originalState = order.getState();
-        Double refund = 0.0;
+        Double refund;
         //设置订单
         order.setState(OrderState.CANCELLED);
         //已经进入配餐阶段的order
@@ -277,27 +265,8 @@ public class OrderBlServiceImpl implements OrderBlService {
         }
 
         //数据库处理
-        //1.订单
         orderDao.save(order);
-        //2.customer, 如果失败则卷回
-        try {
-            customerDao.save(customer);
-        } catch (RuntimeException e) {
-            order.setState(originalState);
-            orderDao.save(order);
-        }
-
-        //3.记录
-        try {
-            orderLogHelper.createOrderLog(order, OrderState.CANCELLED);
-        } catch (RuntimeException e) {
-            order.setState(originalState);
-            orderDao.save(order);
-            try {
-                customer.reduceBalance(refund);
-                customerDao.save(customer);
-            } catch (LackOfBalanceException ignored) {
-            }
-        }
+        customerDao.save(customer);
+        orderLogHelper.createOrderLog(order, OrderState.CANCELLED);
     }
 }

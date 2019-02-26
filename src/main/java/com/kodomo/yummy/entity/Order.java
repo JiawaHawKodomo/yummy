@@ -2,7 +2,6 @@ package com.kodomo.yummy.entity;
 
 import com.kodomo.yummy.config.StaticConfig;
 import com.kodomo.yummy.entity.entity_enum.OrderState;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -152,6 +151,11 @@ public class Order {
         return getRestaurantStrategy().getText();
     }
 
+    public Double getOrderSettlementFinalRate() {
+        if (getOrderSettlementStrategy() == null) return 0.0;
+        return getOrderSettlementStrategy().getFinalRate(restaurant);
+    }
+
     public Double getFinalMoneyToRestaurant() {
         Restaurant restaurant = getRestaurant();
         OrderSettlementStrategy settlementStrategy = getOrderSettlementStrategy();
@@ -160,6 +164,17 @@ public class Order {
         }
 
         return getTotalPriceAfterDiscount() * settlementStrategy.getFinalRate(restaurant);
+    }
+
+    /**
+     * 获得最终适用的订单结算策略条例
+     *
+     * @return
+     */
+    @NotNull
+    public List<OrderSettlementStrategyDetail> getAppliedOrderSettlementStrategyDetails() {
+        if (getOrderSettlementStrategy() == null || getRestaurant() == null) return new ArrayList<>();
+        return getOrderSettlementStrategy().getAppliedDetails(getRestaurant());
     }
 
     @NotNull
@@ -219,4 +234,17 @@ public class Order {
         }
     }
 
+    public Integer getRestaurantId() {
+        if (getRestaurant() == null) return null;
+        return getRestaurant().getRestaurantId();
+    }
+
+    public String getRestaurantName() {
+        if (getRestaurant() == null) return null;
+        return getRestaurant().getName();
+    }
+
+    public boolean isDone() {
+        return getState() == OrderState.DONE;
+    }
 }

@@ -84,7 +84,9 @@ public interface OrderBlService {
      * @throws NoSuchAttributeException 订单不存在
      * @throws UnupdatableException     订单状态不正确
      */
-    void confirmOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
+    void customerConfirmOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
+
+    void restaurantConfirmOrder(Integer restaurantId, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
 
     /**
      * 取消订单

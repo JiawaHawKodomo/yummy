@@ -1,6 +1,8 @@
 package com.kodomo.yummy.bl;
 
+import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.entity.Customer;
+import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 
@@ -125,5 +127,19 @@ public interface CustomerBlService {
      * @param amount        数值
      */
     void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException;
+
+    /**
+     * 获取统计数据列表
+     *
+     * @param email email
+     * @return
+     */
+    List<OrderStatisticsInfoVo> getStatisticsInfos(String email) throws UserNotExistsException;
+
+
+    List<Order> getOrdersByRestaurantOfCustomer(String email, Integer rid) throws UserNotExistsException;
+
+
+    List<Order> getOrdersByTimeOfCustomer(String email, String time, String timeFormat) throws UserNotExistsException;
 }
 

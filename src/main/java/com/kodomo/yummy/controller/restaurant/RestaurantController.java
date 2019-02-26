@@ -94,13 +94,6 @@ public class RestaurantController {
         return "redirect:/";
     }
 
-    @GetMapping("/order")
-    public String orders(HttpServletRequest request, Model model) {
-        Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
-        Restaurant restaurant = restaurantBlService.getRestaurantById(rid);
-        model.addAttribute("restaurant", restaurant);
-        return "restaurant/orders";
-    }
 
     @GetMapping("/manage")
     public String manage(HttpServletRequest request, Model model) {

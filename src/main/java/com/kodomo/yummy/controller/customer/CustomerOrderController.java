@@ -200,7 +200,7 @@ public class CustomerOrderController {
         }
 
         try {
-            orderBlService.confirmOrder(email, orderId);
+            orderBlService.customerConfirmOrder(email, orderId);
             result.put("result", true);
         } catch (ParamErrorException e) {
             result.put("info", "参数错误:" + e.getErrorFieldsInfo());

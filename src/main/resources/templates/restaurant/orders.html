@@ -3,9 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 我的订单</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
+    <style>
+        .order-div {
+            margin: 20px;
+            padding: 10px;
+            border: 2px solid black;
+            width: 300px;
+        }
+
+        .order-div-table {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
 </head>
 <body>
 
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<th:block th:if="${restaurant}==null">
+    出错了
+</th:block>
+<th:block th:if="${restaurant}!=null">
+    <th:block th:replace="restaurant/head"/>
+
+    <th:block th:if="${restaurant.getOngoingOrders().size()}!=0">
+        <div>
+            <h3>进行中的订单:</h3>
+            <div class="order-div-table">
+                <div th:each="order:${restaurant.getOngoingOrders()}"
+                     class="order-div">
+                    <th:block th:replace="order/generalOrder"/>
+                </div>
+            </div>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+
+    <th:block th:if="${restaurant.getUnpaidOrders().size()}!=0">
+        <div>
+            <h3>待支付的订单:</h3>
+            <div class="order-div-table">
+                <div th:each="order:${restaurant.getUnpaidOrders()}"
+                     class="order-div">
+                    <th:block th:replace="order/generalOrder"/>
+                </div>
+            </div>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+
+    <th:block th:if="${restaurant.getIdleOrders().size()}!=0">
+        <div>
+            <h3>过去的订单:</h3>
+            <div class="order-div-table">
+                <div th:each="order:${restaurant.getIdleOrders()}"
+                     class="order-div">
+                    <th:block th:replace="order/generalOrder"/>
+                </div>
+            </div>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+</th:block>
 </body>
 </html>

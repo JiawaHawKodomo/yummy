@@ -65,6 +65,23 @@
                 <td th:text="${order.getRefundAmount()}"></td>
             </tr>
         </th:block>
+        <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+        <th:block th:if="${restaurant}!=null">
+            <tr>
+                <th>订单结算条例</th>
+                <td>
+                    <ul>
+                        <li th:each="detail:${order.getAppliedOrderSettlementStrategyDetails()}"
+                            th:text="${detail.getText()}"></li>
+                        <li th:text="'最终结算率:'+${order.getOrderSettlementFinalRate()}"></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>实收款</th>
+                <td th:text="${order.getFinalMoneyToRestaurant()}"></td>
+            </tr>
+        </th:block>
     </table>
     <h3>订单记录追踪</h3>
     <ul>

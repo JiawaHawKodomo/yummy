@@ -1,4 +1,4 @@
-package com.kodomo.yummy.controller;
+package com.kodomo.yummy.controller.management;
 
 import com.kodomo.yummy.bl.ManagementBlService;
 import com.kodomo.yummy.bl.OrderBlService;

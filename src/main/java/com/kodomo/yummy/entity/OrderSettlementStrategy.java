@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,17 +47,28 @@ public class OrderSettlementStrategy {
      * @param restaurant 餐厅
      * @return 最终的折算率
      */
-    public double getFinalRate(Restaurant restaurant) {
+    double getFinalRate(Restaurant restaurant) {
         double result = 1.0;
-        result -= details.stream()
+        result -= getAppliedDetails(restaurant).stream()
+                .mapToDouble(OrderSettlementStrategyDetail::getRate).sum();
+        return result;
+    }
+
+    /**
+     * 根据餐厅的情况筛选最后适用的结算策略条例
+     *
+     * @param restaurant
+     * @return
+     */
+    List<OrderSettlementStrategyDetail> getAppliedDetails(Restaurant restaurant) {
+        return details.stream()
                 .collect(Collectors.groupingBy(OrderSettlementStrategyDetail::getType, Collectors.toList())).values()
                 .stream()
-                .mapToDouble(l -> l.stream().mapToDouble(
-                        d -> d.isValid(restaurant) ? d.getRate() : d.getOrderSettlementStrategyTypeDefaultValue()
-                        ).min().orElse(0)
-                ).sum();
-        //计算
-        return result;
+                .map(l -> l.stream()
+                        .filter(d -> d.isValid(restaurant))
+                        .reduce((a, b) -> a.getRate() < b.getRate() ? a : b).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override

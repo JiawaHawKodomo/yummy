@@ -298,4 +298,38 @@ public class Restaurant {
 
         setBalance(getBalance() - amount);
     }
+
+    @NotNull
+    public List<Order> getOngoingOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(o -> o.isOngoing())
+                .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<Order> getUnpaidOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(o -> o.isUnpaid())
+                .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<Order> getIdleOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(o -> !o.isOngoing() && !o.isUnpaid())
+                .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
+                .collect(Collectors.toList());
+    }
+
+    public Order getOrderById(Integer orderId) {
+        if (getOrders() == null || orderId == null) return null;
+        for (Order order : getOrders()) {
+            if (orderId.equals(order.getOrderId())) {
+                return order;
+            }
+        }
+        return null;
+    }
 }

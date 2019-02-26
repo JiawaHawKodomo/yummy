@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.Order"*/-->
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 订单详情</title>
+    <script th:src="@{/js/tool/jquery.js}"></script>
+
+    <meta name="orderId" th:content="${order.getOrderId()}">
+</head>
+<body>
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<th:block th:if="${restaurant eq null||order eq null}">
+    出错了
+</th:block>
+<th:block th:if="${restaurant ne null&&order ne null}">
+    <th:block th:replace="restaurant/head"/>
+
+    <th:block th:replace="order/order"/>
+
+    <div>
+        <h3>操作:</h3>
+        <div>
+            <button id="confirm-button" th:if="${order.isOngoing()}">确认送达</button>
+        </div>
+        <span id="order-operation-info" style="color: red"></span>
+    </div>
+</th:block>
+<script th:src="@{/js/restaurantOrderInfo.js}"></script>
+</body>
+</html>
