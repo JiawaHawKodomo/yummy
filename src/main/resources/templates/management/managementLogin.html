@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy管理系统登录</title>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script th:src="@{/js/tool/jquery.js}"></script>
 </head>
 <body>
 管理员信息
@@ -19,6 +19,7 @@
 </table>
 
 <button id="management-login-button">登录</button>
+<a th:href="@{/}">返回</a>
 <script th:src="@{/js/managementLogin.js}"></script>
 </body>
 </html>

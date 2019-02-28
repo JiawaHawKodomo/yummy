@@ -111,4 +111,15 @@ public class ManagementBlServiceImpl implements ManagementBlService {
 
         return true;
     }
+
+    /**
+     * 获得manager实体对象
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Manager getManagerById(String id) {
+        return managerDao.find(id);
+    }
 }

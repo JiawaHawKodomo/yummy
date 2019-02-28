@@ -6,11 +6,7 @@
     <script th:src="@{/js/tool/jquery.js}"></script>
 </head>
 <body>
-<a th:href="@{/management/logout}">登出</a>
-<p style="color: red">退出系统时请务必登出</p>
-
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
+<th:block th:replace="management/head"/>
 <div>
     <h3>添加管理员</h3>
     <table>
@@ -50,8 +46,8 @@
             <th>操作</th>
         </tr>
         <!--/*@thymesVar id="unactivatedRestaurant" type="java.util.List"*/-->
+        <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
         <tr th:each="restaurant:${unactivatedRestaurant}">
-            <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
             <td th:text="${restaurant.getRestaurantId()}"></td>
             <td th:text="${restaurant.getName()}"></td>
             <td th:text="${restaurant.getRegisterTime()}"></td>
@@ -132,7 +128,7 @@
         </tr>
 
         <th:block th:if="${currentOrderRefundStrategy}!=null">
-            <tr th:each="strategy:${currentOrderRefundStrategy.getDetails()}" class="refund-strategy-tr">
+            <tr th:each="strategy:${currentOrderRefundStrategy.getDetailsByOrder()}" class="refund-strategy-tr">
                 <td><input th:value="${strategy.getMoreThanOrEquals()}" class="refund-strategy-more-input"></td>
                 <td><input th:value="${strategy.getLessThan()}" class="refund-strategy-less-input"></td>
                 <td><input th:value="${strategy.getRefundRate()}" class="refund-strategy-rate-input"></td>
@@ -146,6 +142,40 @@
     <div id="refund-strategy-info-div" style="color: red"></div>
 </div>
 
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+<div>
+    <h3>制定会员等级策略</h3>
+    <!--/*@thymesVar id="currentCustomerLevelStrategy" type="com.kodomo.yummy.entity.CustomerLevelStrategy"*/-->
+    <div th:if="${currentCustomerLevelStrategy}==null" style="color: red">
+        无法找到当前策略, 请新建策略
+    </div>
+
+    <table id="customer-level-strategy-table" border="2 solid" cellpadding="5">
+        <tr>
+            <th>等级</th>
+            <th>消费金额</th>
+            <th>折扣率</th>
+            <th>操作
+                <button id="customer-level-strategy-add-button">添加</button>
+            </th>
+        </tr>
+        <th:block th:if="${currentCustomerLevelStrategy}!=null">
+            <tr th:each="detail:${currentCustomerLevelStrategy.getDetailsByOrder()}"
+                class="customer-level-strategy-tr">
+                <td><input th:value="${detail.getLevel()}" class="customer-level-strategy-level-input"></td>
+                <td><input th:value="${detail.getConsumptionAmount()}" class="customer-level-strategy-amount-input">
+                </td>
+                <td><input th:value="${detail.getDiscountRate()}" class="customer-level-strategy-rate-input"></td>
+                <td>
+                    <button class="customer-level-strategy-remove-button">删除</button>
+                </td>
+            </tr>
+        </th:block>
+    </table>
+    <button id="customer-level-strategy-save-button">保存</button>
+    <div id="customer-level-strategy-info-div" style="color: red"></div>
+</div>
 <script th:src="@{/js/managementInfo.js}"></script>
 </body>
 </html>

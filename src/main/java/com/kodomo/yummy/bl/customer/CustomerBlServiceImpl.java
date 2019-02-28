@@ -3,6 +3,9 @@ package com.kodomo.yummy.bl.customer;
 import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.bl.location.LocationHelper;
 import com.kodomo.yummy.bl.util.ValidatingHelper;
+import com.kodomo.yummy.controller.vo.CustomerLevelStrategyVo;
+import com.kodomo.yummy.controller.vo.CustomerRechargeStatisticsVo;
+import com.kodomo.yummy.controller.vo.CustomerStatisticsVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.dao.CustomerRechargeLogDao;
@@ -30,9 +33,10 @@ public class CustomerBlServiceImpl implements CustomerBlService {
     private final CustomerPlaceHelper customerPlaceHelper;
     private final CustomerRechargeLogDao customerRechargeLogDao;
     private final CustomerStatisticsHelper customerStatisticsHelper;
+    private final CustomerStrategyHelper customerStrategyHelper;
 
     @Autowired
-    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao, CustomerPlaceHelper customerPlaceHelper, CustomerRechargeLogDao customerRechargeLogDao, CustomerStatisticsHelper customerStatisticsHelper) {
+    public CustomerBlServiceImpl(CustomerDao customerDao, CustomerCreator customerCreator, LocationHelper locationHelper, ValidatingHelper validatingHelper, LocationDao locationDao, CustomerPlaceHelper customerPlaceHelper, CustomerRechargeLogDao customerRechargeLogDao, CustomerStatisticsHelper customerStatisticsHelper, CustomerStrategyHelper customerStrategyHelper) {
         this.customerDao = customerDao;
         this.customerCreator = customerCreator;
         this.locationHelper = locationHelper;
@@ -41,6 +45,7 @@ public class CustomerBlServiceImpl implements CustomerBlService {
         this.customerPlaceHelper = customerPlaceHelper;
         this.customerRechargeLogDao = customerRechargeLogDao;
         this.customerStatisticsHelper = customerStatisticsHelper;
+        this.customerStrategyHelper = customerStrategyHelper;
     }
 
     /**
@@ -327,5 +332,35 @@ public class CustomerBlServiceImpl implements CustomerBlService {
     @Override
     public List<Order> getOrdersByTimeOfCustomer(String email, String time, String timeFormat) throws UserNotExistsException {
         return customerStatisticsHelper.getOrdersByTimeOfCustomer(email, time, timeFormat);
+    }
+
+    @Override
+    public CustomerLevelStrategy getCurrentCustomerLevelStrategy() {
+        return customerStrategyHelper.getCurrentCustomerLevelStrategy();
+    }
+
+    @Override
+    public void saveCustomerLevelStrategy(List<CustomerLevelStrategyVo> vos, String managerId) throws UserNotExistsException, ParamErrorException {
+        customerStrategyHelper.saveCustomerLevelStrategy(vos, managerId);
+    }
+
+    /**
+     * 获取顾客信息的统计
+     *
+     * @return
+     */
+    @Override
+    public List<CustomerStatisticsVo> getCustomerStatisticsVo() {
+        return customerStatisticsHelper.getCustomerStatisticsVo();
+    }
+
+    /**
+     * 获取顾客充值信息的统计
+     *
+     * @return
+     */
+    @Override
+    public List<CustomerRechargeStatisticsVo> getCustomerRechargeStatisticsVo() {
+        return customerStatisticsHelper.getCustomerRechargeStatisticsVo();
     }
 }

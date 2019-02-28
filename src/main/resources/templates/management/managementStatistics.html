@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 统计</title>
+    <script th:src="@{/js/tool/jquery.js}"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=KKdnn1DpFvLwqvo0SNHGAyp6Me2gU8Fy"></script>
+    <script th:src="@{/js/tool/echarts.js}"></script>
+    <script th:src="@{/js/tool/bmap.js}"></script>
+</head>
+<body>
+<th:block th:replace="management/head"/>
+
+<div>
+    <h3>餐厅统计</h3>
+    <div style="display: flex;height: 500px">
+        <div style="width: 50%;height: 100%" id="restaurant-region-distribution-chart"></div>
+        <div style="width: 50%;height: 100%" id="restaurant-register-time-chart"></div>
+    </div>
+
+</div>
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+<div>
+    <h3>会员统计</h3>
+    <div style="display: flex;height: 600px">
+        <div style="width: 40%;height: 100%" id="customer-register-time-chart"></div>
+        <div style="width: 60%;height: 100%; display: flex;flex-wrap: wrap">
+            <div style="width: 50%;height: 50%" id="customer-order-quantity-chart"></div>
+            <div style="width: 50%;height: 50%" id="customer-consumption-amount-chart"></div>
+            <div style="width: 50%;height: 50%" id="customer-level-chart"></div>
+        </div>
+    </div>
+</div>
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+
+<div>
+    <h3>订单统计</h3>
+    <div style="width: 80%;height: 500px" id="order-time-chart"></div>
+</div>
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+<div>
+    <h3>Yummy! 财务统计</h3>
+    <div style="height: 600px;width:100%;display: flex">
+        <div id="financial-time-chart" style="width: 80%;height: 100%"></div>
+    </div>
+</div>
+<script th:src="@{/js/managementStatistics.js}"></script>
+</body>
+</html>

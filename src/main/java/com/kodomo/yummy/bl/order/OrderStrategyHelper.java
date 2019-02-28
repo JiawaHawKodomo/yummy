@@ -75,11 +75,11 @@ public class OrderStrategyHelper {
 
         //新旧策略处理
         OrderSettlementStrategy oldStrategy = orderSettlementStrategyDao.getCurrentOrderSettlementStrategy();
+        orderSettlementStrategyDao.save(newStrategy);
         if (oldStrategy != null) {
             oldStrategy.setEndTime(new Date());
             orderSettlementStrategyDao.save(oldStrategy);
         }
-        orderSettlementStrategyDao.save(newStrategy);
     }
 
     /**
@@ -126,4 +126,6 @@ public class OrderStrategyHelper {
         orderRefundStrategyDao.save(orderRefundStrategy);
     }
 
+    private void setLevelForCustomer(String email) {
+    }
 }

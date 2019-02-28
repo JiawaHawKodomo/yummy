@@ -3,6 +3,7 @@ package com.kodomo.yummy.bl.order;
 import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
+import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.controller.vo.OrderVo;
 import com.kodomo.yummy.dao.*;
 import com.kodomo.yummy.entity.*;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -25,6 +27,7 @@ public class OrderBlServiceImpl implements OrderBlService {
     @Value("${yummy-system.pay-time}")
     private Integer maxPayTime;//最长等待支付时间, 单位分钟
 
+    private final OrderHelper orderHelper;
     private final OrderDao orderDao;
     private final OrderCreator orderCreator;
     private final OrderLogDao orderLogDao;
@@ -34,7 +37,7 @@ public class OrderBlServiceImpl implements OrderBlService {
     private final OrderStrategyHelper orderStrategyHelper;
 
     @Autowired
-    public OrderBlServiceImpl(OrderDao orderDao, OrderCreator orderCreator, OrderLogDao orderLogDao, CustomerDao customerDao, OrderLogHelper orderLogHelper, RestaurantDao restaurantDao, OrderStrategyHelper orderStrategyHelper) {
+    public OrderBlServiceImpl(OrderDao orderDao, OrderCreator orderCreator, OrderLogDao orderLogDao, CustomerDao customerDao, OrderLogHelper orderLogHelper, RestaurantDao restaurantDao, OrderStrategyHelper orderStrategyHelper, OrderHelper orderHelper) {
         this.orderDao = orderDao;
         this.orderCreator = orderCreator;
         this.orderLogDao = orderLogDao;
@@ -42,6 +45,7 @@ public class OrderBlServiceImpl implements OrderBlService {
         this.orderLogHelper = orderLogHelper;
         this.restaurantDao = restaurantDao;
         this.orderStrategyHelper = orderStrategyHelper;
+        this.orderHelper = orderHelper;
     }
 
     @Override
@@ -199,6 +203,8 @@ public class OrderBlServiceImpl implements OrderBlService {
         orderDao.save(order);
         restaurantDao.save(restaurant);
         orderLogHelper.createOrderLog(order, OrderState.DONE);
+        //增加经验
+        setLevelForCustomer(customer.getEmail(), order.getCustomerLevelStrategy());
     }
 
     @Override
@@ -227,6 +233,8 @@ public class OrderBlServiceImpl implements OrderBlService {
         orderDao.save(order);
         restaurantDao.save(restaurant);
         orderLogHelper.createOrderLog(order, OrderState.DONE);
+        //增加经验
+        setLevelForCustomer(order.getCustomerEmail(), order.getCustomerLevelStrategy());
     }
 
     /**
@@ -268,5 +276,23 @@ public class OrderBlServiceImpl implements OrderBlService {
         orderDao.save(order);
         customerDao.save(customer);
         orderLogHelper.createOrderLog(order, OrderState.CANCELLED);
+    }
+
+    private void setLevelForCustomer(String email, CustomerLevelStrategy strategy) {
+        Customer customer = customerDao.find(email);
+        if (customer != null) {
+            customer.setLevel(strategy.calculateLevel(customer.getTotalConsumptionAmount()));
+            customerDao.save(customer);
+        }
+    }
+
+    /**
+     * 获取订单统计信息
+     *
+     * @return
+     */
+    @Override
+    public List<OrderStatisticsInfoVo> getOrderStatisticsVo() {
+        return orderHelper.mapToStatisticsVo(orderDao.findAll());
     }
 }

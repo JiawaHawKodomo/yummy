@@ -1,8 +1,7 @@
 package com.kodomo.yummy.bl;
 
-import com.kodomo.yummy.controller.vo.OfferingTypeVo;
-import com.kodomo.yummy.controller.vo.OfferingVo;
-import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
+import com.kodomo.yummy.controller.vo.*;
+import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
@@ -104,4 +103,21 @@ public interface RestaurantBlService {
      * @throws UnupdatableException     不是自己的策略, 无法修改
      */
     void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws NoSuchAttributeException, ParamErrorException, UnupdatableException;
+
+    /**
+     * 计算获得统计信息
+     *
+     * @param rid rid
+     * @return
+     */
+    List<OrderStatisticsInfoVo> getStatisticsInfos(Integer rid);
+
+    List<Order> getOrdersByTimeOfCustomer(Integer rid, String time, String format);
+
+    /**
+     * 获取统计信息
+     *
+     * @return
+     */
+    List<RestaurantStatisticsVo> getRestaurantStatisticsInfo();
 }

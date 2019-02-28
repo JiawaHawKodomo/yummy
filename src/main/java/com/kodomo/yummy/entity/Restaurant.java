@@ -302,7 +302,7 @@ public class Restaurant {
     @NotNull
     public List<Order> getOngoingOrders() {
         if (getOrders() == null) return new ArrayList<>();
-        return getOrders().stream().filter(o -> o.isOngoing())
+        return getOrders().stream().filter(Order::isOngoing)
                 .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
                 .collect(Collectors.toList());
     }
@@ -310,7 +310,7 @@ public class Restaurant {
     @NotNull
     public List<Order> getUnpaidOrders() {
         if (getOrders() == null) return new ArrayList<>();
-        return getOrders().stream().filter(o -> o.isUnpaid())
+        return getOrders().stream().filter(Order::isUnpaid)
                 .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
                 .collect(Collectors.toList());
     }
@@ -319,6 +319,22 @@ public class Restaurant {
     public List<Order> getIdleOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> !o.isOngoing() && !o.isUnpaid())
+                .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<Order> getCanceledOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(Order::isCanceled)
+                .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<Order> getDoneOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream().filter(Order::isDone)
                 .sorted((a, b) -> (int) (b.getCreateTime().getTime() - a.getCreateTime().getTime()))
                 .collect(Collectors.toList());
     }

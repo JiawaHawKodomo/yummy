@@ -1,0 +1,10 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <span>你好:</span>
+    <!--/*@thymesVar id="manager" type="com.kodomo.yummy.entity.Manager"*/-->
+    <span th:text="${manager.getManagerId()}"></span>
+    <a th:href="@{/management/logout}">登出</a>
+    <a th:href="@{/management}">管理</a>
+    <a th:href="@{/management/statistics}">统计</a>
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+</div>

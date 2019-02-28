@@ -1,7 +1,11 @@
 package com.kodomo.yummy.bl.customer;
 
+import com.kodomo.yummy.bl.order.OrderHelper;
+import com.kodomo.yummy.controller.vo.CustomerRechargeStatisticsVo;
+import com.kodomo.yummy.controller.vo.CustomerStatisticsVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.dao.CustomerDao;
+import com.kodomo.yummy.dao.CustomerRechargeLogDao;
 import com.kodomo.yummy.entity.Customer;
 import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
@@ -20,11 +24,15 @@ import java.util.stream.Collectors;
 @Component
 public class CustomerStatisticsHelper {
 
+    private final OrderHelper orderHelper;
     private final CustomerDao customerDao;
+    private final CustomerRechargeLogDao customerRechargeLogDao;
 
     @Autowired
-    public CustomerStatisticsHelper(CustomerDao customerDao) {
+    public CustomerStatisticsHelper(CustomerDao customerDao, OrderHelper orderHelper, CustomerRechargeLogDao customerRechargeLogDao) {
         this.customerDao = customerDao;
+        this.orderHelper = orderHelper;
+        this.customerRechargeLogDao = customerRechargeLogDao;
     }
 
     List<OrderStatisticsInfoVo> getStatisticsInfos(String email) throws UserNotExistsException {
@@ -33,17 +41,7 @@ public class CustomerStatisticsHelper {
             throw new UserNotExistsException();
         }
 
-        return customer.getOrders().stream()
-                .filter(order -> !order.isCanceled())
-                .map(order -> {
-                    OrderStatisticsInfoVo vo = new OrderStatisticsInfoVo();
-                    vo.setOrderId(order.getOrderId());
-                    vo.setTime(order.getCreateTime());
-                    vo.setMoney(order.getTotalPriceAfterDiscount());
-                    vo.setRestaurantId(order.getRestaurantId());
-                    vo.setRestaurantName(order.getRestaurantName());
-                    return vo;
-                }).collect(Collectors.toList());
+        return orderHelper.mapToStatisticsVo(customer.getOrders());
     }
 
     List<Order> getOrdersByRestaurantOfCustomer(String email, Integer rid) throws UserNotExistsException {
@@ -52,21 +50,38 @@ public class CustomerStatisticsHelper {
             throw new UserNotExistsException();
         }
 
-        return customer.getOrders().stream()
-                .filter(order -> Objects.equals(rid, order.getRestaurantId()))
-                .filter(Order::isDone)
-                .collect(Collectors.toList());
+        return orderHelper.filterOrderByRestaurant(customer.getOrders(), rid);
     }
 
-    public List<Order> getOrdersByTimeOfCustomer(String email, String time, String timeFormat) throws UserNotExistsException {
+    List<Order> getOrdersByTimeOfCustomer(String email, String time, String timeFormat) throws UserNotExistsException {
         Customer customer = customerDao.find(email);
         if (customer == null) {
             throw new UserNotExistsException();
         }
 
-        return customer.getOrders().stream()
-                .filter(order -> Objects.equals(time, new SimpleDateFormat(timeFormat).format(order.getCreateTime())))
-                .filter(Order::isDone)
-                .collect(Collectors.toList());
+        return orderHelper.filterOrderByTime(customer.getOrders(), time, timeFormat);
+    }
+
+    List<CustomerStatisticsVo> getCustomerStatisticsVo() {
+        return customerDao.findAll().stream()
+                .map(customer -> {
+                    CustomerStatisticsVo vo = new CustomerStatisticsVo();
+                    vo.setEmail(customer.getEmail());
+                    vo.setRegisterTime(customer.getRegisterTime());
+                    vo.setConsumptionAmount(customer.getTotalConsumptionAmount());
+                    vo.setOrderQuantity(customer.getDoneOrders().size());
+                    vo.setLevel(customer.getLevel());
+                    return vo;
+                }).collect(Collectors.toList());
+    }
+
+    List<CustomerRechargeStatisticsVo> getCustomerRechargeStatisticsVo() {
+        return customerRechargeLogDao.findAll().stream()
+                .map(customerRechargeLog -> {
+                    CustomerRechargeStatisticsVo vo = new CustomerRechargeStatisticsVo();
+                    vo.setTime(customerRechargeLog.getTime());
+                    vo.setAmount(customerRechargeLog.getAmount());
+                    return vo;
+                }).collect(Collectors.toList());
     }
 }

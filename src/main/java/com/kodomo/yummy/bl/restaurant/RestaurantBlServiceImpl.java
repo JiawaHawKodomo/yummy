@@ -1,13 +1,12 @@
 package com.kodomo.yummy.bl.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
-import com.kodomo.yummy.controller.vo.OfferingTypeVo;
-import com.kodomo.yummy.controller.vo.OfferingVo;
-import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
+import com.kodomo.yummy.controller.vo.*;
 import com.kodomo.yummy.dao.OfferingDao;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.Offering;
 import com.kodomo.yummy.entity.OfferingType;
+import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
@@ -30,14 +29,16 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     private final OfferingDao offeringDao;
     private final OfferingCreator offeringCreator;
     private final RestaurantStrategyBlService restaurantStrategyBlService;
+    private final RestaurantStatisticsHelper restaurantStatisticsHelper;
 
     @Autowired
-    public RestaurantBlServiceImpl(RestaurantCreator restaurantCreator, RestaurantDao restaurantDao, OfferingDao offeringDao, OfferingCreator offeringCreator, RestaurantStrategyBlService restaurantStrategyBlService) {
+    public RestaurantBlServiceImpl(RestaurantCreator restaurantCreator, RestaurantDao restaurantDao, OfferingDao offeringDao, OfferingCreator offeringCreator, RestaurantStrategyBlService restaurantStrategyBlService, RestaurantStatisticsHelper restaurantStatisticsHelper) {
         this.restaurantCreator = restaurantCreator;
         this.restaurantDao = restaurantDao;
         this.offeringDao = offeringDao;
         this.offeringCreator = offeringCreator;
         this.restaurantStrategyBlService = restaurantStrategyBlService;
+        this.restaurantStatisticsHelper = restaurantStatisticsHelper;
     }
 
     @Override
@@ -232,5 +233,25 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     @Override
     public void deleteRestaurantStrategy(Integer rid, Integer strategyId) throws NoSuchAttributeException, ParamErrorException, UnupdatableException {
         restaurantStrategyBlService.deleteRestaurantStrategy(rid, strategyId);
+    }
+
+    /**
+     * 计算获得统计信息
+     *
+     * @param rid rid
+     * @return
+     */
+    @Override
+    public List<OrderStatisticsInfoVo> getStatisticsInfos(Integer rid) {
+        return restaurantStatisticsHelper.getStatisticsInfos(rid);
+    }
+
+    @Override
+    public List<Order> getOrdersByTimeOfCustomer(Integer rid, String time, String format) {
+        return restaurantStatisticsHelper.getOrdersByTimeOfCustomer(rid, time, format);
+    }
+
+    public List<RestaurantStatisticsVo> getRestaurantStatisticsInfo() {
+        return restaurantStatisticsHelper.getRestaurantStatisticsInfo();
     }
 }

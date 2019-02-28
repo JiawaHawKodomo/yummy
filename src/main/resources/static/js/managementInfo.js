@@ -1,6 +1,7 @@
 const registerResponseInfo = $('#manager-register-info');
 const strategyTable = $('#strategy-table');
 const refundStrategyTable = $('#refund-strategy-table');
+const customerLevelStrategyTable = $('#customer-level-strategy-table');
 
 $('.restaurant-pass-button').on('click', function () {
     const id = $(this).attr('id').split('-')[2];
@@ -18,6 +19,27 @@ $('.refund-strategy-remove-button').on('click', function () {
 
 $('.strategy-remove-button').on('click', function () {
     $(this).parents('.strategy-tr').remove();
+});
+
+$('.customer-level-strategy-remove-button').on('click', function () {
+    $(this).parents('.customer-level-strategy-tr').remove();
+});
+
+$('#customer-level-strategy-add-button').on('click', function () {
+    customerLevelStrategyTable.append(
+        $('<tr></tr>').attr('class', 'customer-level-strategy-tr').append(
+            $('<td></td>').append($('<input>').attr('class', 'customer-level-strategy-level-input'))
+        ).append(
+            $('<td></td>').append($('<input>').attr('class', 'customer-level-strategy-amount-input'))
+        ).append(
+            $('<td></td>').append($('<input>').attr('class', 'customer-level-strategy-rate-input'))
+        ).append(
+            $('<td></td>').append($('<button></button>').text('删除').attr('class', 'customer-level-strategy-remove-button')
+                .on('click', function () {
+                    $(this).parents('.customer-level-strategy-tr').remove();
+                }))
+        )
+    )
 });
 
 $('#refund-strategy-add-button').on('click', function () {
@@ -112,6 +134,36 @@ $('#refund-strategy-save-button').on('click', function () {
         success: function (data) {
             console.log(data);
             const infoDiv = $('#refund-strategy-info-div');
+            if (data.result) {
+                infoDiv.text('成功');
+            } else {
+                infoDiv.text('失败:' + data.info);
+            }
+        }
+    })
+});
+
+//保存会员等级策略
+$('#customer-level-strategy-save-button').on('click', function () {
+    var result = [];
+    $('.customer-level-strategy-tr').each(function () {
+        const e = $(this);
+        result.push({
+            level: e.find('.customer-level-strategy-level-input').val(),
+            amount: e.find('.customer-level-strategy-amount-input').val(),
+            rate: e.find('.customer-level-strategy-rate-input').val()
+        });
+    });
+
+    $.ajax({
+        type: 'post',
+        url: '/management/customerLevelStrategy',
+        dataType: 'json',
+        contentType: 'application/json;charsetset=UTF-8',
+        data: JSON.stringify(result),
+        success: function (data) {
+            console.log(data);
+            const infoDiv = $('#customer-level-strategy-info-div');
             if (data.result) {
                 infoDiv.text('成功');
             } else {

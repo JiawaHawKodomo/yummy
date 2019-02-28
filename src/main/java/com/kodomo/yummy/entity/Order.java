@@ -64,25 +64,35 @@ public class Order {
     private OrderSettlementStrategy orderSettlementStrategy;
 
     /**
+     * 该订单生效的会员等级策略
+     */
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "customer_level_strategy_id")
+    private CustomerLevelStrategy customerLevelStrategy;
+
+    /**
      * 该订单生效的退款策略
      */
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "order_refund_strategy_id")
     private OrderRefundStrategy orderRefundStrategy;
 
-    public double getDiscount() {
+    private double getRestaurantDiscount() {
         if (restaurantStrategy == null || restaurantStrategy.getDiscount() == null) return 0;
         return restaurantStrategy.getDiscount();
     }
 
-    public double getTotalPriceBeforeDiscount() {
+    private double getTotalPriceBeforeDiscount() {
         if (details == null) return 0;
         return details.stream().mapToDouble(OrderDetail::getTotalPrice).sum();
     }
 
     public double getTotalPriceAfterDiscount() {
-        double tmp = getTotalPriceBeforeDiscount() - getDiscount();
+        //餐厅满减
+        double tmp = getTotalPriceBeforeDiscount() - getRestaurantDiscount();
         double min = StaticConfig.getMinPayment();
+        //会员折扣
+        tmp = tmp * (1 - getCustomerLevelStrategy().getDiscountRate(customer));
         return tmp < min ? min : tmp;
     }
 
@@ -119,6 +129,11 @@ public class Order {
 
     public boolean isCanceled() {
         return getState() == OrderState.CANCELLED;
+    }
+
+    public String getCustomerEmail() {
+        if (getCustomer() == null) return null;
+        return getCustomer().getEmail();
     }
 
     /**

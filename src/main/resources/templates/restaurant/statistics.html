@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 商家统计</title>
+    <script th:src="@{/js/tool/echarts.js}"></script>
+    <script th:src="@{/js/tool/jquery.js}"></script>
+</head>
+<body>
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<th:block th:if="${restaurant}==null">
+    出错了
+</th:block>
+<th:block th:if="${restaurant}!=null">
+    <th:block th:replace="restaurant/head"/>
+
+    <div>
+        <h3>日订单统计</h3>
+        <div style="display: flex">
+            <div id="day-order-quantity" style="width: 50%;height: 400px"></div>
+            <div id="day-order-amount" style="width: 50%;height: 400px"></div>
+        </div>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+    <div>
+        <h3>月订单统计</h3>
+        <div style="display: flex">
+            <div id="month-order-quantity" style="width: 50%;height: 400px"></div>
+            <div id="month-order-amount" style="width: 50%;height: 400px"></div>
+        </div>
+    </div>
+
+    <!--黑线-->
+    <div style="height: 2px;width: 100%;background: black"></div>
+
+    <div>
+        <h3>财务明细</h3>
+        <table id="detail-table">
+            <tr>
+                <th>时间</th>
+                <th>订单号</th>
+                <th>实收款</th>
+                <th>买家</th>
+                <th>操作</th>
+            </tr>
+        </table>
+    </div>
+
+</th:block>
+<script th:src="@{/js/restaurantStatistics.js}"></script>
+</body>
+</html>

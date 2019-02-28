@@ -1,9 +1,12 @@
 package com.kodomo.yummy.config;
 
+import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.bl.ManagementBlService;
 import com.kodomo.yummy.bl.OrderBlService;
+import com.kodomo.yummy.controller.vo.CustomerLevelStrategyVo;
 import com.kodomo.yummy.dao.ManagerDao;
 import com.kodomo.yummy.dao.OrderSettlementStrategyDao;
+import com.kodomo.yummy.entity.CustomerLevelStrategy;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.OrderRefundStrategy;
 import com.kodomo.yummy.entity.OrderSettlementStrategy;
@@ -33,11 +36,13 @@ public class ManagerConfig {
 
     private final ManagementBlService managementBlService;
     private final OrderBlService orderBlService;
+    private final CustomerBlService customerBlService;
 
     @Autowired
-    public ManagerConfig(ManagementBlService managementBlService, OrderBlService orderBlService) {
+    public ManagerConfig(ManagementBlService managementBlService, OrderBlService orderBlService, CustomerBlService customerBlService) {
         this.managementBlService = managementBlService;
         this.orderBlService = orderBlService;
+        this.customerBlService = customerBlService;
     }
 
     /**
@@ -50,6 +55,8 @@ public class ManagerConfig {
         checkDefaultOrderSettlementStrategy(manager.getManagerId());
         //检查默认订单退款策略
         checkDefaultOrderRefundStrategy(manager.getManagerId());
+        //检查会员策略
+        checkDefaultCustomerLevelStrategy(manager.getManagerId());
     }
 
     /**
@@ -62,6 +69,7 @@ public class ManagerConfig {
             try {
                 orderBlService.saveNewOrderSettlementStrategy(new ArrayList<>(), managerId);
             } catch (ParamErrorException | UserNotExistsException ignored) {
+                throw new RuntimeException(ignored);
             }
         }
     }
@@ -76,6 +84,30 @@ public class ManagerConfig {
             try {
                 orderBlService.saveNewOrderRefundStrategy(new ArrayList<>(), managerId);
             } catch (UserNotExistsException | ParamErrorException ignored) {
+                throw new RuntimeException(ignored);
+            }
+        }
+    }
+
+    /**
+     * 插入默认会员等级策略
+     *
+     * @param managerId
+     */
+    private void checkDefaultCustomerLevelStrategy(String managerId) {
+        CustomerLevelStrategy customerLevelStrategy = customerBlService.getCurrentCustomerLevelStrategy();
+        if (customerLevelStrategy == null) {
+            //插入默认策略
+            try {
+                customerBlService.saveCustomerLevelStrategy(new ArrayList<CustomerLevelStrategyVo>() {{
+                    CustomerLevelStrategyVo vo = new CustomerLevelStrategyVo();
+                    vo.setLevel(1);
+                    vo.setAmount(0.0);
+                    vo.setRate(0.0);
+                    add(vo);
+                }}, managerId);
+            } catch (UserNotExistsException | ParamErrorException ignored) {
+                throw new RuntimeException(ignored);
             }
         }
     }

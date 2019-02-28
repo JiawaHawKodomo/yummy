@@ -6,8 +6,9 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 订单退款策略
@@ -50,5 +51,13 @@ public class OrderRefundStrategy {
             }
         }
         return StaticConfig.getOrderRefundDefaultRate();
+    }
+
+    @NotNull
+    public List<OrderRefundStrategyDetail> getDetailsByOrder() {
+        if (getDetails() == null) return new ArrayList<>();
+        return getDetails().stream()
+                .sorted(Comparator.comparingInt(OrderRefundStrategyDetail::getMoreThanOrEquals))
+                .collect(Collectors.toList());
     }
 }

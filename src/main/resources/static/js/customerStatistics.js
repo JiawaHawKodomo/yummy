@@ -1,9 +1,8 @@
-var timeChart = echarts.init(document.getElementById('diagram-time'));
-var moneyChart = echarts.init(document.getElementById('diagram-money'));
-var restaurantChart = echarts.init(document.getElementById('diagram-restaurant'));
-var moneyChartByMonth = echarts.init(document.getElementById('diagram-money-month'));
+const timeChart = echarts.init(document.getElementById('diagram-time'));
+const moneyChart = echarts.init(document.getElementById('diagram-money'));
+const restaurantChart = echarts.init(document.getElementById('diagram-restaurant'));
+const moneyChartByMonth = echarts.init(document.getElementById('diagram-money-month'));
 
-//加载按时间统计的结果
 $.ajax({
     type: 'get',
     url: '/customer/statistics/data',

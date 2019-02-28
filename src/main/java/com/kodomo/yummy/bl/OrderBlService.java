@@ -2,6 +2,7 @@ package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
+import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.controller.vo.OrderVo;
 import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.OrderRefundStrategy;
@@ -95,4 +96,11 @@ public interface OrderBlService {
      * @param orderId
      */
     void customerCancelOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
+
+    /**
+     * 获取订单统计信息
+     *
+     * @return
+     */
+    List<OrderStatisticsInfoVo> getOrderStatisticsVo();
 }

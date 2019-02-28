@@ -1,5 +1,6 @@
 package com.kodomo.yummy.controller.management;
 
+import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.bl.ManagementBlService;
 import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.bl.RestaurantBlService;
@@ -31,12 +32,14 @@ public class ManagementController {
     private final ManagementBlService managementBlService;
     private final RestaurantBlService restaurantBlService;
     private final OrderBlService orderBlService;
+    private final CustomerBlService customerBlService;
 
     @Autowired
-    public ManagementController(ManagementBlService managementBlService, RestaurantBlService restaurantBlService, OrderBlService orderBlService) {
+    public ManagementController(ManagementBlService managementBlService, RestaurantBlService restaurantBlService, OrderBlService orderBlService, CustomerBlService customerBlService) {
         this.managementBlService = managementBlService;
         this.restaurantBlService = restaurantBlService;
         this.orderBlService = orderBlService;
+        this.customerBlService = customerBlService;
     }
 
     @GetMapping("/login")
@@ -73,10 +76,12 @@ public class ManagementController {
      * @return
      */
     @RequestMapping
-    public String management(Model model) {
+    public String management(HttpServletRequest request, Model model) {
+        model.addAttribute("manager", managementBlService.getManagerById((String) request.getSession(true).getAttribute("manager")));
         model.addAttribute("unactivatedRestaurant", restaurantBlService.getRestaurantByState(UserState.UNACTIVATED));
         model.addAttribute("currentOrderSettlementStrategy", orderBlService.getCurrentOrderSettlementStrategy());
         model.addAttribute("currentOrderRefundStrategy", orderBlService.getCurrentOrderRefundStrategy());
+        model.addAttribute("currentCustomerLevelStrategy", customerBlService.getCurrentCustomerLevelStrategy());
         return "management/managementInfo";
     }
 
@@ -117,50 +122,6 @@ public class ManagementController {
             result.put("info", "未知错误");
         }
 
-        return result;
-    }
-
-    @PostMapping("/orderStrategy")
-    @ResponseBody
-    public Map<String, Object> updateOrderStrategy(HttpServletRequest request,
-                                                   @RequestBody List<OrderSettlementStrategyVo> vos) {
-        Map<String, Object> result = new HashMap<>();
-        String managerId = (String) request.getSession(true).getAttribute("manager");
-        if (managerId == null) {
-            result.put("info", "请先登录");
-            return result;
-        }
-
-        try {
-            orderBlService.saveNewOrderSettlementStrategy(vos, managerId);
-            result.put("result", true);
-        } catch (ParamErrorException e) {
-            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
-        } catch (UserNotExistsException e) {
-            result.put("info", "管理员不存在");
-        }
-        return result;
-    }
-
-    @PostMapping("/orderRefundStrategy")
-    @ResponseBody
-    public Map<String, Object> updateOrderRefundStrategy(HttpServletRequest request,
-                                                         @RequestBody List<OrderRefundStrategyVo> vos) {
-        Map<String, Object> result = new HashMap<>();
-        String managerId = (String) request.getSession(true).getAttribute("manager");
-        if (managerId == null) {
-            result.put("info", "请先登录");
-            return result;
-        }
-
-        try {
-            orderBlService.saveNewOrderRefundStrategy(vos, managerId);
-            result.put("result", true);
-        } catch (UserNotExistsException e) {
-            result.put("info", "管理员不存在");
-        } catch (ParamErrorException e) {
-            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
-        }
         return result;
     }
 }

@@ -16,4 +16,6 @@ public class OrderStatisticsInfoVo {
     private Double money;
     private Integer restaurantId;
     private String restaurantName;
+    private String customerEmail;
+    private Double moneyToRestaurant;
 }

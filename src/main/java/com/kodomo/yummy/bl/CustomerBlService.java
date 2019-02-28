@@ -1,7 +1,11 @@
 package com.kodomo.yummy.bl;
 
+import com.kodomo.yummy.controller.vo.CustomerLevelStrategyVo;
+import com.kodomo.yummy.controller.vo.CustomerRechargeStatisticsVo;
+import com.kodomo.yummy.controller.vo.CustomerStatisticsVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.entity.Customer;
+import com.kodomo.yummy.entity.CustomerLevelStrategy;
 import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.exceptions.*;
@@ -141,5 +145,30 @@ public interface CustomerBlService {
 
 
     List<Order> getOrdersByTimeOfCustomer(String email, String time, String timeFormat) throws UserNotExistsException;
+
+
+    CustomerLevelStrategy getCurrentCustomerLevelStrategy();
+
+    /**
+     * 保存会员等级策略
+     *
+     * @param vos
+     * @param managerId
+     */
+    void saveCustomerLevelStrategy(List<CustomerLevelStrategyVo> vos, String managerId) throws UserNotExistsException, ParamErrorException;
+
+    /**
+     * 获取顾客信息的统计
+     *
+     * @return
+     */
+    List<CustomerStatisticsVo> getCustomerStatisticsVo();
+
+    /**
+     * 获取顾客充值信息的统计
+     *
+     * @return
+     */
+    List<CustomerRechargeStatisticsVo> getCustomerRechargeStatisticsVo();
 }
 

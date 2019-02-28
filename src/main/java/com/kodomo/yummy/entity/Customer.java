@@ -29,6 +29,10 @@ public class Customer {
     private UserState state;
     @Column(nullable = false, columnDefinition = "double default 0", insertable = false)
     private Double balance;
+    @Column(nullable = false, columnDefinition = "integer default 0", insertable = false)
+    private Integer level;//等级
+    @Column(nullable = false, columnDefinition = "timestamp default now()", insertable = false)
+    private Date registerTime;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "_relationship_customer_to_location",
@@ -132,6 +136,32 @@ public class Customer {
     }
 
     /**
+     * 获得完成的订单, 按时间倒序
+     *
+     * @return
+     */
+    @NotNull
+    public List<Order> getDoneOrders() {
+        if (getOrders() == null) return new ArrayList<>();
+        return getOrders().stream()
+                .filter(o -> o.getState() == OrderState.DONE)
+                .sorted(Comparator.comparing(Order::getTheLastUpdateTime).reversed())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 计算总消费金额
+     *
+     * @return
+     */
+    @NotNull
+    public Double getTotalConsumptionAmount() {
+        return getDoneOrders().stream()
+                .mapToDouble(Order::getTotalPriceAfterDiscount)
+                .sum();
+    }
+
+    /**
      * 根据id获取order实体
      *
      * @param id
@@ -188,6 +218,7 @@ public class Customer {
 
     /**
      * 按时间倒序, 充值记录
+     *
      * @return
      */
     @NotNull

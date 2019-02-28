@@ -27,14 +27,16 @@ public class OrderCreator {
     private final OrderSettlementStrategyDao orderSettlementStrategyDao;
     private final OfferingDao offeringDao;
     private final OrderDao orderDao;
+    private final CustomerLevelStrategyDao customerLevelStrategyDao;
 
     @Autowired
-    public OrderCreator(CustomerDao customerDao, RestaurantDao restaurantDao, OrderSettlementStrategyDao orderSettlementStrategyDao, OfferingDao offeringDao, OrderDao orderDao) {
+    public OrderCreator(CustomerDao customerDao, RestaurantDao restaurantDao, OrderSettlementStrategyDao orderSettlementStrategyDao, OfferingDao offeringDao, OrderDao orderDao, CustomerLevelStrategyDao customerLevelStrategyDao) {
         this.customerDao = customerDao;
         this.restaurantDao = restaurantDao;
         this.orderSettlementStrategyDao = orderSettlementStrategyDao;
         this.offeringDao = offeringDao;
         this.orderDao = orderDao;
+        this.customerLevelStrategyDao = customerLevelStrategyDao;
     }
 
     /**
@@ -74,6 +76,8 @@ public class OrderCreator {
         //orderSettlementStrategy
         OrderSettlementStrategy settlementStrategy = orderSettlementStrategyDao.getCurrentOrderSettlementStrategy();
 
+        //customerLevelStrategy
+        CustomerLevelStrategy customerLevelStrategy = customerLevelStrategyDao.getCurrentStrategy();
         //details
         Set<OrderDetail> details = new HashSet<>();
         if (vo.getDetails().size() == 0) {
@@ -111,7 +115,7 @@ public class OrderCreator {
         order.setDetails(details);
         order.setRestaurantStrategy(restaurantStrategy);
         order.setOrderSettlementStrategy(settlementStrategy);
-
+        order.setCustomerLevelStrategy(customerLevelStrategy);
         //保存到数据库
         order = orderDao.save(order);
         return order;

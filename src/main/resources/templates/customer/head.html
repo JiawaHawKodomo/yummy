@@ -5,6 +5,8 @@
         <span th:text="${customer.getName()}"></span>
         <span>余额:</span>
         <span th:text="${customer.getBalance()}"></span>
+        <span>等级:</span>
+        <span th:text="${customer.getLevel()}"></span>
         <a th:href="@{/customer/logout}">登出</a>
         <a th:href="@{/customer/place}">点餐</a>
         <a th:href="@{/customer/info}">个人信息</a>

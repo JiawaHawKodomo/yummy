@@ -54,11 +54,25 @@
         <div style="height: 2px;width: 100%;background: black"></div>
     </th:block>
 
-    <th:block th:if="${restaurant.getIdleOrders().size()}!=0">
+    <th:block th:if="${restaurant.getCanceledOrders().size()}!=0">
         <div>
-            <h3>过去的订单:</h3>
+            <h3>取消的订单:</h3>
             <div class="order-div-table">
-                <div th:each="order:${restaurant.getIdleOrders()}"
+                <div th:each="order:${restaurant.getCanceledOrders()}"
+                     class="order-div">
+                    <th:block th:replace="order/generalOrder"/>
+                </div>
+            </div>
+        </div>
+        <!--黑线-->
+        <div style="height: 2px;width: 100%;background: black"></div>
+    </th:block>
+
+    <th:block th:if="${restaurant.getDoneOrders().size()}!=0">
+        <div>
+            <h3>完成的订单:</h3>
+            <div class="order-div-table">
+                <div th:each="order:${restaurant.getDoneOrders()}"
                      class="order-div">
                     <th:block th:replace="order/generalOrder"/>
                 </div>
