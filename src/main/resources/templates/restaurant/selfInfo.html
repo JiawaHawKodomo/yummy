@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yummy! 店铺信息</title>
+    <script th:src="@{/js/tool/jquery.js}"></script>
+</head>
+<body>
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<th:block th:if="${restaurant}==null">
+    出错了
+</th:block>
+<th:block th:if="${restaurant}!=null">
+    <th:block th:replace="restaurant/head"/>
+
+    <h2>修改信息</h2>
+    <div style="color: red">修改信息需要先提交, 等待管理人员审核</div>
+    <table border="2">
+        <tr>
+            <td>编号</td>
+            <td th:text="${restaurant.getRestaurantId()}"></td>
+        </tr>
+        <tr>
+            <td>状态</td>
+            <td th:text="${restaurant.getStateText()}"></td>
+        </tr>
+        <tr>
+            <td>店铺名字</td>
+            <td><input th:value="${restaurant.getName()}" id="name-input"></td>
+        </tr>
+        <tr>
+            <td>电话</td>
+            <td><input th:value="${restaurant.getTelephone()}" id="telephone-input"></td>
+        </tr>
+        <tr>
+            <td>营业时间</td>
+            <td><input th:value="${restaurant.getBusinessHours()}" id="business-hours-input"></td>
+        </tr>
+        <tr th:if="${restaurant.getTypes()}!=null">
+            <td>餐厅类型</td>
+            <td>
+                <ul>
+                    <li th:each="type:${restaurant.getTypes()}" class="type-li">
+                        <input th:value="${type.getContent()}" class="type-input">
+                        <button class="type-remove-button">删除</button>
+                    </li>
+                    <li id="type-add-button-li">
+                        <button id="type-add-button">添加</button>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>位置</td>
+            <td>
+                <ul>
+                    <li th:text="${restaurant.getCity()}"></li>
+                    <li th:text="${restaurant.getBlockInfo()}"></li>
+                    <li th:text="${restaurant.getPointInfo()}"></li>
+                    <li>
+                        <span>备注:</span>
+                        <textarea th:value="${restaurant.getLocationNote()}" id="location-note-input"></textarea>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <button id="restaurant-info-update-submit-button"
+            th:disabled="${restaurant.getWaitingConfirmModificationInfo()}!=null">提交
+    </button>
+    <span id="restaurant-info-update-info" style="color: red"></span>
+
+    <div th:if="${restaurant.getWaitingConfirmModificationInfo()}!=null"
+         th:with="modificationInfo=${restaurant.getWaitingConfirmModificationInfo()}">
+        <span style="color: red">已经提交了修改信息, 在审核前无法再次提交</span>
+        <h3>提交的修改信息</h3>
+        <table border="2">
+            <tr>
+                <td>店铺名字</td>
+                <td th:text="${modificationInfo.getName()}"></td>
+            </tr>
+            <tr>
+                <td>电话</td>
+                <td th:text="${modificationInfo.getTelephone()}"></td>
+            </tr>
+            <tr>
+                <td>营业时间</td>
+                <td th:text="${modificationInfo.getBusinessHours()}"></td>
+            </tr>
+            <tr>
+                <td>餐厅类型</td>
+                <td>
+                    <ul>
+                        <li th:each="type:${modificationInfo.getTypes()}"
+                            th:text="${type.getContent()}"></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>位置备注</td>
+                <td th:text="${modificationInfo.getLocationNote()}"></td>
+            </tr>
+        </table>
+    </div>
+</th:block>
+<script th:src="@{/js/restaurantSelfInfo.js}"></script>
+</body>
+</html>

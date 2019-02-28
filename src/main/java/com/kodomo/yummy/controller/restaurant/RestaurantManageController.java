@@ -4,9 +4,11 @@ import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.controller.vo.OfferingTypeVo;
 import com.kodomo.yummy.controller.vo.OfferingVo;
 import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
+import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,14 @@ public class RestaurantManageController {
     @Autowired
     public RestaurantManageController(RestaurantBlService restaurantBlService) {
         this.restaurantBlService = restaurantBlService;
+    }
+
+    @GetMapping("/manage")
+    public String manage(HttpServletRequest request, Model model) {
+        Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
+        Restaurant restaurant = restaurantBlService.getRestaurantById(rid);
+        model.addAttribute("restaurant", restaurant);
+        return "restaurant/manage";
     }
 
     /**
@@ -53,7 +63,7 @@ public class RestaurantManageController {
             result.put("info", "输入的名称不正确");
         } catch (UserNotExistsException e) {
             result.put("info", "用户不存在");
-        } catch (DuplicatedPrimaryKeyException e) {
+        } catch (DuplicatedUniqueKeyException e) {
             result.put("info", "分类名称不能重复");
         } catch (UnupdatableException e) {
             result.put("info", "该账号状态下无法修改:" + e.getCurrentStateText());

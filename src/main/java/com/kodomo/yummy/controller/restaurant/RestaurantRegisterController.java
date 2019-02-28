@@ -2,7 +2,7 @@ package com.kodomo.yummy.controller.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
+import com.kodomo.yummy.exceptions.DuplicatedUniqueKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,7 +60,7 @@ public class RestaurantRegisterController {
             request.getSession().setAttribute("restaurant", restaurant.getRestaurantId());
         } catch (ParamErrorException e) {
             result.put("info", "以下信息填写错误:" + e.getErrorFieldsInfo());
-        } catch (DuplicatedPrimaryKeyException e) {
+        } catch (DuplicatedUniqueKeyException e) {
             result.put("info", "该电话已经被注册");
         }
         return result;

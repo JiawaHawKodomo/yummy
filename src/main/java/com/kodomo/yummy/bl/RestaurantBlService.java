@@ -31,7 +31,7 @@ public interface RestaurantBlService {
      * @return 餐厅实体对象
      * @throws ParamErrorException 参数错误,创建失败
      */
-    Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedPrimaryKeyException;
+    Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedUniqueKeyException;
 
     /**
      * 登录
@@ -64,7 +64,7 @@ public interface RestaurantBlService {
      * @param rid
      * @param newTypes
      */
-    void updateRestaurantOfferingType(Integer rid, List<OfferingTypeVo> newTypes) throws ParamErrorException, UserNotExistsException, DuplicatedPrimaryKeyException, UnupdatableException;
+    void updateRestaurantOfferingType(Integer rid, List<OfferingTypeVo> newTypes) throws ParamErrorException, UserNotExistsException, DuplicatedUniqueKeyException, UnupdatableException;
 
     /**
      * 保存餐品信息
@@ -120,4 +120,12 @@ public interface RestaurantBlService {
      * @return
      */
     List<RestaurantStatisticsVo> getRestaurantStatisticsInfo();
+
+    /**
+     * 提交修改餐厅的信息的申请
+     *
+     * @param vo
+     * @param restaurantId
+     */
+    void submitModification(RestaurantModificationVo vo, Integer restaurantId) throws ParamErrorException, DuplicatedUniqueKeyException, UserNotExistsException, DuplicatedSubmitException;
 }

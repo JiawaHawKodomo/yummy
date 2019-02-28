@@ -2,42 +2,46 @@ package com.kodomo.yummy.bl.restaurant;
 
 import com.kodomo.yummy.bl.location.LocationHelper;
 import com.kodomo.yummy.bl.util.ValidatingHelper;
+import com.kodomo.yummy.controller.vo.RestaurantModificationVo;
 import com.kodomo.yummy.dao.RestaurantDao;
+import com.kodomo.yummy.dao.RestaurantModificationInfoDao;
 import com.kodomo.yummy.dao.RestaurantTypeDao;
 import com.kodomo.yummy.entity.Location;
 import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.RestaurantModificationInfo;
 import com.kodomo.yummy.entity.RestaurantType;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
+import com.kodomo.yummy.exceptions.DuplicatedSubmitException;
+import com.kodomo.yummy.exceptions.DuplicatedUniqueKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Shuaiyu Yao
  * @create 2019-02-17 17:07
  */
 @Service
-public class RestaurantCreator {
+public class RestaurantEntityHelper {
 
     private final ValidatingHelper validatingHelper;
     private final RestaurantDao restaurantDao;
     private final RestaurantTypeDao restaurantTypeDao;
     private final LocationHelper locationHelper;
+    private final RestaurantModificationInfoDao restaurantModificationInfoDao;
 
     @Autowired
-    public RestaurantCreator(ValidatingHelper validatingHelper, RestaurantDao restaurantDao, RestaurantTypeDao restaurantTypeDao, LocationHelper locationHelper) {
+    public RestaurantEntityHelper(ValidatingHelper validatingHelper, RestaurantDao restaurantDao, RestaurantTypeDao restaurantTypeDao, LocationHelper locationHelper, RestaurantModificationInfoDao restaurantModificationInfoDao) {
         this.validatingHelper = validatingHelper;
         this.restaurantDao = restaurantDao;
         this.restaurantTypeDao = restaurantTypeDao;
         this.locationHelper = locationHelper;
+        this.restaurantModificationInfoDao = restaurantModificationInfoDao;
     }
 
     /**
@@ -56,7 +60,7 @@ public class RestaurantCreator {
      * @param addressNote addressNote
      * @return restaurant对象
      */
-    Restaurant createNewRestaurantForDatabase(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedPrimaryKeyException {
+    Restaurant createNewRestaurantForDatabase(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedUniqueKeyException {
         List<String> errorField = new ArrayList<>();
         if (name == null || name.equals("")) {
             errorField.add("名称");
@@ -95,15 +99,9 @@ public class RestaurantCreator {
         restaurant.setState(UserState.UNACTIVATED);
 
         //检查餐厅类型
-        RestaurantType type1 = new RestaurantType();
-        type1.setContent(type);
-        List<RestaurantType> types = restaurantTypeDao.findAll(Example.of(type1));
+        RestaurantType type1 = restaurantTypeDao.findTypeByContent(type);
         Set<RestaurantType> set = new HashSet<>();
-        if (types.isEmpty()) {
-            set.add(type1);
-        } else {
-            set.addAll(types);
-        }
+        dealWithType(type1, set, type);
         restaurant.setTypes(set);
         restaurant.setNote(note);
 
@@ -114,7 +112,7 @@ public class RestaurantCreator {
         try {
             restaurant = restaurantDao.save(restaurant);
         } catch (Exception e) {
-            throw new DuplicatedPrimaryKeyException("该电话号码已注册");
+            throw new DuplicatedUniqueKeyException("该电话号码已注册");
         }
         return restaurant;
     }
@@ -149,4 +147,86 @@ public class RestaurantCreator {
         }
     }
 
+    /**
+     * 保存餐厅修改信息请求
+     *
+     * @param vo
+     * @param restaurantId
+     * @throws ParamErrorException
+     * @throws UserNotExistsException
+     * @throws DuplicatedUniqueKeyException
+     */
+    void submitModification(RestaurantModificationVo vo, Integer restaurantId) throws ParamErrorException, UserNotExistsException, DuplicatedUniqueKeyException, DuplicatedSubmitException {
+        if (vo == null || restaurantId == null) {
+            throw new ParamErrorException();
+        }
+
+        //restaurant
+        Restaurant restaurant = restaurantDao.find(restaurantId);
+        if (restaurant == null) {
+            throw new UserNotExistsException();
+        }
+
+        //已有申请
+        if (restaurant.getWaitingConfirmModificationInfo() != null) {
+            throw new DuplicatedSubmitException();
+        }
+
+        List<String> errors = new ArrayList<>();
+        if (vo.getName() == null) {
+            errors.add("名字");
+        }
+        Time[] times = new Time[0];
+        try {
+            times = formatTimes(vo.getBusinessHours());
+        } catch (Exception e) {
+            errors.add("营业时间");
+        }
+
+        if (vo.getTelephone() == null || !validatingHelper.isTelephone(vo.getTelephone())) {
+            errors.add("电话");
+        }
+
+        if (vo.getTypes() == null || vo.getTypes().isEmpty()) {
+            errors.add("餐厅类型");
+        }
+        //检查填写异常
+        if (!errors.isEmpty()) {
+            throw new ParamErrorException(errors);
+        }
+
+        //手机号已存在
+        if (!vo.getTelephone().equals(restaurant.getTelephone()) && restaurantDao.getRestaurantByTelephone(vo.getTelephone()) != null) {
+            throw new DuplicatedUniqueKeyException();
+        }
+
+        RestaurantModificationInfo modificationInfo = new RestaurantModificationInfo();
+        modificationInfo.setRestaurant(restaurant);
+        modificationInfo.setName(vo.getName());
+        modificationInfo.setTelephone(vo.getTelephone());
+        modificationInfo.setRunFrom(times[0]);
+        modificationInfo.setRunTo(times[1]);
+        modificationInfo.setLocationNote(vo.getLocationNote());
+        //处理type
+        Set<RestaurantType> types = new HashSet<>();
+        vo.getTypes().forEach(s -> {
+            RestaurantType type = restaurantTypeDao.findTypeByContent(s);
+            dealWithType(type, types, s);
+        });
+        modificationInfo.setTypes(types);
+
+        //保存
+        restaurantModificationInfoDao.save(modificationInfo);
+    }
+
+    private void dealWithType(RestaurantType type, Set<RestaurantType> types, String content) {
+        if (type != null) {
+            types.add(type);
+        } else {
+            //新建type
+            RestaurantType newType = new RestaurantType();
+            newType.setContent(content);
+            types.add(newType);
+        }
+    }
 }

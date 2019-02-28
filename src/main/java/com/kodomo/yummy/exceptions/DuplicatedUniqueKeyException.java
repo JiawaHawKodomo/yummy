@@ -6,14 +6,14 @@ import java.security.PrivilegedActionException;
  * @author Shuaiyu Yao
  * @create 2019-02-20 14:10
  */
-public class DuplicatedPrimaryKeyException extends Exception {
+public class DuplicatedUniqueKeyException extends Exception {
 
     /**
      * Constructs a new exception with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public DuplicatedPrimaryKeyException() {
+    public DuplicatedUniqueKeyException() {
     }
 
     /**
@@ -24,7 +24,7 @@ public class DuplicatedPrimaryKeyException extends Exception {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public DuplicatedPrimaryKeyException(String message) {
+    public DuplicatedUniqueKeyException(String message) {
         super(message);
     }
 
@@ -42,7 +42,7 @@ public class DuplicatedPrimaryKeyException extends Exception {
      *                unknown.)
      * @since 1.4
      */
-    public DuplicatedPrimaryKeyException(String message, Throwable cause) {
+    public DuplicatedUniqueKeyException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -60,7 +60,7 @@ public class DuplicatedPrimaryKeyException extends Exception {
      *              unknown.)
      * @since 1.4
      */
-    public DuplicatedPrimaryKeyException(Throwable cause) {
+    public DuplicatedUniqueKeyException(Throwable cause) {
         super(cause);
     }
 
@@ -78,7 +78,7 @@ public class DuplicatedPrimaryKeyException extends Exception {
      *                           be writable
      * @since 1.7
      */
-    public DuplicatedPrimaryKeyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public DuplicatedUniqueKeyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

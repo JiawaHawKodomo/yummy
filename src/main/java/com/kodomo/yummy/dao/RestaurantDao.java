@@ -26,6 +26,8 @@ public interface RestaurantDao extends JpaRepository<Restaurant, Integer>, JpaSp
     }
 
     default List<Restaurant> getRestaurantWithinSquare(Double lat, Double lng, Double distanceToSide) {
+        if (lat == null || lng == null || distanceToSide == null) return new ArrayList<>();
+
         try {
             return findAll(new Specification<Restaurant>() {
                 @Nullable
@@ -43,6 +45,23 @@ public interface RestaurantDao extends JpaRepository<Restaurant, Integer>, JpaSp
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    default Restaurant getRestaurantByTelephone(String telephone) {
+        if (telephone == null) return null;
+
+        try {
+            return findOne(new Specification<Restaurant>() {
+                @Nullable
+                @Override
+                public Predicate toPredicate(Root<Restaurant> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                    return criteriaBuilder.equal(root.get("telephone").as(String.class), telephone);
+                }
+            }).orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

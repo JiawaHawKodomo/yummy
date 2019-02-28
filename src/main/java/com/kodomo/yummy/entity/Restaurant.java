@@ -1,5 +1,6 @@
 package com.kodomo.yummy.entity;
 
+import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.LackOfBalanceException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
@@ -43,7 +44,7 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "double default 0", insertable = false)
     private Double balance;
 
-    @ManyToMany(targetEntity = RestaurantType.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToMany(targetEntity = RestaurantType.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(name = "_relationship_restaurant_to_type",
             joinColumns = {@JoinColumn(name = "restaurant_id")},
             inverseJoinColumns = {@JoinColumn(name = "type_id")})
@@ -65,6 +66,9 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private Set<Order> orders;
+
+    @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private Set<RestaurantModificationInfo> modificationInfos;
 
     /**
      * 用String表示营业时间
@@ -347,5 +351,23 @@ public class Restaurant {
             }
         }
         return null;
+    }
+
+    public String getStateText() {
+        if (getState() == null) return "-";
+        return getState().getText();
+    }
+
+    public RestaurantModificationInfo getWaitingConfirmModificationInfo() {
+        if (getModificationInfos() == null || getModificationInfos().isEmpty()) return null;
+        List<RestaurantModificationInfo> infos = getModificationInfos().stream()
+                .filter(restaurantModificationInfo -> restaurantModificationInfo.getState() == RestaurantModificationState.WAIT_CONFIRM)
+                .collect(Collectors.toList());
+
+        if (infos.isEmpty()) {
+            return null;
+        } else {
+            return infos.get(0);
+        }
     }
 }

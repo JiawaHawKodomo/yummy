@@ -24,7 +24,7 @@ import java.util.*;
 @Service
 public class RestaurantBlServiceImpl implements RestaurantBlService {
 
-    private final RestaurantCreator restaurantCreator;
+    private final RestaurantEntityHelper restaurantEntityHelper;
     private final RestaurantDao restaurantDao;
     private final OfferingDao offeringDao;
     private final OfferingCreator offeringCreator;
@@ -32,8 +32,8 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     private final RestaurantStatisticsHelper restaurantStatisticsHelper;
 
     @Autowired
-    public RestaurantBlServiceImpl(RestaurantCreator restaurantCreator, RestaurantDao restaurantDao, OfferingDao offeringDao, OfferingCreator offeringCreator, RestaurantStrategyBlService restaurantStrategyBlService, RestaurantStatisticsHelper restaurantStatisticsHelper) {
-        this.restaurantCreator = restaurantCreator;
+    public RestaurantBlServiceImpl(RestaurantEntityHelper restaurantEntityHelper, RestaurantDao restaurantDao, OfferingDao offeringDao, OfferingCreator offeringCreator, RestaurantStrategyBlService restaurantStrategyBlService, RestaurantStatisticsHelper restaurantStatisticsHelper) {
+        this.restaurantEntityHelper = restaurantEntityHelper;
         this.restaurantDao = restaurantDao;
         this.offeringDao = offeringDao;
         this.offeringCreator = offeringCreator;
@@ -42,8 +42,8 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     }
 
     @Override
-    public Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedPrimaryKeyException {
-        return restaurantCreator.createNewRestaurantForDatabase(name, password, tel, time, type, note, city, lat, lng, block, point, addressNote);
+    public Restaurant registerRestaurant(String name, String password, String tel, String time, String type, String note, String city, Double lat, Double lng, String block, String point, String addressNote) throws ParamErrorException, DuplicatedUniqueKeyException {
+        return restaurantEntityHelper.createNewRestaurantForDatabase(name, password, tel, time, type, note, city, lat, lng, block, point, addressNote);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
      * 修改餐厅的餐品类型
      */
     @Override
-    public void updateRestaurantOfferingType(Integer rid, List<OfferingTypeVo> newTypes) throws ParamErrorException, UserNotExistsException, DuplicatedPrimaryKeyException, UnupdatableException {
+    public void updateRestaurantOfferingType(Integer rid, List<OfferingTypeVo> newTypes) throws ParamErrorException, UserNotExistsException, DuplicatedUniqueKeyException, UnupdatableException {
         if (rid == null || newTypes == null) {
             throw new ParamErrorException();//参数错误
         }
@@ -143,7 +143,7 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
         try {
             restaurantDao.save(restaurant);
         } catch (Exception e) {
-            throw new DuplicatedPrimaryKeyException();
+            throw new DuplicatedUniqueKeyException();
         }
     }
 
@@ -251,7 +251,19 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
         return restaurantStatisticsHelper.getOrdersByTimeOfCustomer(rid, time, format);
     }
 
+    @Override
     public List<RestaurantStatisticsVo> getRestaurantStatisticsInfo() {
         return restaurantStatisticsHelper.getRestaurantStatisticsInfo();
+    }
+
+    /**
+     * 提交修改餐厅的信息的申请
+     *
+     * @param vo
+     * @param restaurantId
+     */
+    @Override
+    public void submitModification(RestaurantModificationVo vo, Integer restaurantId) throws ParamErrorException, DuplicatedUniqueKeyException, UserNotExistsException, DuplicatedSubmitException {
+        restaurantEntityHelper.submitModification(vo, restaurantId);
     }
 }

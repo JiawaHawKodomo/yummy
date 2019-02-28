@@ -2,8 +2,6 @@ package com.kodomo.yummy.controller.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.exceptions.DuplicatedPrimaryKeyException;
-import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -94,12 +92,4 @@ public class RestaurantController {
         return "redirect:/";
     }
 
-
-    @GetMapping("/manage")
-    public String manage(HttpServletRequest request, Model model) {
-        Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
-        Restaurant restaurant = restaurantBlService.getRestaurantById(rid);
-        model.addAttribute("restaurant", restaurant);
-        return "restaurant/manage";
-    }
 }
