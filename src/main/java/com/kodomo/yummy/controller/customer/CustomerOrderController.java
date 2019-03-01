@@ -116,6 +116,8 @@ public class CustomerOrderController {
             result.put("info", "用户不存在:" + e.getMessage());
         } catch (UnupdatableException e) {
             result.put("info", "状态不正确, 无法创建订单, 当前状态:" + e.getCurrentStateText());
+        } catch (RestaurantHasClosedException e) {
+            result.put("info", "餐厅已经关门, 无法创建订单");
         }
 
         return result;

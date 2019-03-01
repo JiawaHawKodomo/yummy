@@ -1,6 +1,7 @@
 package com.kodomo.yummy.entity;
 
 import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
+import com.kodomo.yummy.entity.util.restaurant.RestaurantTypeHelper;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -66,5 +68,9 @@ public class RestaurantModificationInfo {
         if (runFrom == null || runTo == null) return "-";
         SimpleDateFormat format = new SimpleDateFormat("HH:mm");
         return format.format(runFrom) + "-" + format.format(runTo);
+    }
+
+    public String getTypeByString() {
+        return RestaurantTypeHelper.typesToString(getTypes());
     }
 }

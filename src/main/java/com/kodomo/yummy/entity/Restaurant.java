@@ -2,6 +2,7 @@ package com.kodomo.yummy.entity;
 
 import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.entity.util.restaurant.RestaurantTypeHelper;
 import com.kodomo.yummy.exceptions.LackOfBalanceException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import lombok.Data;
@@ -44,7 +45,7 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "double default 0", insertable = false)
     private Double balance;
 
-    @ManyToMany(targetEntity = RestaurantType.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @ManyToMany(targetEntity = RestaurantType.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "_relationship_restaurant_to_type",
             joinColumns = {@JoinColumn(name = "restaurant_id")},
             inverseJoinColumns = {@JoinColumn(name = "type_id")})
@@ -60,7 +61,7 @@ public class Restaurant {
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY, mappedBy = "restaurant")
     private Set<RestaurantStrategy> strategies;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
@@ -82,14 +83,34 @@ public class Restaurant {
     }
 
     /**
+     * 判断是否正在营业
+     *
+     * @return
+     */
+    public boolean isOpenNow() {
+        if (getRunFrom() == null || getRunTo() == null) {
+            return false;
+        }
+
+        int from = dateToMinute(getRunFrom());
+        int to = dateToMinute(getRunTo());
+        int now = dateToMinute(new Date());
+        return now >= from && now <= to;
+    }
+
+    private int dateToMinute(@NotNull Date date) {
+        SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+        SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
+        return Integer.parseInt(hourFormat.format(date)) * 60 + Integer.parseInt(minuteFormat.format(date));
+    }
+
+    /**
      * 用String表示餐厅类型
      *
      * @return
      */
     public String getTypeByString() {
-        if (getTypes() == null) return "-";
-        return new ArrayList<>(types).stream().map(RestaurantType::getContent)
-                .reduce((a, b) -> a + "/" + b).orElse("-");
+        return RestaurantTypeHelper.typesToString(getTypes());
     }
 
     @NotNull
@@ -131,6 +152,11 @@ public class Restaurant {
     public double getOrderQuantity() {
         if (getOrders() == null) return 0;
         return getOrders().size();
+    }
+
+    public void setLocationNote(String locationNote) {
+        if (getLocation() == null) return;
+        getLocation().setNote(locationNote);
     }
 
     /**

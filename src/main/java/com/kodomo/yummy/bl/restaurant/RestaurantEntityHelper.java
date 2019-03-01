@@ -10,11 +10,9 @@ import com.kodomo.yummy.entity.Location;
 import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.entity.RestaurantModificationInfo;
 import com.kodomo.yummy.entity.RestaurantType;
+import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.DuplicatedSubmitException;
-import com.kodomo.yummy.exceptions.DuplicatedUniqueKeyException;
-import com.kodomo.yummy.exceptions.ParamErrorException;
-import com.kodomo.yummy.exceptions.UserNotExistsException;
+import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -227,6 +225,68 @@ public class RestaurantEntityHelper {
             RestaurantType newType = new RestaurantType();
             newType.setContent(content);
             types.add(newType);
+        }
+    }
+
+    /**
+     * 查找所有未审核的修改信息
+     *
+     * @return
+     */
+    List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo() {
+        return restaurantModificationInfoDao.getWaitingModificationInfo();
+    }
+
+    /**
+     * 处理审核的修改信息
+     *
+     * @param modificationId
+     * @param pass
+     */
+    void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, NoSuchAttributeException, DuplicatedUniqueKeyException {
+        if (modificationId == null || pass == null) {
+            throw new ParamErrorException();
+        }
+
+        RestaurantModificationInfo info = restaurantModificationInfoDao.find(modificationId);
+        if (modificationId == null) {//不存在
+            throw new NoSuchAttributeException();
+        }
+
+        info.setCheckTime(new Date());
+        if (!pass) {
+            //没通过
+            info.setState(RestaurantModificationState.NOT_APPROVED);
+        } else {
+            //通过
+            info.setState(RestaurantModificationState.APPROVED);
+            //处理餐厅信息
+            modifyRestaurantInfo(info);
+        }
+
+        //保存修改信息结果
+        restaurantModificationInfoDao.save(info);
+    }
+
+    /**
+     * 按照申请修改餐厅的信息
+     *
+     * @param info
+     */
+    private void modifyRestaurantInfo(RestaurantModificationInfo info) throws DuplicatedUniqueKeyException {
+        Restaurant restaurant = info.getRestaurant();
+        restaurant.setName(info.getName());
+        restaurant.setTelephone(info.getTelephone());
+        restaurant.setRunFrom(info.getRunFrom());
+        restaurant.setRunTo(info.getRunTo());
+        restaurant.setLocationNote(info.getLocationNote());
+        restaurant.setTypes(new HashSet<>(info.getTypes()));
+
+        try {
+            restaurantDao.save(restaurant);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DuplicatedUniqueKeyException();
         }
     }
 }

@@ -59,7 +59,7 @@
                     <li th:text="${restaurant.getPointInfo()}"></li>
                     <li>
                         <span>备注:</span>
-                        <textarea th:value="${restaurant.getLocationNote()}" id="location-note-input"></textarea>
+                        <textarea th:text="${restaurant.getLocationNote()}" id="location-note-input"></textarea>
                     </li>
                 </ul>
             </td>

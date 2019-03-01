@@ -3,6 +3,7 @@ package com.kodomo.yummy.bl;
 import com.kodomo.yummy.controller.vo.*;
 import com.kodomo.yummy.entity.Order;
 import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.RestaurantModificationInfo;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 
@@ -128,4 +129,19 @@ public interface RestaurantBlService {
      * @param restaurantId
      */
     void submitModification(RestaurantModificationVo vo, Integer restaurantId) throws ParamErrorException, DuplicatedUniqueKeyException, UserNotExistsException, DuplicatedSubmitException;
+
+    /**
+     * 获取待审核的修改信息
+     *
+     * @return
+     */
+    List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo();
+
+    /**
+     * 处理审核的修改信息
+     *
+     * @param modificationId
+     * @param pass
+     */
+    void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, DuplicatedUniqueKeyException, NoSuchAttributeException;
 }

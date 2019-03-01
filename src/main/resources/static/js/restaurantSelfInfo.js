@@ -35,7 +35,8 @@ $('#restaurant-info-update-submit-button').on('click', function () {
         }),
         success: function (data) {
             if (data.result) {
-                infoText.hide().text('成功').fadeIn();
+                alert('成功');
+                history.go(0);
             } else {
                 infoText.hide().text('失败:' + data.info).fadeIn();
             }

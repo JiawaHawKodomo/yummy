@@ -5,6 +5,7 @@ import com.kodomo.yummy.dao.*;
 import com.kodomo.yummy.entity.*;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.ParamErrorException;
+import com.kodomo.yummy.exceptions.RestaurantHasClosedException;
 import com.kodomo.yummy.exceptions.UnupdatableException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class OrderCreator {
      * @param vo
      * @return
      */
-    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException {
+    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException {
         if (email == null || vo == null) {
             throw new ParamErrorException();
         }
@@ -73,6 +74,12 @@ public class OrderCreator {
         if (location == null) {
             errorFields.add("位置");
         }
+
+        if (!restaurant.isOpenNow()) {
+            //餐厅已经关门
+            throw new RestaurantHasClosedException();
+        }
+
         //orderSettlementStrategy
         OrderSettlementStrategy settlementStrategy = orderSettlementStrategyDao.getCurrentOrderSettlementStrategy();
 

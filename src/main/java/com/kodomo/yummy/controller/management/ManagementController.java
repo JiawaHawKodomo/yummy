@@ -8,9 +8,7 @@ import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.ParamErrorException;
-import com.kodomo.yummy.exceptions.UnupdatableException;
-import com.kodomo.yummy.exceptions.UserNotExistsException;
+import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -82,6 +80,7 @@ public class ManagementController {
         model.addAttribute("currentOrderSettlementStrategy", orderBlService.getCurrentOrderSettlementStrategy());
         model.addAttribute("currentOrderRefundStrategy", orderBlService.getCurrentOrderRefundStrategy());
         model.addAttribute("currentCustomerLevelStrategy", customerBlService.getCurrentCustomerLevelStrategy());
+        model.addAttribute("modificationInfos", restaurantBlService.getWaitingRestaurantModificationInfo());
         return "management/managementInfo";
     }
 
@@ -120,6 +119,31 @@ public class ManagementController {
             result.put("info", e.getMessage());
         } catch (Exception e) {
             result.put("info", "未知错误");
+        }
+
+        return result;
+    }
+
+    @PutMapping("/restaurantModificationConfirm")
+    @ResponseBody
+    public Map<String, Object> restaurantModificationConfirm(HttpServletRequest request
+            , @RequestParam("pass") Boolean pass
+            , @RequestParam("id") Integer modificationId) {
+        Map<String, Object> result = new HashMap<>();
+        if (request.getSession(true).getAttribute("manager") == null) {
+            result.put("info", "请先登录");
+            return result;
+        }
+
+        try {
+            restaurantBlService.confirmModification(modificationId, pass);
+            result.put("result", true);
+        } catch (ParamErrorException e) {
+            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+        } catch (DuplicatedUniqueKeyException e) {
+            result.put("info", "电话已经被注册, 无法修改");
+        } catch (NoSuchAttributeException e) {
+            result.put("info", "不存在该修改信息");
         }
 
         return result;

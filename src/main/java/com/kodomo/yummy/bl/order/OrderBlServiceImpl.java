@@ -100,7 +100,7 @@ public class OrderBlServiceImpl implements OrderBlService {
      * @return
      */
     @Override
-    public Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException {
+    public Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException {
         Order order = orderCreator.createNewOrder(email, vo);
 
         //生成新的订单记录

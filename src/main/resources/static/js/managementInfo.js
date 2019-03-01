@@ -2,6 +2,31 @@ const registerResponseInfo = $('#manager-register-info');
 const strategyTable = $('#strategy-table');
 const refundStrategyTable = $('#refund-strategy-table');
 const customerLevelStrategyTable = $('#customer-level-strategy-table');
+const restaurantModificationInfo = $('#restaurant-modification-info');
+
+$('.restaurant-modification-pass-button').on('click', function () {
+    restaurantModificationConfirm(true, $(this).parents('.restaurant-modification-tr'));
+});
+
+$('.restaurant-modification-not-pass-button').on('click', function () {
+    restaurantModificationConfirm(false, $(this).parents('.restaurant-modification-tr'));
+});
+
+function restaurantModificationConfirm(pass, elem) {
+    $.ajax({
+        type: 'put',
+        url: '/management/restaurantModificationConfirm',
+        data: {pass: pass, id: elem.attr('value')},
+        success: function (data) {
+            if (data.result) {
+                restaurantModificationInfo.hide().text('成功').fadeIn();
+                elem.remove();
+            } else {
+                restaurantModificationInfo.hide().text('失败:' + data.info).fadeIn();
+            }
+        }
+    })
+}
 
 $('.restaurant-pass-button').on('click', function () {
     const id = $(this).attr('id').split('-')[2];

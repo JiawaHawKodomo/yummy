@@ -57,9 +57,20 @@
 
     <div>
         <div>
-            <h4>满减优惠</h4>
+            <div>满减优惠</div>
             <div th:text="${restaurant.getRestaurantStrategyText()}">
             </div>
+        </div>
+
+        <div>
+            <span th:text="'商家备注:'+${restaurant.getNote()}"></span>
+        </div>
+
+        <div>
+            <span th:text="'地址:'+${restaurant.getLocationInfo()}"></span>
+        </div>
+        <div>
+            <span th:text="'营业时间:'+${restaurant.getBusinessHours()}"></span>
         </div>
 
         <!--黑线-->
@@ -108,18 +119,23 @@
         <th:block th:if="${customer}!=null">
             <div style="position: absolute;bottom: 0;width: 100%;">
                 <button id="offering-selected-toggle-button" style="width: 100%">↓</button>
-                <div style="background: black;min-height: 100px;color: white"
-                     id="offering-selected-div">
-                    <h3>已选:</h3>
-                    <table id="offering-selected-table">
+                <div th:if="${restaurant.isOpenNow()}">
+                    <div style="background: black;min-height: 100px;color: white"
+                         id="offering-selected-div">
+                        <h3>已选:</h3>
+                        <table id="offering-selected-table">
 
-                    </table>
-                    <button id="offering-submit-button">提交订单</button>
-                    <span>总价: </span>
-                    <span id="offering-total-before-price-span" style="text-decoration: line-through"></span>
-                    <span id="offering-total-price-span">0</span>
-                    <span>元</span>
-                    <span style="color: red" id="offering-submit-info"></span>
+                        </table>
+                        <button id="offering-submit-button">提交订单</button>
+                        <span>总价: </span>
+                        <span id="offering-total-before-price-span" style="text-decoration: line-through"></span>
+                        <span id="offering-total-price-span">0</span>
+                        <span>元</span>
+                        <span style="color: red" id="offering-submit-info"></span>
+                    </div>
+                </div>
+                <div th:if="${!restaurant.isOpenNow()}">
+                    <h3>该餐厅已经打烊, 无法点餐</h3>
                 </div>
             </div>
         </th:block>

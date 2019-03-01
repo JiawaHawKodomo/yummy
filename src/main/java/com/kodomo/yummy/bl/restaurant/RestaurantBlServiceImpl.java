@@ -4,10 +4,7 @@ import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.controller.vo.*;
 import com.kodomo.yummy.dao.OfferingDao;
 import com.kodomo.yummy.dao.RestaurantDao;
-import com.kodomo.yummy.entity.Offering;
-import com.kodomo.yummy.entity.OfferingType;
-import com.kodomo.yummy.entity.Order;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.*;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -265,5 +262,26 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     @Override
     public void submitModification(RestaurantModificationVo vo, Integer restaurantId) throws ParamErrorException, DuplicatedUniqueKeyException, UserNotExistsException, DuplicatedSubmitException {
         restaurantEntityHelper.submitModification(vo, restaurantId);
+    }
+
+    /**
+     * 获取待审核的修改信息
+     *
+     * @return
+     */
+    @Override
+    public List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo() {
+        return restaurantEntityHelper.getWaitingRestaurantModificationInfo();
+    }
+
+    /**
+     * 处理审核的修改信息
+     *
+     * @param modificationId
+     * @param pass
+     */
+    @Override
+    public void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, DuplicatedUniqueKeyException, NoSuchAttributeException {
+        restaurantEntityHelper.confirmModification(modificationId, pass);
     }
 }

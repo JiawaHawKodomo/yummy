@@ -31,7 +31,7 @@
 <div style="height: 2px;width: 100%;background: black"></div>
 
 <div>
-    <h3>审批餐厅</h3>
+    <h3>审批餐厅注册</h3>
     <table border="2" cellpadding="5">
         <tr>
             <th>餐厅编号</th>
@@ -66,6 +66,94 @@
             </td>
         </tr>
     </table>
+</div>
+
+<!--黑线-->
+<div style="height: 2px;width: 100%;background: black"></div>
+<div>
+    <h3>审批餐厅修改信息</h3>
+    <div style="color: red">红色字体为商家修改的内容</div>
+    <table border="2">
+        <tr>
+            <th>商家编号</th>
+            <th>申请修改时间</th>
+            <th>店铺名字</th>
+            <th>电话</th>
+            <th>营业时间</th>
+            <th>地点备注</th>
+            <th>店铺类型</th>
+            <th>操作</th>
+        </tr>
+        <!--/*@thymesVar id="modificationInfos" type="java.util.List"*/-->
+        <!--/*@thymesVar id="info" type="com.kodomo.yummy.entity.RestaurantModificationInfo"*/-->
+        <tr th:each="info:${modificationInfos}" th:with="original=${info.getRestaurant()}"
+            class="restaurant-modification-tr"
+            th:value="${info.getRestaurantModificationInfoId()}">
+            <td><a th:href="@{/restaurant/index/}+${original.getRestaurantId()}"
+                   th:text="${original.getRestaurantId()}"
+                   target="_blank"></a></td>
+            <td th:text="${info.getSubmitTime()}"></td>
+            <td>
+                <th:block th:if="${original.getName().equals(info.getName())}" th:text="${original.getName()}"/>
+                <th:block th:if="${!original.getName().equals(info.getName())}">
+                    <span th:text="${original.getName()}"></span>
+                    <br>
+                    <span>→</span>
+                    <br>
+                    <span style="color: red" th:text="${info.getName()}"></span>
+                </th:block>
+            </td>
+            <td>
+                <th:block th:if="${original.getTelephone().equals(info.getTelephone())}"
+                          th:text="${original.getTelephone()}"/>
+                <th:block th:if="${!original.getTelephone().equals(info.getTelephone())}">
+                    <span th:text="${original.getTelephone()}"></span>
+                    <br>
+                    <span>→</span>
+                    <br>
+                    <span th:text="${info.getTelephone()}" style="color: red"></span>
+                </th:block>
+            </td>
+            <td>
+                <th:block th:if="${original.getBusinessHours().equals(info.getBusinessHours())}"
+                          th:text="${original.getBusinessHours()}"/>
+                <th:block th:if="${!original.getBusinessHours().equals(info.getBusinessHours())}">
+                    <span th:text="${original.getBusinessHours()}"></span>
+                    <br>
+                    <span>→</span>
+                    <br>
+                    <span th:text="${info.getBusinessHours()}" style="color: red"></span>
+                </th:block>
+            </td>
+            <td>
+                <th:block th:if="${original.getLocationNote().equals(info.getLocationNote())}"
+                          th:text="${original.getLocationNote()}"/>
+                <th:block th:if="${!original.getLocationNote().equals(info.getLocationNote())}">
+                    <span th:text="${original.getLocationNote()}"></span>
+                    <br>
+                    <span>→</span>
+                    <br>
+                    <span th:text="${info.getLocationNote()}" style="color: red"></span>
+                </th:block>
+            </td>
+            <td>
+                <th:block th:if="${original.getTypeByString().equals(info.getTypeByString())}"
+                          th:text="${original.getTypeByString()}"/>
+                <th:block th:if="${!original.getTypeByString().equals(info.getTypeByString())}">
+                    <span th:text="${original.getTypeByString()}"></span>
+                    <br>
+                    <span>→</span>
+                    <br>
+                    <span th:text="${info.getTypeByString()}" style="color: red"></span>
+                </th:block>
+            </td>
+            <td>
+                <button class="restaurant-modification-pass-button">通过</button>
+                <button class="restaurant-modification-not-pass-button">不通过</button>
+            </td>
+        </tr>
+    </table>
+    <div id="restaurant-modification-info" style="color: red"></div>
 </div>
 
 <!--黑线-->
