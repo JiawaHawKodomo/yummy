@@ -1,7 +1,7 @@
 package com.kodomo.yummy.dao;
 
 import com.kodomo.yummy.entity.Location;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.util.Utility;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Shuaiyu Yao

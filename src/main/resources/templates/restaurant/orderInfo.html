@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.Order"*/-->
+<!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.order.Order"*/-->
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 订单详情</title>
@@ -9,7 +9,7 @@
     <meta name="orderId" th:content="${order.getOrderId()}">
 </head>
 <body>
-<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
 <th:block th:if="${restaurant eq null||order eq null}">
     出错了
 </th:block>

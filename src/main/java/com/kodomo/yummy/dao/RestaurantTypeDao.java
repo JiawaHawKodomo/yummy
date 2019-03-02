@@ -1,6 +1,6 @@
 package com.kodomo.yummy.dao;
 
-import com.kodomo.yummy.entity.RestaurantType;
+import com.kodomo.yummy.entity.restaurant.RestaurantType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

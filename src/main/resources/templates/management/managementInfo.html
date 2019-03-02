@@ -46,7 +46,7 @@
             <th>操作</th>
         </tr>
         <!--/*@thymesVar id="unactivatedRestaurant" type="java.util.List"*/-->
-        <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+        <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
         <tr th:each="restaurant:${unactivatedRestaurant}">
             <td th:text="${restaurant.getRestaurantId()}"></td>
             <td th:text="${restaurant.getName()}"></td>
@@ -85,7 +85,7 @@
             <th>操作</th>
         </tr>
         <!--/*@thymesVar id="modificationInfos" type="java.util.List"*/-->
-        <!--/*@thymesVar id="info" type="com.kodomo.yummy.entity.RestaurantModificationInfo"*/-->
+        <!--/*@thymesVar id="info" type="com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo"*/-->
         <tr th:each="info:${modificationInfos}" th:with="original=${info.getRestaurant()}"
             class="restaurant-modification-tr"
             th:value="${info.getRestaurantModificationInfoId()}">
@@ -162,7 +162,7 @@
 <div>
     <h3>制定订单结算策略</h3>
     <div style="color: red">注: 对于阈值一栏, 如果类型为城市, 则表示在该城市执行</div>
-    <!--/*@thymesVar id="currentOrderSettlementStrategy" type="com.kodomo.yummy.entity.OrderSettlementStrategy"*/-->
+    <!--/*@thymesVar id="currentOrderSettlementStrategy" type="com.kodomo.yummy.entity.order.OrderSettlementStrategy"*/-->
     <div th:unless="${currentOrderSettlementStrategy}!=null" style="color: red">
         无法找到当前策略, 请新建策略
     </div>
@@ -199,7 +199,7 @@
 
 <div>
     <h3>制定订单退款策略</h3>
-    <!--/*@thymesVar id="currentOrderRefundStrategy" type="com.kodomo.yummy.entity.OrderRefundStrategy"*/-->
+    <!--/*@thymesVar id="currentOrderRefundStrategy" type="com.kodomo.yummy.entity.order.OrderRefundStrategy"*/-->
     <div th:unless="${currentOrderRefundStrategy}!=null" style="color: red">
         无法找到当前策略, 请新建策略
     </div>
@@ -234,7 +234,7 @@
 <div style="height: 2px;width: 100%;background: black"></div>
 <div>
     <h3>制定会员等级策略</h3>
-    <!--/*@thymesVar id="currentCustomerLevelStrategy" type="com.kodomo.yummy.entity.CustomerLevelStrategy"*/-->
+    <!--/*@thymesVar id="currentCustomerLevelStrategy" type="com.kodomo.yummy.entity.customer.CustomerLevelStrategy"*/-->
     <div th:if="${currentCustomerLevelStrategy}==null" style="color: red">
         无法找到当前策略, 请新建策略
     </div>

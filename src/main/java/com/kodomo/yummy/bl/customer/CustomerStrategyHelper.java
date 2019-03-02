@@ -1,13 +1,12 @@
 package com.kodomo.yummy.bl.customer;
 
 import com.kodomo.yummy.controller.vo.CustomerLevelStrategyVo;
-import com.kodomo.yummy.controller.vo.CustomerStatisticsVo;
 import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.dao.CustomerLevelStrategyDao;
 import com.kodomo.yummy.dao.ManagerDao;
-import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.entity.CustomerLevelStrategy;
-import com.kodomo.yummy.entity.CustomerLevelStrategyDetail;
+import com.kodomo.yummy.entity.customer.Customer;
+import com.kodomo.yummy.entity.customer.CustomerLevelStrategy;
+import com.kodomo.yummy.entity.customer.CustomerLevelStrategyDetail;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;

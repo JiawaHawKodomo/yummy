@@ -1,6 +1,6 @@
 package com.kodomo.yummy.dao;
 
-import com.kodomo.yummy.entity.RestaurantModificationInfo;
+import com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo;
 import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;

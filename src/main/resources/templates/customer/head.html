@@ -1,7 +1,7 @@
-<!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+<!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
 <div xmlns:th="http://www.thymeleaf.org" th:if="${customer}!=null">
     <div><span>你好:</span>
-        <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+        <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
         <span th:text="${customer.getName()}"></span>
         <span>余额:</span>
         <span th:text="${customer.getBalance()}"></span>

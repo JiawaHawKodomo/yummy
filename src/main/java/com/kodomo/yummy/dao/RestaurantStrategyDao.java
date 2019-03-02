@@ -1,6 +1,6 @@
 package com.kodomo.yummy.dao;
 
-import com.kodomo.yummy.entity.RestaurantStrategy;
+import com.kodomo.yummy.entity.restaurant.RestaurantStrategy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

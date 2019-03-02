@@ -1,7 +1,9 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.restaurant;
 
+import com.kodomo.yummy.entity.*;
 import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.entity.order.Order;
 import com.kodomo.yummy.entity.util.restaurant.RestaurantTypeHelper;
 import com.kodomo.yummy.exceptions.LackOfBalanceException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
@@ -180,7 +182,7 @@ public class Restaurant {
     @NotNull
     public List<Offering> getValidOffering() {
         if (getOfferings() == null) return new ArrayList<>();
-        return getOfferings().stream().filter(Offering::isOnSale)
+        return getOfferings().stream().filter(Offering::isValid)
                 .collect(Collectors.toList());
     }
 

@@ -27,7 +27,7 @@
                 <th>时间</th>
                 <th>金额</th>
             </tr>
-            <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.Customer"*/-->
+            <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
             <tr th:each="log:${customer.getRechargeLogsByTimeDesc()}">
                 <td th:text="${log.getTime()}"></td>
                 <th th:text="${log.getAmount()}"></th>

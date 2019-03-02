@@ -1,5 +1,6 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.order;
 
+import com.kodomo.yummy.entity.restaurant.Offering;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;

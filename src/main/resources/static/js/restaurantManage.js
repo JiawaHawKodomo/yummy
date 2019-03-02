@@ -62,6 +62,8 @@ function registerOfferingButtons() {
         const price = father.find('.offering-price-input').val();
         const note = father.find('.offering-note-input').val();
         const id = father.attr('value');
+        const startTime = father.find('.offering-start-time-input').val();
+        const endTime = father.find('.offering-end-time-input').val();
         const types = [];
 
         father.find('.offering-type-option:selected').each(function () {
@@ -73,7 +75,9 @@ function registerOfferingButtons() {
             price: price,
             note: note,
             id: id,
-            types: types
+            types: types,
+            startTime: startTime,
+            endTime: endTime
         };
 
         //发送
@@ -242,6 +246,16 @@ $('#offering-add-button').on('click', function () {
                 )
             )
         ).append(
+            $('<div></div>').append(
+                $('<label></label>').append('起售日期:').append(
+                    $('<input>').attr('class', 'offering-start-time-input').attr('type', 'date')
+                )
+            ).append(
+                $('<label></label>').append('结束日期:').append(
+                    $('<input>').attr('class', 'offering-end-time-input').attr('type', 'date')
+                )
+            )
+        ).append(
             $('<div></div>').append('分类').append(
                 $('<div></div>').attr('class', 'offering-type-div').append(
                     $('<select></select>').attr('class', 'offering-type-select').attr('disabled', 'disabled').append(
@@ -273,7 +287,13 @@ $('.offering-type-radio').on('click', function () {
             var list = id.split('-');
             list.shift();
             if (list.indexOf(typeId) >= 0) {
+                //需要展示, 调整selected的位置
                 thisDiv.slideDown();
+                thisDiv.find('.offering-type-option').each(function () {
+                    if ($(this).val() === typeId) {
+                        $(this).select();
+                    }
+                });
             }
         }
     });

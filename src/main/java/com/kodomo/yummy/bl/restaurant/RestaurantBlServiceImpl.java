@@ -2,10 +2,12 @@ package com.kodomo.yummy.bl.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.controller.vo.*;
-import com.kodomo.yummy.dao.OfferingDao;
 import com.kodomo.yummy.dao.RestaurantDao;
-import com.kodomo.yummy.entity.*;
 import com.kodomo.yummy.entity.entity_enum.UserState;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.restaurant.OfferingType;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
+import com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -23,17 +25,15 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
 
     private final RestaurantEntityHelper restaurantEntityHelper;
     private final RestaurantDao restaurantDao;
-    private final OfferingDao offeringDao;
-    private final OfferingCreator offeringCreator;
+    private final OfferingHelper offeringHelper;
     private final RestaurantStrategyBlService restaurantStrategyBlService;
     private final RestaurantStatisticsHelper restaurantStatisticsHelper;
 
     @Autowired
-    public RestaurantBlServiceImpl(RestaurantEntityHelper restaurantEntityHelper, RestaurantDao restaurantDao, OfferingDao offeringDao, OfferingCreator offeringCreator, RestaurantStrategyBlService restaurantStrategyBlService, RestaurantStatisticsHelper restaurantStatisticsHelper) {
+    public RestaurantBlServiceImpl(RestaurantEntityHelper restaurantEntityHelper, RestaurantDao restaurantDao, OfferingHelper offeringHelper, RestaurantStrategyBlService restaurantStrategyBlService, RestaurantStatisticsHelper restaurantStatisticsHelper) {
         this.restaurantEntityHelper = restaurantEntityHelper;
         this.restaurantDao = restaurantDao;
-        this.offeringDao = offeringDao;
-        this.offeringCreator = offeringCreator;
+        this.offeringHelper = offeringHelper;
         this.restaurantStrategyBlService = restaurantStrategyBlService;
         this.restaurantStatisticsHelper = restaurantStatisticsHelper;
     }
@@ -151,34 +151,8 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
      * @param vo
      */
     @Override
-    public void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException {
-        if (rid == null || vo == null) {
-            throw new ParamErrorException();
-        }
-
-        Restaurant restaurant = restaurantDao.findById(rid).orElse(null);
-        if (restaurant == null) {
-            throw new UserNotExistsException();//用户不存在
-        }
-
-        if (restaurant.getState() != UserState.ACTIVATED) {
-            throw new UnupdatableException(restaurant.getState());//状态不对
-        }
-
-        Offering newOffering = offeringCreator.getNewOfferingForDatabase(vo, restaurant);
-        try {
-            offeringDao.save(newOffering);
-            //处理旧餐品信息
-            if (vo.getId() != null) {
-                Offering oldOffering = offeringDao.findById(vo.getId()).orElse(null);
-                if (oldOffering != null) {
-                    oldOffering.setEndTime(new Date());
-                    offeringDao.save(oldOffering);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, DateSettingException {
+        offeringHelper.saveOffering(rid, vo);
     }
 
     /**
@@ -189,22 +163,7 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
      */
     @Override
     public void deleteOffering(Integer rid, Integer offeringId) throws ParamErrorException, NoSuchAttributeException, UnupdatableException {
-        if (rid == null || offeringId == null) {
-            throw new ParamErrorException("餐厅, 商品");
-        }
-
-        Offering offering = offeringDao.findById(offeringId).orElse(null);
-        if (offering == null) {
-            throw new NoSuchAttributeException();//没有该商品
-        }
-
-        if (offering.getRestaurantId() == null || !offering.getRestaurantId().equals(rid)) {
-            throw new UnupdatableException();//拥有商品的餐厅不是该餐厅
-        }
-
-        //设置结束时间, 数据库中保留
-        offering.setEndTime(new Date());
-        offeringDao.save(offering);
+        offeringHelper.deleteOffering(rid, offeringId);
     }
 
     /**

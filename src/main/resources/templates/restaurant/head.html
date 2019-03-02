@@ -1,7 +1,7 @@
 <!--/*@thymesVar id="self0" type="java.lang.Integer"*/-->
 <div xmlns:th="http://www.thymeleaf.org" th:with="self0=${restaurant}">
     你好:
-    <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+    <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
     <span th:text="${self0.getName()}"></span>
     <span th:text="'金额:'+${self0.getBalance()}"></span>
     <a th:href="@{/restaurant/logout}">登出</a>

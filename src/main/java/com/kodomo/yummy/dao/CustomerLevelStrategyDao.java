@@ -1,7 +1,6 @@
 package com.kodomo.yummy.dao;
 
-import com.kodomo.yummy.entity.CustomerLevelStrategy;
-import com.kodomo.yummy.entity.OrderRefundStrategy;
+import com.kodomo.yummy.entity.customer.CustomerLevelStrategy;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

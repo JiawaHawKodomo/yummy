@@ -1,11 +1,11 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.order;
 
 import com.kodomo.yummy.entity.entity_enum.OrderSettlementStrategyType;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 /**
  * @author Shuaiyu Yao

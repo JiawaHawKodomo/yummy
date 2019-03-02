@@ -1,6 +1,6 @@
 package com.kodomo.yummy.entity.util.restaurant;
 
-import com.kodomo.yummy.entity.RestaurantType;
+import com.kodomo.yummy.entity.restaurant.RestaurantType;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;

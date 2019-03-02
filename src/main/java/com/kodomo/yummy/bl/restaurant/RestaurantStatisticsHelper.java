@@ -4,8 +4,8 @@ import com.kodomo.yummy.bl.order.OrderHelper;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.controller.vo.RestaurantStatisticsVo;
 import com.kodomo.yummy.dao.RestaurantDao;
-import com.kodomo.yummy.entity.Order;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

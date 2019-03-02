@@ -1,6 +1,6 @@
 package com.kodomo.yummy.entity.util.order;
 
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 
 /**
  * 计算Strategy的折扣率

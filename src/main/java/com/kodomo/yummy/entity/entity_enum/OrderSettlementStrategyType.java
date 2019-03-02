@@ -1,7 +1,7 @@
 package com.kodomo.yummy.entity.entity_enum;
 
 import com.kodomo.yummy.config.StaticConfig;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.entity.util.order.OrderStrategyCalculator;
 
 /**

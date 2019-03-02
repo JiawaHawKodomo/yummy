@@ -7,14 +7,13 @@ import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.dao.RestaurantModificationInfoDao;
 import com.kodomo.yummy.dao.RestaurantTypeDao;
 import com.kodomo.yummy.entity.Location;
-import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.entity.RestaurantModificationInfo;
-import com.kodomo.yummy.entity.RestaurantType;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
+import com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo;
+import com.kodomo.yummy.entity.restaurant.RestaurantType;
 import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;

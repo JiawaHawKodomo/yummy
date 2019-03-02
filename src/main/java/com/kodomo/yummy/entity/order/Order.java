@@ -1,7 +1,12 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.order;
 
 import com.kodomo.yummy.config.StaticConfig;
+import com.kodomo.yummy.entity.Location;
+import com.kodomo.yummy.entity.customer.Customer;
+import com.kodomo.yummy.entity.customer.CustomerLevelStrategy;
 import com.kodomo.yummy.entity.entity_enum.OrderState;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
+import com.kodomo.yummy.entity.restaurant.RestaurantStrategy;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;

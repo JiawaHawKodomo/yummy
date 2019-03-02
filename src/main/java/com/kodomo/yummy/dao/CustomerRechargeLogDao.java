@@ -1,6 +1,6 @@
 package com.kodomo.yummy.dao;
 
-import com.kodomo.yummy.entity.CustomerRechargeLog;
+import com.kodomo.yummy.entity.customer.CustomerRechargeLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.restaurant;
 
 import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.util.restaurant.RestaurantTypeHelper;
@@ -9,7 +9,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 

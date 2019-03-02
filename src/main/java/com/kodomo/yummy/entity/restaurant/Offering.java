@@ -1,6 +1,5 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.restaurant;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -50,11 +49,11 @@ public class Offering {
     private Set<OfferingType> offeringTypes;
 
     /**
-     * 是否正在销售
+     * 是否正在销售或者正在预售
      *
      * @return boolean
      */
-    public boolean isOnSale() {
+    public boolean isValid() {
         return endTime == null || endTime.after(new Date());
     }
 

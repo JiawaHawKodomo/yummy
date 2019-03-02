@@ -1,7 +1,7 @@
 package com.kodomo.yummy.bl.order;
 
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
-import com.kodomo.yummy.entity.Order;
+import com.kodomo.yummy.entity.order.Order;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;

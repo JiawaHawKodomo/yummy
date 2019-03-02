@@ -1,6 +1,6 @@
 package com.kodomo.yummy.dao;
 
-import com.kodomo.yummy.entity.OrderLog;
+import com.kodomo.yummy.entity.order.OrderLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

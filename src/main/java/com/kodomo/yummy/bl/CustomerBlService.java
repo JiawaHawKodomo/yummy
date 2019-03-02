@@ -4,10 +4,10 @@ import com.kodomo.yummy.controller.vo.CustomerLevelStrategyVo;
 import com.kodomo.yummy.controller.vo.CustomerRechargeStatisticsVo;
 import com.kodomo.yummy.controller.vo.CustomerStatisticsVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
-import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.entity.CustomerLevelStrategy;
-import com.kodomo.yummy.entity.Order;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.customer.Customer;
+import com.kodomo.yummy.entity.customer.CustomerLevelStrategy;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 
 import java.util.List;

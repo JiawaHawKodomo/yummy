@@ -1,5 +1,5 @@
 <div xmlns:th="http://www.thymeleaf.org">
-    <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.Order"*/-->
+    <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.order.Order"*/-->
     <div th:text="${order.getTheLastUpdateTime()}"></div>
     <div th:text="${order.getOrderStateText()}"></div>
     <h4 th:text="${order.getRestaurant().getName()}"></h4>

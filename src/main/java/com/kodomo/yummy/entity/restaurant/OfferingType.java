@@ -1,8 +1,6 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.restaurant;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

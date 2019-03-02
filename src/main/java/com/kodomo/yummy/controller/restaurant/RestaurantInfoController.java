@@ -2,7 +2,6 @@ package com.kodomo.yummy.controller.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.controller.vo.RestaurantModificationVo;
-import com.kodomo.yummy.entity.Restaurant;
 import com.kodomo.yummy.exceptions.DuplicatedSubmitException;
 import com.kodomo.yummy.exceptions.DuplicatedUniqueKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;

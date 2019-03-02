@@ -1,4 +1,4 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.order;
 
 import com.kodomo.yummy.entity.entity_enum.OrderState;
 import lombok.Getter;

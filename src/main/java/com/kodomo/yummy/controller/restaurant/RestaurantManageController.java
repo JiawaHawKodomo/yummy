@@ -4,7 +4,7 @@ import com.kodomo.yummy.bl.RestaurantBlService;
 import com.kodomo.yummy.controller.vo.OfferingTypeVo;
 import com.kodomo.yummy.controller.vo.OfferingVo;
 import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -98,6 +98,8 @@ public class RestaurantManageController {
             result.put("info", "用户不存在");
         } catch (UnupdatableException e) {
             result.put("info", "该账号状态下无法修改:" + e.getCurrentStateText());
+        } catch (DateSettingException e) {
+            result.put("info", "起止时间设置错误");
         }
         return result;
     }

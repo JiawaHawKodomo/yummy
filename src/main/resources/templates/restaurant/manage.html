@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.Restaurant"*/-->
+<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
 <th:block th:if="${restaurant}==null">
     出错了
 </th:block>
@@ -79,10 +79,15 @@
                      th:value="${offering.getOfferingId()}">
                     <div><label>名称:<input th:value="${offering.getName()}" class="offering-name-input"></label>
                     </div>
+                    <div><label>价格:<input th:value="${offering.getPrice()}" class="offering-price-input">元</label></div>
+                    <div><label>备注:<input placeholder="客户可以看到你的备注" class="offering-note-input"></label></div>
                     <div>
-                        <label>价格:<input th:value="${offering.getPrice()}" class="offering-price-input">元</label></div>
-                    <div>
-                        <label>备注:<input placeholder="客户可以看到你的备注" class="offering-note-input"></label></div>
+                        <label>起售日期:<input type="date" class="offering-start-time-input"
+                                           th:value="${#dates.format(offering.getStartTime(),'yyyy-MM-dd')}"
+                                           th:disabled="${offering.getStartTime().before(#dates.createNow())}"></label>
+                        <label>结束日期:<input type="date" class="offering-end-time-input"
+                                           th:value="${#dates.format(offering.getEndTime(),'yyyy-MM-dd')}"></label>
+                    </div>
                     <div>
                         分类:
                         <div th:each="myType:${offering.getOfferingTypes()}" class="offering-type-div">
@@ -131,7 +136,7 @@
                 </tr>
             </table>
             <button id="strategy-save-button">保存</button>
-            <span id="strategy-info" style="color: "></span>
+            <span id="strategy-info" style="color: red"></span>
         </div>
     </div>
 </th:block>

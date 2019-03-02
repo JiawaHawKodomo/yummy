@@ -1,5 +1,6 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.customer;
 
+import com.kodomo.yummy.entity.Manager;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -62,7 +63,7 @@ public class CustomerLevelStrategy {
     }
 
     @NotNull
-    double getDiscountRate(Customer customer) {
+    public double getDiscountRate(Customer customer) {
         Integer level = customer.getLevel() == null ? 0 : customer.getLevel();
         if (level == 0) return 0;
         for (CustomerLevelStrategyDetail detail : getDetails()) {

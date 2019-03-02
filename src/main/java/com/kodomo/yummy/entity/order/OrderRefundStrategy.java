@@ -1,6 +1,7 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.order;
 
 import com.kodomo.yummy.config.StaticConfig;
+import com.kodomo.yummy.entity.Manager;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;

@@ -4,9 +4,9 @@ import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.controller.vo.OrderVo;
-import com.kodomo.yummy.entity.Order;
-import com.kodomo.yummy.entity.OrderRefundStrategy;
-import com.kodomo.yummy.entity.OrderSettlementStrategy;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.order.OrderRefundStrategy;
+import com.kodomo.yummy.entity.order.OrderSettlementStrategy;
 import com.kodomo.yummy.exceptions.*;
 
 import java.util.List;

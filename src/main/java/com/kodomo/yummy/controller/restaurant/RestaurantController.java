@@ -1,7 +1,7 @@
 package com.kodomo.yummy.controller.restaurant;
 
 import com.kodomo.yummy.bl.RestaurantBlService;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

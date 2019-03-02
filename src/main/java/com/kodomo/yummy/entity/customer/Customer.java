@@ -1,5 +1,7 @@
-package com.kodomo.yummy.entity;
+package com.kodomo.yummy.entity.customer;
 
+import com.kodomo.yummy.entity.Location;
+import com.kodomo.yummy.entity.order.Order;
 import com.kodomo.yummy.entity.entity_enum.OrderState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.LackOfBalanceException;

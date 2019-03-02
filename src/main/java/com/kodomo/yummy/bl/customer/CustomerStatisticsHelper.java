@@ -6,15 +6,13 @@ import com.kodomo.yummy.controller.vo.CustomerStatisticsVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.dao.CustomerRechargeLogDao;
-import com.kodomo.yummy.entity.Customer;
-import com.kodomo.yummy.entity.Order;
+import com.kodomo.yummy.entity.customer.Customer;
+import com.kodomo.yummy.entity.order.Order;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**

@@ -6,15 +6,20 @@ import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
 import com.kodomo.yummy.controller.vo.OrderVo;
 import com.kodomo.yummy.dao.*;
-import com.kodomo.yummy.entity.*;
+import com.kodomo.yummy.entity.customer.Customer;
+import com.kodomo.yummy.entity.customer.CustomerLevelStrategy;
 import com.kodomo.yummy.entity.entity_enum.OrderState;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.order.OrderLog;
+import com.kodomo.yummy.entity.order.OrderRefundStrategy;
+import com.kodomo.yummy.entity.order.OrderSettlementStrategy;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**

@@ -2,7 +2,7 @@ package com.kodomo.yummy.controller.restaurant;
 
 import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.bl.RestaurantBlService;
-import com.kodomo.yummy.entity.Restaurant;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.exceptions.NoSuchAttributeException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UnupdatableException;

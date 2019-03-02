@@ -1,8 +1,8 @@
 package com.kodomo.yummy.bl.order;
 
 import com.kodomo.yummy.dao.OrderLogDao;
-import com.kodomo.yummy.entity.Order;
-import com.kodomo.yummy.entity.OrderLog;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.order.OrderLog;
 import com.kodomo.yummy.entity.entity_enum.OrderState;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;

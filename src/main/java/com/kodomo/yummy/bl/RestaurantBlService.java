@@ -1,9 +1,9 @@
 package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.controller.vo.*;
-import com.kodomo.yummy.entity.Order;
-import com.kodomo.yummy.entity.Restaurant;
-import com.kodomo.yummy.entity.RestaurantModificationInfo;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.restaurant.Restaurant;
+import com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 
@@ -73,7 +73,7 @@ public interface RestaurantBlService {
      * @param rid
      * @param vo
      */
-    void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException;
+    void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, DateSettingException;
 
     /**
      * 删除商品信息
