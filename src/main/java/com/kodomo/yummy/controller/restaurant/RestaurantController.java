@@ -80,8 +80,6 @@ public class RestaurantController {
         if (restaurant != null) {
             request.getSession(true).setAttribute("restaurant", restaurant.getRestaurantId());
             result.put("result", true);
-        } else {
-            result.put("result", false);
         }
         return result;
     }

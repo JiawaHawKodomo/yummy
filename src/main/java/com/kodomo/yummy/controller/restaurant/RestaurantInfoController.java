@@ -7,6 +7,7 @@ import com.kodomo.yummy.exceptions.DuplicatedUniqueKeyException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,20 @@ import java.util.Map;
 @RequestMapping("/restaurant")
 public class RestaurantInfoController {
 
+    @Value("${yummy-system.text.public.password-error}")
+    private String passwordErrorText;
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
+    @Value("${yummy-system.text.public.not-login-error}")
+    private String notLoginErrorText;
+    @Value("${yummy-system.text.public.telephone-duplicated}")
+    private String telephoneDuplicatedText;
+    @Value("${yummy-system.text.restaurant.duplicated-modification-submit}")
+    private String modificationSubmitErrorText;
     private final RestaurantBlService restaurantBlService;
 
     @Autowired
@@ -47,13 +62,13 @@ public class RestaurantInfoController {
             restaurantBlService.submitModification(vo, rid);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (DuplicatedUniqueKeyException e) {
-            result.put("info", "该电话已经被注册");
+            result.put("info", telephoneDuplicatedText);
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (DuplicatedSubmitException e) {
-            result.put("info", "已经提交过申请, 无法重复提交");
+            result.put("info", modificationSubmitErrorText);
         }
         return result;
     }

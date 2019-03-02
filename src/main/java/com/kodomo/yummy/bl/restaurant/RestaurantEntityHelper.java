@@ -14,6 +14,7 @@ import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -26,19 +27,26 @@ import java.util.*;
 @Service
 public class RestaurantEntityHelper {
 
+    @Value("${yummy-system.text.restaurant.modify.not-approve}")
+    private String modifyNotApproveText;
+    @Value("${yummy-system.text.restaurant.modify.approve}")
+    private String modifyApproveText;
+
     private final ValidatingHelper validatingHelper;
     private final RestaurantDao restaurantDao;
     private final RestaurantTypeDao restaurantTypeDao;
     private final LocationHelper locationHelper;
     private final RestaurantModificationInfoDao restaurantModificationInfoDao;
+    private final RestaurantMessageHelper restaurantMessageHelper;
 
     @Autowired
-    public RestaurantEntityHelper(ValidatingHelper validatingHelper, RestaurantDao restaurantDao, RestaurantTypeDao restaurantTypeDao, LocationHelper locationHelper, RestaurantModificationInfoDao restaurantModificationInfoDao) {
+    public RestaurantEntityHelper(ValidatingHelper validatingHelper, RestaurantDao restaurantDao, RestaurantTypeDao restaurantTypeDao, LocationHelper locationHelper, RestaurantModificationInfoDao restaurantModificationInfoDao, RestaurantMessageHelper restaurantMessageHelper) {
         this.validatingHelper = validatingHelper;
         this.restaurantDao = restaurantDao;
         this.restaurantTypeDao = restaurantTypeDao;
         this.locationHelper = locationHelper;
         this.restaurantModificationInfoDao = restaurantModificationInfoDao;
+        this.restaurantMessageHelper = restaurantMessageHelper;
     }
 
     /**
@@ -232,7 +240,7 @@ public class RestaurantEntityHelper {
      *
      * @return
      */
-    List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo() {
+    public List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo() {
         return restaurantModificationInfoDao.getWaitingModificationInfo();
     }
 
@@ -242,7 +250,7 @@ public class RestaurantEntityHelper {
      * @param modificationId
      * @param pass
      */
-    void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, NoSuchAttributeException, DuplicatedUniqueKeyException {
+    public void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, NoSuchAttributeException, DuplicatedUniqueKeyException {
         if (modificationId == null || pass == null) {
             throw new ParamErrorException();
         }
@@ -265,6 +273,13 @@ public class RestaurantEntityHelper {
 
         //保存修改信息结果
         restaurantModificationInfoDao.save(info);
+
+        //发送消息
+        String messageText = pass ? modifyApproveText : modifyNotApproveText;
+        try {
+            restaurantMessageHelper.sendMessage(info.getRestaurantId(), messageText);
+        } catch (UserNotExistsException ignored) {
+        }
     }
 
     /**

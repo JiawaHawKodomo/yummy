@@ -22,6 +22,11 @@ import java.util.Map;
 @Controller
 public class RestaurantRegisterController {
 
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.telephone-duplicated}")
+    private String telephoneDuplicatedText;
+
     @Value("${lbs.key}")
     private String lbsKey;
     private final RestaurantBlService restaurantBlService;
@@ -59,9 +64,9 @@ public class RestaurantRegisterController {
             //添加session信息
             request.getSession().setAttribute("restaurant", restaurant.getRestaurantId());
         } catch (ParamErrorException e) {
-            result.put("info", "以下信息填写错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (DuplicatedUniqueKeyException e) {
-            result.put("info", "该电话已经被注册");
+            result.put("info", telephoneDuplicatedText);
         }
         return result;
     }

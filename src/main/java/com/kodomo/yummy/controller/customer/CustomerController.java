@@ -25,6 +25,14 @@ public class CustomerController {
 
     @Value("${lbs.key}")
     private String lbsKey;
+    @Value("${yummy-system.text.public.password-error}")
+    private String passwordErrorText;
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
 
     private final CustomerBlService customerBlService;
 
@@ -49,7 +57,7 @@ public class CustomerController {
             Customer customer = customerBlService.loginOrRegister(email, password);
             if (customer == null) {
                 result.put("result", false);
-                result.put("info", "账号或密码不正确");
+                result.put("info", passwordErrorText);
             } else {
                 request.getSession().setAttribute("customer", customer.getEmail());
                 result.put("result", true);
@@ -110,11 +118,11 @@ public class CustomerController {
             customerBlService.recharge(customerEmail, amount);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (UnupdatableException e) {
-            result.put("info", "当前状态无法充值:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
         return result;
     }

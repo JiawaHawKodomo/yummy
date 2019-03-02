@@ -53,7 +53,7 @@
         </tr>
         <tr>
             <th>最终金额</th>
-            <td th:text="${order.getTotalPriceAfterDiscount()}"></td>
+            <td th:text="${#numbers.formatDecimal(order.getTotalPriceAfterDiscount(),0,2)}"></td>
         </tr>
         <tr>
             <th>配餐时长</th>
@@ -62,11 +62,11 @@
         <th:block th:if="${order.isCanceled()}">
             <tr>
                 <th>退款金额</th>
-                <td th:text="${order.getRefundAmount()}"></td>
+                <td th:text="${#numbers.formatDecimal(order.getRefundAmount(),0,2)}"></td>
             </tr>
         </th:block>
         <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
-        <th:block th:if="${restaurant}!=null">
+        <th:block th:if="${restaurant!=null&&order.isDone()}">
             <tr>
                 <th>订单结算条例</th>
                 <td>
@@ -86,6 +86,6 @@
     <h3>订单记录追踪</h3>
     <ul>
         <li th:each="log:${order.getLogsByTimeDesc()}"
-            th:text="${log.getDate()}+'  '+${log.getToState().getText()}"></li>
+            th:text="${#dates.format(log.getDate(),'yyyy-MM-dd HH:mm:ss')}+'  '+${log.getToState().getText()}"></li>
     </ul>
 </div>

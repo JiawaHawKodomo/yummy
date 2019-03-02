@@ -28,14 +28,16 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     private final OfferingHelper offeringHelper;
     private final RestaurantStrategyBlService restaurantStrategyBlService;
     private final RestaurantStatisticsHelper restaurantStatisticsHelper;
+    private final RestaurantMessageHelper restaurantMessageHelper;
 
     @Autowired
-    public RestaurantBlServiceImpl(RestaurantEntityHelper restaurantEntityHelper, RestaurantDao restaurantDao, OfferingHelper offeringHelper, RestaurantStrategyBlService restaurantStrategyBlService, RestaurantStatisticsHelper restaurantStatisticsHelper) {
+    public RestaurantBlServiceImpl(RestaurantEntityHelper restaurantEntityHelper, RestaurantDao restaurantDao, OfferingHelper offeringHelper, RestaurantStrategyBlService restaurantStrategyBlService, RestaurantStatisticsHelper restaurantStatisticsHelper, RestaurantMessageHelper restaurantMessageHelper) {
         this.restaurantEntityHelper = restaurantEntityHelper;
         this.restaurantDao = restaurantDao;
         this.offeringHelper = offeringHelper;
         this.restaurantStrategyBlService = restaurantStrategyBlService;
         this.restaurantStatisticsHelper = restaurantStatisticsHelper;
+        this.restaurantMessageHelper = restaurantMessageHelper;
     }
 
     @Override
@@ -224,23 +226,12 @@ public class RestaurantBlServiceImpl implements RestaurantBlService {
     }
 
     /**
-     * 获取待审核的修改信息
+     * 阅读消息
      *
-     * @return
+     * @param restaurantId
      */
     @Override
-    public List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo() {
-        return restaurantEntityHelper.getWaitingRestaurantModificationInfo();
-    }
-
-    /**
-     * 处理审核的修改信息
-     *
-     * @param modificationId
-     * @param pass
-     */
-    @Override
-    public void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, DuplicatedUniqueKeyException, NoSuchAttributeException {
-        restaurantEntityHelper.confirmModification(modificationId, pass);
+    public void readMessage(Integer restaurantId) throws ParamErrorException {
+        restaurantMessageHelper.readMessage(restaurantId);
     }
 }

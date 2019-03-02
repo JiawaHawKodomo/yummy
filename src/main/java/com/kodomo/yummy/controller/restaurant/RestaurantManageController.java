@@ -7,6 +7,7 @@ import com.kodomo.yummy.controller.vo.RestaurantStrategyVo;
 import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,25 @@ import java.util.Map;
 @RequestMapping("/restaurant")
 @Controller
 public class RestaurantManageController {
+
+    @Value("${yummy-system.text.public.password-error}")
+    private String passwordErrorText;
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
+    @Value("${yummy-system.text.public.not-login-error}")
+    private String notLoginErrorText;
+    @Value("${yummy-system.text.restaurant.duplicated-type-name}")
+    private String duplicatedTypeNameText;
+    @Value("${yummy-system.text.restaurant.date-setting-error}")
+    private String dateSettingErrorText;
+    @Value("${yummy-system.text.restaurant.no-such-offering}")
+    private String offeringDoesNotExistText;
+    @Value("${yummy-system.text.restaurant.no-such-strategy}")
+    private String strategyDoesNotExistText;
 
     private final RestaurantBlService restaurantBlService;
 
@@ -52,7 +72,7 @@ public class RestaurantManageController {
         Map<String, Object> result = new HashMap<>();
         Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
         if (rid == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -60,13 +80,13 @@ public class RestaurantManageController {
             restaurantBlService.updateRestaurantOfferingType(rid, list);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "输入的名称不正确");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (DuplicatedUniqueKeyException e) {
-            result.put("info", "分类名称不能重复");
+            result.put("info", duplicatedTypeNameText);
         } catch (UnupdatableException e) {
-            result.put("info", "该账号状态下无法修改:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
 
         return result;
@@ -85,7 +105,7 @@ public class RestaurantManageController {
         Map<String, Object> result = new HashMap<>();
         Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
         if (rid == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -93,13 +113,13 @@ public class RestaurantManageController {
             restaurantBlService.saveOffering(rid, vo);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "以下信息填写有误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (UnupdatableException e) {
-            result.put("info", "该账号状态下无法修改:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         } catch (DateSettingException e) {
-            result.put("info", "起止时间设置错误");
+            result.put("info", dateSettingErrorText);
         }
         return result;
     }
@@ -117,7 +137,7 @@ public class RestaurantManageController {
         Map<String, Object> result = new HashMap<>();
         Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
         if (rid == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -125,9 +145,9 @@ public class RestaurantManageController {
             restaurantBlService.deleteOffering(rid, id);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (NoSuchAttributeException | UnupdatableException e) {
-            result.put("info", "不存在该餐品");
+            result.put("info", offeringDoesNotExistText);
         }
         return result;
     }
@@ -146,7 +166,7 @@ public class RestaurantManageController {
         Map<String, Object> result = new HashMap<>();
         Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
         if (rid == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -154,9 +174,9 @@ public class RestaurantManageController {
             restaurantBlService.addRestaurantStrategy(rid, vos);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "该餐厅不存在");
+            result.put("info", userNotExistsErrorText);
         }
         return result;
     }
@@ -175,7 +195,7 @@ public class RestaurantManageController {
         Map<String, Object> result = new HashMap<>();
         Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
         if (rid == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -183,9 +203,9 @@ public class RestaurantManageController {
             restaurantBlService.deleteRestaurantStrategy(rid, id);
             result.put("result", true);
         } catch (NoSuchAttributeException | UnupdatableException e) {
-            result.put("info", "不存在该策略, 无法删除");
+            result.put("info", strategyDoesNotExistText);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         }
 
         return result;

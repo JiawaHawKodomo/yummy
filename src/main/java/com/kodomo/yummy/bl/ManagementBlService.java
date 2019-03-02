@@ -1,8 +1,10 @@
 package com.kodomo.yummy.bl;
 
 import com.kodomo.yummy.entity.Manager;
-import com.kodomo.yummy.exceptions.UnupdatableException;
-import com.kodomo.yummy.exceptions.UserNotExistsException;
+import com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo;
+import com.kodomo.yummy.exceptions.*;
+
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
@@ -35,7 +37,7 @@ public interface ManagementBlService {
      * @param pass         通过为true, 不通过为false
      * @return 结果
      */
-    boolean approveRestaurant(String restaurantId, boolean pass) throws UserNotExistsException, UnupdatableException;
+    void approveRestaurant(Integer restaurantId, boolean pass) throws UserNotExistsException, UnupdatableException;
 
     /**
      * 获得manager实体对象
@@ -44,6 +46,22 @@ public interface ManagementBlService {
      * @return
      */
     Manager getManagerById(String id);
+
+    /**
+     * 获取待审核的修改信息
+     *
+     * @return
+     */
+    List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo();
+
+    /**
+     * 处理审核的修改信息
+     *
+     * @param modificationId
+     * @param pass
+     */
+    void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, DuplicatedUniqueKeyException, NoSuchAttributeException;
+
 }
 
 

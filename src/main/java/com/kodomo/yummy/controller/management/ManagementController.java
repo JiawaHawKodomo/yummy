@@ -4,19 +4,17 @@ import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.bl.ManagementBlService;
 import com.kodomo.yummy.bl.OrderBlService;
 import com.kodomo.yummy.bl.RestaurantBlService;
-import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
-import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +24,21 @@ import java.util.Map;
 @Controller
 @RequestMapping("/management")
 public class ManagementController {
+
+    @Value("${yummy-system.text.public.password-error}")
+    private String passwordErrorText;
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
+    @Value("${yummy-system.text.public.not-login-error}")
+    private String notLoginErrorText;
+    @Value("${yummy-system.text.public.telephone-duplicated}")
+    private String telephoneDuplicatedText;
+    @Value("${yummy-system.text.public.no-such-info-error}")
+    private String noSuchInfoErrorText;
 
     private final ManagementBlService managementBlService;
     private final RestaurantBlService restaurantBlService;
@@ -80,7 +93,7 @@ public class ManagementController {
         model.addAttribute("currentOrderSettlementStrategy", orderBlService.getCurrentOrderSettlementStrategy());
         model.addAttribute("currentOrderRefundStrategy", orderBlService.getCurrentOrderRefundStrategy());
         model.addAttribute("currentCustomerLevelStrategy", customerBlService.getCurrentCustomerLevelStrategy());
-        model.addAttribute("modificationInfos", restaurantBlService.getWaitingRestaurantModificationInfo());
+        model.addAttribute("modificationInfos", managementBlService.getWaitingRestaurantModificationInfo());
         return "management/managementInfo";
     }
 
@@ -100,25 +113,20 @@ public class ManagementController {
 
     @PostMapping("/approve")
     @ResponseBody
-    public Map<String, Object> approve(HttpServletRequest request) {
+    public Map<String, Object> approve(HttpServletRequest request, @RequestParam("id") Integer id, @RequestParam("pass") Boolean pass) {
         Map<String, Object> result = new HashMap<>();
         if (request.getSession(true).getAttribute("manager") == null) {
-            result.put("info", "请先登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
         try {
-            String id = request.getParameter("id");
-            boolean pass = Boolean.parseBoolean(request.getParameter("pass"));
-            if (managementBlService.approveRestaurant(id, pass)) {
-                result.put("result", true);
-            } else {
-                result.put("info", "未知错误");
-            }
-        } catch (UserNotExistsException | UnupdatableException e) {
-            result.put("info", e.getMessage());
-        } catch (Exception e) {
-            result.put("info", "未知错误");
+            managementBlService.approveRestaurant(id, pass);
+            result.put("result", true);
+        } catch (UserNotExistsException e) {
+            result.put("info", userNotExistsErrorText);
+        } catch (UnupdatableException e) {
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
 
         return result;
@@ -131,19 +139,19 @@ public class ManagementController {
             , @RequestParam("id") Integer modificationId) {
         Map<String, Object> result = new HashMap<>();
         if (request.getSession(true).getAttribute("manager") == null) {
-            result.put("info", "请先登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
         try {
-            restaurantBlService.confirmModification(modificationId, pass);
+            managementBlService.confirmModification(modificationId, pass);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (DuplicatedUniqueKeyException e) {
-            result.put("info", "电话已经被注册, 无法修改");
+            result.put("info", telephoneDuplicatedText);
         } catch (NoSuchAttributeException e) {
-            result.put("info", "不存在该修改信息");
+            result.put("info", noSuchInfoErrorText);
         }
 
         return result;

@@ -1,9 +1,9 @@
 <div xmlns:th="http://www.thymeleaf.org">
     <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.order.Order"*/-->
-    <div th:text="${order.getTheLastUpdateTime()}"></div>
+    <div th:text="${#dates.format(order.getTheLastUpdateTime(),'yyyy-MM-dd HH:mm:ss')}"></div>
     <div th:text="${order.getOrderStateText()}"></div>
     <h4 th:text="${order.getRestaurant().getName()}"></h4>
-    <p th:text="${order.getTotalPriceAfterDiscount()}+'元'" style="float: right"></p>
+    <p th:text="${#numbers.formatDecimal(order.getTotalPriceAfterDiscount(),0,2)}+'元'" style="float: right"></p>
     <ul th:with="first=${order.getDetailsByPrice().get(0)}">
         <li th:each="detail:${order.getDetailsByPrice()}"
             th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>

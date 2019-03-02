@@ -15,18 +15,22 @@
     <div th:replace="customer/head"></div>
 
     <div>
-        <div style="width: 80%;height: 400px" id="diagram-time"></div>
+        <h3>订单数统计</h3>
+        <div style="display: flex;width: 90%;height: 400px">
+            <div style="width: 50%;height: 100%" id="diagram-time"></div>
+            <div style="width: 50%;height: 100%" id="diagram-month-time"></div>
+        </div>
+
     </div>
 
     <!--黑线-->
     <div style="height: 2px;width: 100%;background: black"></div>
 
     <div>
-        <div style="width: 80%;height: 400px" id="diagram-money"></div>
-    </div>
-
-    <div>
-        <div style="width: 80%;height: 400px" id="diagram-money-month"></div>
+        <h3>金额统计</h3>
+        <div style="display: flex;width: 90%;height: 400px">
+            <div style="width: 50%;height: 100%" id="diagram-money-month"></div>
+        </div>
     </div>
 
     <!--黑线-->

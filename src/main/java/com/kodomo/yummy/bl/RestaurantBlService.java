@@ -131,17 +131,9 @@ public interface RestaurantBlService {
     void submitModification(RestaurantModificationVo vo, Integer restaurantId) throws ParamErrorException, DuplicatedUniqueKeyException, UserNotExistsException, DuplicatedSubmitException;
 
     /**
-     * 获取待审核的修改信息
+     * 阅读消息
      *
-     * @return
+     * @param restaurantId
      */
-    List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo();
-
-    /**
-     * 处理审核的修改信息
-     *
-     * @param modificationId
-     * @param pass
-     */
-    void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, DuplicatedUniqueKeyException, NoSuchAttributeException;
+    void readMessage(Integer restaurantId) throws ParamErrorException;
 }

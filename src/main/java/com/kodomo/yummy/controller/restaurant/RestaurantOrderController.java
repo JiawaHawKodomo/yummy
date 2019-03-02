@@ -8,6 +8,7 @@ import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UnupdatableException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,19 @@ import java.util.Map;
 @Controller
 @RequestMapping("/restaurant")
 public class RestaurantOrderController {
+
+    @Value("${yummy-system.text.public.password-error}")
+    private String passwordErrorText;
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
+    @Value("${yummy-system.text.public.not-login-error}")
+    private String notLoginErrorText;
+    @Value("${yummy-system.text.order.no-such-order-error}")
+    private String orderDoesNotExistsText;
 
     private final RestaurantBlService restaurantBlService;
     private final OrderBlService orderBlService;
@@ -58,7 +72,7 @@ public class RestaurantOrderController {
         Map<String, Object> result = new HashMap<>();
         Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
         if (rid == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -66,13 +80,13 @@ public class RestaurantOrderController {
             orderBlService.restaurantConfirmOrder(rid, orderId);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (NoSuchAttributeException e) {
-            result.put("info", "订单不存在");
+            result.put("info", orderDoesNotExistsText);
         } catch (UnupdatableException e) {
-            result.put("info", "订单状态不正确, 无法修改, 状态:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
         return result;
     }

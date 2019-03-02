@@ -73,6 +73,9 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private Set<RestaurantModificationInfo> modificationInfos;
 
+    @OneToMany(mappedBy = "restaurant", cascade = {CascadeType.DETACH}, fetch = FetchType.LAZY)
+    private List<RestaurantMessage> messages;
+
     /**
      * 用String表示营业时间
      *
@@ -104,6 +107,21 @@ public class Restaurant {
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
         SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
         return Integer.parseInt(hourFormat.format(date)) * 60 + Integer.parseInt(minuteFormat.format(date));
+    }
+
+    public int getUnreadMessageQuantity() {
+        if (getMessages() == null) return 0;
+        return (int) getMessages().stream()
+                .filter(restaurantMessage -> !restaurantMessage.getHasBeenRead())
+                .count();
+    }
+
+    @NotNull
+    public List<RestaurantMessage> getMessagesByTimeOrderDesc() {
+        if (getMessages() == null) return new ArrayList<>();
+        return getMessages().stream()
+                .sorted((a, b) -> (int) (b.getTime().getTime() - a.getTime().getTime()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -183,6 +201,18 @@ public class Restaurant {
     public List<Offering> getValidOffering() {
         if (getOfferings() == null) return new ArrayList<>();
         return getOfferings().stream().filter(Offering::isValid)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取在售商品
+     *
+     * @return
+     */
+    @NotNull
+    public List<Offering> getOnSaleOffering() {
+        if (getOfferings() == null) return new ArrayList<>();
+        return getOfferings().stream().filter(Offering::isOnSale)
                 .collect(Collectors.toList());
     }
 

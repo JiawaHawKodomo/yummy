@@ -99,7 +99,7 @@
                 </div>
                 <div style="background: black;width: 2px;height: auto; margin: 10px"></div>
                 <div>
-                    <div th:each="offering:${restaurant.getValidOffering()}"
+                    <div th:each="offering:${restaurant.getOnSaleOffering()}"
                          style="display: none; background: #d3d3d3 ;min-width: 200px; width: auto; margin: 10px"
                          class="offering-div"
                          th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}"

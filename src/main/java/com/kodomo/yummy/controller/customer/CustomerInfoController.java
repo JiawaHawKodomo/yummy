@@ -24,6 +24,21 @@ public class CustomerInfoController {
     @Value("${lbs.key}")
     private String lbsKey;
 
+    @Value("${yummy-system.text.public.password-error}")
+    private String passwordErrorText;
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
+    @Value("${yummy-system.text.public.not-login-error}")
+    private String notLoginErrorText;
+    @Value("${yummy-system.text.public.no-such-location-error}")
+    private String noSuchLocationErrorText;
+    @Value("${yummy-system.text.customer.old-password-error}")
+    private String oldPasswordErrorText;
+
     private final CustomerBlService customerBlService;
 
     @Autowired
@@ -46,18 +61,18 @@ public class CustomerInfoController {
         Map<String, Object> result = new HashMap<>();
         String customerEmail = (String) request.getSession(true).getAttribute("customer");
         if (customerEmail == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
         try {
             customerBlService.updateCustomerInfo(customerEmail, name, telephone);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (UnupdatableException e) {
-            result.put("info", "用户状态不正确, 无法修改, 当前状态为:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
 
         return result;
@@ -78,20 +93,20 @@ public class CustomerInfoController {
         Map<String, Object> result = new HashMap<>();
         String customerEmail = (String) request.getSession(true).getAttribute("customer");
         if (customerEmail == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
         }
 
         try {
             customerBlService.updateCustomerPassword(customerEmail, oldPassword, password);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (UnupdatableException e) {
-            result.put("info", "用户状态不正确, 无法修改, 当前状态为:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         } catch (PasswordErrorException e) {
-            result.put("info", "旧密码不正确");
+            result.put("info", oldPasswordErrorText);
         }
         return result;
     }
@@ -120,11 +135,11 @@ public class CustomerInfoController {
             customerBlService.addLocationForCustomer(customerEmail, block, point, note, city, telephone, lat, lng);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "地址未正确选择或信息未正确填写");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (UnupdatableException e) {
-            result.put("info", "用户状态不正确, 无法修改, 当前状态为:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
         return result;
     }
@@ -149,13 +164,13 @@ public class CustomerInfoController {
             customerBlService.deleteLocationForCustomer(customerEmail, locationId);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "地址未正确选择或信息未正确填写");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (UnupdatableException e) {
-            result.put("info", "用户状态不正确, 无法修改, 当前状态为:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         } catch (NoSuchAttributeException e) {
-            result.put("info", "该用户没有该地址");
+            result.put("info", noSuchLocationErrorText);
         }
         return result;
     }
@@ -182,13 +197,13 @@ public class CustomerInfoController {
             //取消登陆状态
             request.getSession(true).setAttribute("customer", null);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确");
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (UnupdatableException e) {
-            result.put("info", "用户状态不正确, 无法修改, 当前状态为:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         } catch (PasswordErrorException e) {
-            result.put("info", "密码不正确");
+            result.put("info", passwordErrorText);
         }
         return result;
     }

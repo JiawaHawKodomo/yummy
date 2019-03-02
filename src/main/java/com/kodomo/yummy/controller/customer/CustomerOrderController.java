@@ -9,6 +9,7 @@ import com.kodomo.yummy.entity.order.Order;
 import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,25 @@ import java.util.Map;
 @Controller
 @RequestMapping("/customer")
 public class CustomerOrderController {
+
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
+    @Value("${yummy-system.text.public.not-login-error}")
+    private String notLoginErrorText;
+    @Value("${yummy-system.text.restaurant.has-closed}")
+    private String restaurantHasClosedText;
+    @Value("${yummy-system.text.order.no-such-order-error}")
+    private String orderDoesNotExistText;
+    @Value("${yummy-system.text.order.time-out}")
+    private String orderTimeOutText;
+    @Value("${yummy-system.text.customer.lack-of-balance}")
+    private String lackOfBalanceText;
+    @Value("${yummy-system.text.customer.pay-password-error}")
+    private String payPasswordErrorText;
 
     private final CustomerBlService customerBlService;
     private final RestaurantBlService restaurantBlService;
@@ -103,7 +123,7 @@ public class CustomerOrderController {
         Map<String, Object> result = new HashMap<>();
         String email = (String) request.getSession(true).getAttribute("customer");
         if (email == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -111,13 +131,13 @@ public class CustomerOrderController {
             Order order = orderBlService.createNewOrder(email, orderVo);
             result.put("result", order.getOrderId());
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在:" + e.getMessage());
+            result.put("info", userNotExistsErrorText + e.getMessage());
         } catch (UnupdatableException e) {
-            result.put("info", "状态不正确, 无法创建订单, 当前状态:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         } catch (RestaurantHasClosedException e) {
-            result.put("info", "餐厅已经关门, 无法创建订单");
+            result.put("info", restaurantHasClosedText);
         }
 
         return result;
@@ -166,7 +186,7 @@ public class CustomerOrderController {
         Map<String, Object> result = new HashMap<>();
         String email = (String) request.getSession(true).getAttribute("customer");
         if (email == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -174,19 +194,19 @@ public class CustomerOrderController {
             orderBlService.payOrder(email, password, orderId);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在:" + email);
+            result.put("info", userNotExistsErrorText + email);
         } catch (NoSuchAttributeException e) {
-            result.put("info", "不存在该订单");
+            result.put("info", orderDoesNotExistText);
         } catch (OrderTimeOutException e) {
-            result.put("info", "该订单已超时, 无法完成支付, 订单创建时间:" + e.getCreateTime());
+            result.put("info", orderTimeOutText);
         } catch (LackOfBalanceException e) {
-            result.put("info", "余额不足, 请充值后重试");
+            result.put("info", lackOfBalanceText);
         } catch (UnupdatableException e) {
-            result.put("info", "订单状态不正确,无法支付");
+            result.put("info", stateErrorText);
         } catch (PasswordErrorException e) {
-            result.put("info", "密码不正确");
+            result.put("info", payPasswordErrorText);
         }
         return result;
     }
@@ -197,7 +217,7 @@ public class CustomerOrderController {
         Map<String, Object> result = new HashMap<>();
         String email = (String) request.getSession(true).getAttribute("customer");
         if (email == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -205,13 +225,13 @@ public class CustomerOrderController {
             orderBlService.customerConfirmOrder(email, orderId);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (NoSuchAttributeException e) {
-            result.put("info", "订单不存在");
+            result.put("info", orderDoesNotExistText);
         } catch (UnupdatableException e) {
-            result.put("info", "订单状态不正确, 无法确认, 当前状态:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
         return result;
     }
@@ -222,7 +242,7 @@ public class CustomerOrderController {
         Map<String, Object> result = new HashMap<>();
         String email = (String) request.getSession(true).getAttribute("customer");
         if (email == null) {
-            result.put("info", "未登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -230,13 +250,13 @@ public class CustomerOrderController {
             orderBlService.customerCancelOrder(email, orderId);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "用户不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (NoSuchAttributeException e) {
-            result.put("info", "订单不存在");
+            result.put("info", orderDoesNotExistText);
         } catch (UnupdatableException e) {
-            result.put("info", "订单状态不正确, 无法取消, 当前状态:" + e.getCurrentStateText());
+            result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         }
         return result;
     }

@@ -1,7 +1,7 @@
 const timeChart = echarts.init(document.getElementById('diagram-time'));
-const moneyChart = echarts.init(document.getElementById('diagram-money'));
 const restaurantChart = echarts.init(document.getElementById('diagram-restaurant'));
 const moneyChartByMonth = echarts.init(document.getElementById('diagram-money-month'));
+const monthQuantityChart = echarts.init(document.getElementById('diagram-month-time'));
 
 $.ajax({
     type: 'get',
@@ -12,26 +12,22 @@ $.ajax({
             return new Date(a.time).getTime() - new Date(b.time).getTime()
         });
         drawTimeChart(data);
-        drawMoneyChart(data);
+        drawOrderQuantityMonthChart(data);
         drawRestaurantChart(data);
         drawMoneyChartByMonth(data);
     }
 });
 
-function drawTimeChart(data) {
-    var byTime = {};
-    const format = 'yyyy-MM-dd';
+function drawOrderQuantityMonthChart(data) {
+    var byTime = getMonthsByStartAndEnd(data[0].time, data[data.length - 1].time);
+    const format = 'yyyy-MM';
     $.each(data, function (i, e) {
         const day = new Date(e.time).format(format);
-        if (byTime[day] === undefined) {
-            byTime[day] = 1;
-        } else {
-            byTime[day] += 1;
-        }
+        byTime[day] += 1;
     });
 
-    timeChart.setOption({
-        title: {text: '日期统计'},
+    monthQuantityChart.setOption({
+        title: {text: '订单数月份统计'},
         tooltip: {trigger: 'axis'},
         xAxis: {data: Object.keys(byTime), name: '日期'},
         yAxis: {name: '单数', splitLine: {show: true}},
@@ -47,25 +43,29 @@ function drawTimeChart(data) {
         },
         series: {
             name: '日期统计',
-            type: 'bar',
+            type: 'line',
             data: Object.values(byTime)
         }
     });
-    timeChart.on('click', function (param) {
+    monthQuantityChart.on('click', function (param) {
         window.open('/customer/statistics/time/' + param.name + '?format=' + format)
-    })
+    });
 }
 
-function drawMoneyChart(data) {
-    moneyChart.setOption({
-        title: {text: '金额统计/单'},
+function drawTimeChart(data) {
+    var byTime = getDaysByStartAndEnd(data[0].time, data[data.length - 1].time);
+    const format = 'yyyy-MM-dd';
+    $.each(data, function (i, e) {
+        const day = new Date(e.time).format(format);
+        byTime[day] += 1;
+    });
+
+    timeChart.setOption({
+        title: {text: '订单数日期统计'},
         tooltip: {trigger: 'axis'},
-        xAxis: {
-            data: data.map(function (t) {
-                return new Date(t.time).format('yyyy-MM-dd hh:mm:ss');
-            }),
-            name: '时间'
-        },
+        xAxis: {data: Object.keys(byTime), name: '日期'},
+        yAxis: {name: '单数', splitLine: {show: true}},
+        dataZoom: [{}, {type: 'inside'}],
         toolbox: {
             left: 'center', feature: {
                 dataZoom: {
@@ -75,30 +75,23 @@ function drawMoneyChart(data) {
                 saveAsImage: {}
             }
         },
-        dataZoom: [{}, {type: 'inside'}],
-        yAxis: {splitLine: {show: true}, name: '订单付款金额'},
         series: {
+            name: '日期统计',
             type: 'line',
-            data: data.map(function (t) {
-                return {value: t.money, name: t.orderId}
-            })
+            data: Object.values(byTime)
         }
     });
-    moneyChart.on('click', function (param) {
-        window.open('/customer/order/' + param.data.name);
+    timeChart.on('click', function (param) {
+        window.open('/customer/statistics/time/' + param.name + '?format=' + format)
     });
 }
 
 function drawMoneyChartByMonth(data) {
-    var byTime = {};
+    var byTime = getMonthsByStartAndEnd(data[0].time, data[data.length - 1].time);
     const format = 'yyyy-MM';
     $.each(data, function (i, e) {
-        const month = new Date(e.time).format(format);
-        if (byTime[month] === undefined) {
-            byTime[month] = e.money;
-        } else {
-            byTime[month] += e.money;
-        }
+        const day = new Date(e.time).format(format);
+        byTime[day] += e.money;
     });
 
     moneyChartByMonth.setOption({
@@ -156,6 +149,41 @@ function drawRestaurantChart(data) {
     restaurantChart.on('click', function (param) {
         window.open('/customer/statistics/restaurant/' + param.data.name);
     });
+}
+
+function getMonthsByStartAndEnd(start, end) {
+    var result = {};
+    const format = 'yyyy-MM';
+    var date = new Date(start);
+    var endDate = new Date(end);
+    while (date.getTime() <= endDate.getTime()) {
+        result[date.format(format)] = 0;
+        date = getNextMonth(date);
+        console.log(date);
+    }
+    return result;
+}
+
+function getNextMonth(date) {
+    var month = Number(date.format('MM'));
+    var year = Number(date.format('yyyy'));
+    if (month === 12) {
+        return new Date((year + 1) + '-' + '01');
+    } else {
+        return new Date(year + '-' + (month + 1));
+    }
+}
+
+function getDaysByStartAndEnd(start, end) {
+    var result = {};
+    const format = 'yyyy-MM-dd';
+    var date = new Date(start);
+    var endDate = new Date(end);
+    while (date.getTime() <= endDate.getTime()) {
+        result[date.format(format)] = 0;
+        date.setTime(date.getTime() + 24 * 60 * 1000);
+    }
+    return result;
 }
 
 Date.prototype.format = function (fmt) { //author: meizz

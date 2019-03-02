@@ -1,17 +1,21 @@
 package com.kodomo.yummy.bl.management;
 
 import com.kodomo.yummy.bl.ManagementBlService;
+import com.kodomo.yummy.bl.restaurant.RestaurantEntityHelper;
+import com.kodomo.yummy.bl.restaurant.RestaurantMessageHelper;
 import com.kodomo.yummy.dao.ManagerDao;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.Manager;
 import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.UnupdatableException;
-import com.kodomo.yummy.exceptions.UserNotExistsException;
+import com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo;
+import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
+import java.util.List;
+
 
 /**
  * @author Shuaiyu Yao
@@ -20,13 +24,22 @@ import java.util.Objects;
 @Service
 public class ManagementBlServiceImpl implements ManagementBlService {
 
+    @Value("${yummy-system.text.restaurant.register.approve}")
+    private String registerApprovedText;
+    @Value("${yummy-system.text.restaurant.register.not-approve}")
+    private String registerNotApprovedText;
+
     private final ManagerDao managerDao;
     private final RestaurantDao restaurantDao;
+    private final RestaurantMessageHelper restaurantMessageHelper;
+    private final RestaurantEntityHelper restaurantEntityHelper;
 
     @Autowired
-    public ManagementBlServiceImpl(ManagerDao managerDao, RestaurantDao restaurantDao) {
+    public ManagementBlServiceImpl(ManagerDao managerDao, RestaurantDao restaurantDao, RestaurantMessageHelper restaurantMessageHelper, RestaurantEntityHelper restaurantEntityHelper) {
         this.managerDao = managerDao;
         this.restaurantDao = restaurantDao;
+        this.restaurantMessageHelper = restaurantMessageHelper;
+        this.restaurantEntityHelper = restaurantEntityHelper;
     }
 
     @Override
@@ -35,6 +48,7 @@ public class ManagementBlServiceImpl implements ManagementBlService {
             return null;
 
         Manager manager = managerDao.findById(id).orElse(null);
+        if (manager == null) return null;
         if (password.equals(manager.getPassword())) {
             return manager;
         } else
@@ -71,24 +85,13 @@ public class ManagementBlServiceImpl implements ManagementBlService {
      * @return 结果
      */
     @Override
-    public boolean approveRestaurant(String restaurantId, boolean pass) throws UserNotExistsException, UnupdatableException {
+    public void approveRestaurant(Integer restaurantId, boolean pass) throws UserNotExistsException, UnupdatableException {
         //检查id
-        if (restaurantId == null || Objects.equals(restaurantId, ""))
+        if (restaurantId == null)
             throw new UserNotExistsException(restaurantId + "不存在");
-
-        Integer idInteger;
-        try {
-            idInteger = Integer.valueOf(restaurantId);
-        } catch (Exception e) {
-            throw new UserNotExistsException(restaurantId + "不存在");
-        }
 
         Restaurant restaurant;
-        try {
-            restaurant = restaurantDao.findById(idInteger).orElse(null);
-        } catch (Exception e) {
-            return false;
-        }
+        restaurant = restaurantDao.findById(restaurantId).orElse(null);
         UserState currentState = restaurant.getState();
         //检查状态
         if (currentState != null && currentState != UserState.UNACTIVATED) {
@@ -103,13 +106,14 @@ public class ManagementBlServiceImpl implements ManagementBlService {
         }
 
         //保存
-        try {
-            restaurantDao.save(restaurant);
-        } catch (Exception e) {
-            return false;
-        }
+        restaurantDao.save(restaurant);
 
-        return true;
+        //发送消息
+        try {
+            String messageText = pass ? registerApprovedText : registerNotApprovedText;
+            restaurantMessageHelper.sendMessage(restaurantId, messageText);
+        } catch (ParamErrorException ignored) {
+        }
     }
 
     /**
@@ -121,5 +125,26 @@ public class ManagementBlServiceImpl implements ManagementBlService {
     @Override
     public Manager getManagerById(String id) {
         return managerDao.find(id);
+    }
+
+    /**
+     * 获取待审核的修改信息
+     *
+     * @return
+     */
+    @Override
+    public List<RestaurantModificationInfo> getWaitingRestaurantModificationInfo() {
+        return restaurantEntityHelper.getWaitingRestaurantModificationInfo();
+    }
+
+    /**
+     * 处理审核的修改信息
+     *
+     * @param modificationId
+     * @param pass
+     */
+    @Override
+    public void confirmModification(Integer modificationId, Boolean pass) throws ParamErrorException, DuplicatedUniqueKeyException, NoSuchAttributeException {
+        restaurantEntityHelper.confirmModification(modificationId, pass);
     }
 }

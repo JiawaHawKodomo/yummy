@@ -72,4 +72,9 @@ public class RestaurantModificationInfo {
     public String getTypeByString() {
         return RestaurantTypeHelper.typesToString(getTypes());
     }
+
+    public Integer getRestaurantId() {
+        if (getRestaurant() == null) return null;
+        return getRestaurant().getRestaurantId();
+    }
 }

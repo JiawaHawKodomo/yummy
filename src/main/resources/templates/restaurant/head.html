@@ -3,13 +3,14 @@
     你好:
     <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
     <span th:text="${self0.getName()}"></span>
-    <span th:text="'金额:'+${self0.getBalance()}"></span>
+    <span th:text="'金额:'+${#numbers.formatDecimal(self0.getBalance(),0,2)}"></span>
     <a th:href="@{/restaurant/logout}">登出</a>
     <a th:href="@{/restaurant}">我的店铺</a>
     <a th:href="@{/restaurant/manage}">管理店铺</a>
     <a th:href="@{/restaurant/info}">店铺信息</a>
     <a th:href="@{/restaurant/order}">我的订单</a>
     <a th:href="@{/restaurant/statistics}">统计</a>
+    <a th:href="@{/restaurant/message}" th:text="'信息('+${self0.getUnreadMessageQuantity()}+')'"></a>
     <!--黑线-->
     <div style="height: 2px;width: 100%;background: black"></div>
 </div>

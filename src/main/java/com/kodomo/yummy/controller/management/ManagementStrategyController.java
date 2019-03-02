@@ -8,6 +8,7 @@ import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,17 @@ import java.util.Map;
 @RequestMapping("/management")
 public class ManagementStrategyController {
 
+    @Value("${yummy-system.text.public.password-error}")
+    private String passwordErrorText;
+    @Value("${yummy-system.text.public.parameter-error}")
+    private String parameterErrorText;
+    @Value("${yummy-system.text.public.user-not-exists-error}")
+    private String userNotExistsErrorText;
+    @Value("${yummy-system.text.public.state-error}")
+    private String stateErrorText;
+    @Value("${yummy-system.text.public.not-login-error}")
+    private String notLoginErrorText;
+
     private final OrderBlService orderBlService;
     private final CustomerBlService customerBlService;
 
@@ -43,7 +55,7 @@ public class ManagementStrategyController {
         Map<String, Object> result = new HashMap<>();
         String managerId = (String) request.getSession(true).getAttribute("manager");
         if (managerId == null) {
-            result.put("info", "请先登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -51,9 +63,9 @@ public class ManagementStrategyController {
             orderBlService.saveNewOrderSettlementStrategy(vos, managerId);
             result.put("result", true);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         } catch (UserNotExistsException e) {
-            result.put("info", "管理员不存在");
+            result.put("info", userNotExistsErrorText);
         }
         return result;
     }
@@ -65,7 +77,7 @@ public class ManagementStrategyController {
         Map<String, Object> result = new HashMap<>();
         String managerId = (String) request.getSession(true).getAttribute("manager");
         if (managerId == null) {
-            result.put("info", "请先登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -73,9 +85,9 @@ public class ManagementStrategyController {
             orderBlService.saveNewOrderRefundStrategy(vos, managerId);
             result.put("result", true);
         } catch (UserNotExistsException e) {
-            result.put("info", "管理员不存在");
+            result.put("info", userNotExistsErrorText);
         } catch (ParamErrorException e) {
-            result.put("info", "参数不正确:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         }
         return result;
     }
@@ -87,7 +99,7 @@ public class ManagementStrategyController {
         Map<String, Object> result = new HashMap<>();
         String managerId = (String) request.getSession(true).getAttribute("manager");
         if (managerId == null) {
-            result.put("info", "请先登录");
+            result.put("info", notLoginErrorText);
             return result;
         }
 
@@ -95,9 +107,9 @@ public class ManagementStrategyController {
             customerBlService.saveCustomerLevelStrategy(vos, managerId);
             result.put("result", true);
         } catch (UserNotExistsException e) {
-            result.put("info", "管理员不存在");
+            result.put("info", notLoginErrorText);
         } catch (ParamErrorException e) {
-            result.put("info", "参数错误:" + e.getErrorFieldsInfo());
+            result.put("info", parameterErrorText + e.getErrorFieldsInfo());
         }
         return result;
     }

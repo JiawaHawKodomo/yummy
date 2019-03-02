@@ -53,8 +53,17 @@ public class Offering {
      *
      * @return boolean
      */
-    public boolean isValid() {
+    boolean isValid() {
         return endTime == null || endTime.after(new Date());
+    }
+
+    /**
+     * 是否正在销售
+     * @return
+     */
+    boolean isOnSale() {
+        Date now = new Date();
+        return startTime != null && startTime.before(now) && (isValid());
     }
 
     @Override

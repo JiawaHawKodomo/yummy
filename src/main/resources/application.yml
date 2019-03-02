@@ -16,7 +16,7 @@ spring:
 
 yummy-system:
   min-payment: 0.01
-  #pay-time: minuit
+  #pay-time: minute
   pay-time: 15
   activating-link: http://localhost/activate/
   #max-distribution-distance: km
@@ -29,7 +29,36 @@ yummy-system:
     city: 0.1
     order-quantity: 0.1
   order-refund-default: 0.5
-
+  text:
+    public:
+      password-error: 账号或密码不正确
+      parameter-error: 参数错误
+      user-not-exists-error: 用户不存在
+      state-error: 当前状态无法完成该操作
+      not-login-error: 未登录
+      no-such-location-error: 未找到该地址
+      telephone-duplicated: 电话已被注册
+      no-such-info-error: 不存在该信息
+    restaurant:
+      has-closed: 餐厅已经打烊
+      duplicated-modification-submit: 不能重复提交申请
+      duplicated-type-name: 分类名称不能重复
+      date-setting-error: 起止时间设置有误
+      no-such-offering: 不存在该商品
+      no-such-strategy: 不存在该策略
+      register:
+        approve: 您的餐厅申请已批准, 可以进行操作
+        not-approve: 您的餐厅申请未被批准
+      modify:
+        approve: 您的餐厅修改申请已批准
+        not-approve: 您的餐厅修改申请未被批准
+    customer:
+      old-password-error: 旧密码不正确
+      lack-of-balance: 余额不足请充值
+      pay-password-error: 密码不正确
+    order:
+      no-such-order-error: 不存在该订单
+      time-out: 订单已超时
 lbs:
   key: HYVBZ-QI7C5-EBFIA-QJMEN-DAVT2-S7B4Q
   baidu-ak-key: KKdnn1DpFvLwqvo0SNHGAyp6Me2gU8Fy
