@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class OrderRefundStrategy {
 
     @Id
-    @Column(name = "order_refund_strategy")
+    @Column(name = "order_refund_strategy_id")
     @GeneratedValue(generator = "generator_ors")
     @GenericGenerator(name = "generator_ors", strategy = "native")
     private Integer orderRefundStrategyId;

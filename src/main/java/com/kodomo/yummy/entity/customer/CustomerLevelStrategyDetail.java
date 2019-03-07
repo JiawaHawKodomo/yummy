@@ -19,7 +19,7 @@ import javax.persistence.Id;
 public class CustomerLevelStrategyDetail {
 
     @Id
-    @Column(name = "customer_level_strategy_detail")
+    @Column(name = "customer_level_strategy_detail_id")
     @GeneratedValue(generator = "generator_cld")
     @GenericGenerator(name = "generator_cld", strategy = "native")
     private Integer customerLevelStrategyDetailId;
