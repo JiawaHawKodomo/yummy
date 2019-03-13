@@ -1,7 +1,7 @@
 <div xmlns:th="http://www.thymeleaf.org">
     <h3>订单信息</h3>
     <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.order.Order"*/-->
-    <table border="1" cellpadding="5">
+    <table class="table table-striped">
         <tr>
             <th>订单编号</th>
             <td th:text="${order.getOrderId()}"></td>
@@ -30,7 +30,8 @@
                 <ul>
                     <li th:text="${location.getCity()}"></li>
                     <li th:text="${location.getBlockInfo()}+' '+${location.getPointInfo()}"></li>
-                    <li th:text="${location.getNote()}"></li>
+                    <li th:if="${location.getNote()!=null&&!location.getNote().equals('')}"
+                        th:text="${location.getNote()}"></li>
                     <li th:text="'电话:'+${location.getTelephone()}"></li>
                 </ul>
             </td>
@@ -38,13 +39,14 @@
         <tr>
             <th>商品明细</th>
             <td>
-                <table>
-                    <tr th:each="detail:${order.getDetails()}">
-                        <td th:text="${detail.getOffering().getName()}"></td>
-                        <td th:text="'×'+${detail.getQuantity()}"></td>
-                        <td th:text="${detail.getTotalPrice()}+'元'"></td>
-                    </tr>
-                </table>
+                <div class="row clearfix" th:each="detail:${order.getDetails()}">
+                    <div class="col-md-3 column" th:text="${detail.getOffering().getName()}">
+                    </div>
+                    <div class="col-md-2 column" th:text="'×'+${detail.getQuantity()}">
+                    </div>
+                    <div class="col-md-3 column" th:text="${detail.getTotalPrice()}+'元'">
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
@@ -84,8 +86,10 @@
         </th:block>
     </table>
     <h3>订单记录追踪</h3>
-    <ul>
-        <li th:each="log:${order.getLogsByTimeDesc()}"
-            th:text="${#dates.format(log.getDate(),'yyyy-MM-dd HH:mm:ss')}+'  '+${log.getToState().getText()}"></li>
-    </ul>
+    <table class="table table-striped">
+        <tr th:each="log:${order.getLogsByTimeDesc()}">
+            <td th:text="${#dates.format(log.getDate(),'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${log.getToState().getText()}"></td>
+        </tr>
+    </table>
 </div>

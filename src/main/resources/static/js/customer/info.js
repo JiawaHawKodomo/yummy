@@ -3,22 +3,20 @@ var locationInfo = null;
 //注销账号
 $('#cancellation-button').on('click', function () {
     const password = $('#cancellation-password-input').val();
-    if (confirm('注销后无法恢复, 确定要注销么?')) {
-        $.ajax({
-            type: 'delete',
-            url: '/customer',
-            data: {password: password},
-            success: function (data) {
-                console.log(data);
-                if (data.result) {
-                    alert('注销成功');
-                    location = '/';
-                } else {
-                    $('#cancellation-info').text('失败:' + data.info);
-                }
+    $.ajax({
+        type: 'delete',
+        url: '/customer',
+        data: {password: password},
+        success: function (data) {
+            console.log(data);
+            if (data.result) {
+                alert('注销成功');
+                location = '/';
+            } else {
+                $('#cancellation-info').text('失败:' + data.info);
             }
-        })
-    }
+        }
+    })
 });
 
 //地址删除
@@ -133,5 +131,13 @@ window.addEventListener('message', function (event) {
     if (loc && loc.module === 'locationPicker') {
         console.log('location', loc);
         locationInfo = loc;
+        setLocationInfo(loc)
     }
 }, false);
+
+function setLocationInfo(info) {
+    const poiname = info.poiname === '我的位置' ? '' : info.poiname;
+    $('#create-location-city').val(info.cityname);
+    $('#create-location-block').val(info.poiaddress);
+    $('#create-location-point').val(poiname);
+}

@@ -39,7 +39,7 @@ public class RestaurantFilter extends HttpFilter {
         String uri = request.getRequestURI();
         if (uri.startsWith("/restaurant") && !isUnderShield(uri)) {
             if (session.getAttribute("restaurant") == null) {
-                response.sendRedirect("/restaurant/login");
+                response.sendRedirect("/?role=1");
             } else {
                 chain.doFilter(request, response);
             }

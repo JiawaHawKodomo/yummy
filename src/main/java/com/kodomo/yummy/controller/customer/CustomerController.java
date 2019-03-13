@@ -43,7 +43,7 @@ public class CustomerController {
 
     @GetMapping("/login")
     public String customerLogin() {
-        return "customer/login";
+        return "redirect:/?role=0";
     }
 
     @ResponseBody

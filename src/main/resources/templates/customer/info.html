@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 个人信息</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
@@ -13,147 +14,285 @@
 <th:block th:if="${customer}!=null">
     <div th:replace="customer/head"></div>
 
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#info-modify-div" data-toggle="tab">
+                            确认/修改信息
+                        </a>
+                    </li>
+                    <li><a href="#password-modify-div" data-toggle="tab">密码修改</a></li>
+                    <li><a href="#location-manage-div" data-toggle="tab">地址管理</a></li>
+                    <li><a href="#cancellation-div" data-toggle="tab">用户注销</a></li>
+                </ul>
 
-    <div>
-        <!--/*@thymesVar id="isSelf" type="java.lang.Boolean"*/-->
-        <h3>确认/修改信息</h3>
-        <table>
-            <tr>
-                <td>邮箱</td>
-                <td th:text="${customer.getEmail()}"></td>
-            </tr>
-            <tr>
-                <td>昵称</td>
-                <td>
-                    <label><input th:value="${customer.getName()}"
-                                  th:disabled="${customer.getState()}==UserState.ACTIVATED"
-                                  id="info-name-input"></label>
-                </td>
-            </tr>
-            <tr>
-                <td>余额</td>
-                <td th:text="${customer.getBalance()}+'元'"></td>
-            </tr>
-            <tr>
-                <td>电话</td>
-                <td>
-                    <label><input th:value="${customer.getTelephone()}"
-                                  th:disabled="${customer.getState()}==UserState.ACTIVATED"
-                                  id="info-telephone-input"></label>
-                </td>
-            </tr>
-            <tr>
-                <td>状态</td>
-                <td th:text="${customer.getState().getText()}"></td>
-            </tr>
-        </table>
-        <button id="info-update-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">提交</button>
-        <span id="info-update-info" style="color: red"></span>
+                <br>
+
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade in active" id="info-modify-div">
+                        <h1>确认/修改信息</h1>
+                        <div class="col-md-10 column">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">邮箱</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control"
+                                               th:value="${customer.getEmail()}"
+                                               disabled="disabled"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">余额</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control"
+                                               th:value="${customer.getBalance()+'元'}"
+                                               disabled="disabled"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">状态</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control"
+                                               th:value="${customer.getState().getText()}"
+                                               disabled="disabled"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="info-name-input" class="col-sm-3 control-label">昵称</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control" id="info-name-input"
+                                               th:value="${customer.getName()}"
+                                               th:disabled="${customer.getState()}==UserState.ACTIVATED"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="info-telephone-input" class="col-sm-3 control-label">电话</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control" id="info-telephone-input"
+                                               th:value="${customer.getTelephone()}"
+                                               th:disabled="${customer.getState()}==UserState.ACTIVATED"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-9">
+                                        <button type="submit" class="btn red-block"
+                                                id="info-update-button">提交
+                                        </button>
+                                        <span id="info-update-info" class="red-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/*@thymesVar id="isSelf" type="java.lang.Boolean"*/-->
+                    </div>
+                    <div class="tab-pane fade" id="password-modify-div">
+                        <h1>密码修改</h1>
+
+                        <div class="col-md-10 column">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">当前密码</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control"
+                                               type="password"
+                                               id="old-password-input"
+                                               th:disabled="${customer.getState()}==UserState.ACTIVATED"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">新密码</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control"
+                                               type="password"
+                                               id="new-password-input"
+                                               th:disabled="${customer.getState()}==UserState.ACTIVATED"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">重复输入新密码</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control"
+                                               type="password"
+                                               id="new-password-input2"
+                                               th:disabled="${customer.getState()}==UserState.ACTIVATED"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-9">
+                                        <button type="submit" class="btn red-block"
+                                                id="password-update-button">提交
+                                        </button>
+                                        <span id="password-update-info" class="red-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="location-manage-div">
+                        <div th:if="${customer.getValidLocation().size()}!=0">
+                            <h1>删除地址</h1>
+
+                            <table class="table table-striped table-hover">
+                                <tr>
+                                    <td>城市</td>
+                                    <td>地址信息</td>
+                                    <td>地址备注</td>
+                                    <td>取餐电话</td>
+                                    <td>操作</td>
+                                </tr>
+                                <tr th:each="location:${customer.getValidLocation()}">
+                                    <td th:text="${location.getCity()}"></td>
+                                    <td th:text="${location.getBlockInfo()}+' '+${location.getPointInfo()}"></td>
+                                    <td th:text="${location.getNote()}"></td>
+                                    <td th:text="${location.getTelephone()}"></td>
+                                    <td>
+                                        <button th:value="${location.getLocationId()}"
+                                                th:disabled="${customer.getState()}==UserState.ACTIVATED"
+                                                class="delete-location-button btn red-block">删除
+                                        </button>
+                                        <span id="delete-location-info" class="red-text"></span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                        <br>
+                        <div>
+                            <h1>新建地址</h1>
+                            <div class="row clearfix">
+                                <div class="col-md-4 column">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">城市</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control"
+                                                       disabled="disabled"
+                                                       id="create-location-city">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">街/区</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control"
+                                                       disabled="disabled"
+                                                       id="create-location-block">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">地点</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control"
+                                                       disabled="disabled"
+                                                       id="create-location-point">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="create-location-note" class="col-sm-2 control-label">备注</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" class="form-control" id="create-location-note"
+                                                       th:disabled="${customer.getState()}==UserState.ACTIVATED">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="create-location-telephone"
+                                                   class="col-sm-2 control-label">电话</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control"
+                                                       id="create-location-telephone"
+                                                       th:value="${customer.getTelephone()}"
+                                                       th:disabled="${customer.getState()}==UserState.ACTIVATED">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="submit" class="btn red-block" id="create-location-button"
+                                                        th:disabled="${customer.getState()}==UserState.ACTIVATED">
+                                                    提交
+                                                </button>
+                                                <span id="create-location-info" class="red-text"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 column">
+                                    <!--/*@thymesVar id="lbsKey" type="String"*/-->
+                                    <iframe id="mapPage" style="width: 100%; height: 500px" frameborder=0
+                                            th:src="'https://apis.map.qq.com/tools/locpicker?search=1&type=1&key='+${lbsKey}+'&referer=myapp'">
+                                    </iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="cancellation-div">
+                        <div>
+                            <h1>用户注销</h1>
+                            <div class="red-text">
+                                <p class="control-label text-left">
+                                    注: 账号注销后不可恢复, 不能再进行任何处理, 余额无法退还, 请谨慎处理
+                                </p>
+                            </div>
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="cancellation-password-input"
+                                           class="col-sm-3 control-label">请输入密码:</label>
+                                    <div class="col-sm-7">
+                                        <input class="form-control" type="password"
+                                               id="cancellation-password-input"
+                                               th:disabled="${customer.getState()}==UserState.ACTIVATED">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-9">
+                                        <button type="submit" class="btn red-block"
+                                                th:disabled="${customer.getState()}==UserState.ACTIVATED"
+                                                data-toggle="modal" data-target="#cancellation-modal">
+                                            确定注销
+                                        </button>
+                                        <span id="cancellation-info" class="red-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
-
-    <div>
-        <h3>密码修改</h3>
-        <table>
-            <tr>
-                <td>当前密码</td>
-                <td><label for="old-password-input"></label><input type="password" id="old-password-input"
-                                                                   th:disabled="${customer.getState()}==UserState.ACTIVATED">
-                </td>
-            </tr>
-            <tr>
-                <td>新密码</td>
-                <td><label for="new-password-input"></label><input type="password" id="new-password-input"
-                                                                   th:disabled="${customer.getState()}==UserState.ACTIVATED">
-                </td>
-            </tr>
-            <tr>
-                <td>重复输入新密码</td>
-                <td><label for="new-password-input2"></label><input type="password" id="new-password-input2"
-                                                                    th:disabled="${customer.getState()}==UserState.ACTIVATED">
-                </td>
-            </tr>
-        </table>
-        <button id="password-update-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">提交</button>
-        <span id="password-update-info" style="color: red"></span>
-    </div>
-
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
-
-    <div th:if="${customer.getValidLocation().size()}!=0">
-        <h3>删除地址</h3>
-        <table border="1 black" cellpadding="5">
-            <tr>
-                <td>城市</td>
-                <td>地址信息</td>
-                <td>地址备注</td>
-                <td>取餐电话</td>
-                <td>操作</td>
-            </tr>
-            <tr th:each="location:${customer.getValidLocation()}">
-                <td th:text="${location.getCity()}"></td>
-                <td th:text="${location.getBlockInfo()}+' '+${location.getPointInfo()}"></td>
-                <td th:text="${location.getNote()}"></td>
-                <td th:text="${location.getTelephone()}"></td>
-                <td>
-                    <button th:value="${location.getLocationId()}"
-                            th:disabled="${customer.getState()}==UserState.ACTIVATED"
-                            class="delete-location-button">删除
+    <div class="modal fade" id="cancellation-modal" tabindex="-1" role="dialog"
+         aria-labelledby="cancellation-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
                     </button>
-                </td>
-            </tr>
-        </table>
-        <span id="delete-location-info" style="color: red"></span>
-        <p></p>
-        <!--黑线-->
-        <div style="height: 2px;width: 100%;background: black"></div>
-    </div>
-
-    <div>
-        <h3>新建地址</h3>
-        <table>
-            <tr>
-                <td>地址备注</td>
-                <td><label><input id="create-location-note"
-                                  th:disabled="${customer.getState()}==UserState.ACTIVATED"></label>
-                </td>
-            </tr>
-            <tr>
-                <td>取餐电话</td>
-                <td><label><input id="create-location-telephone" th:value="${customer.getTelephone()}"
-                                  th:disabled="${customer.getState()}==UserState.ACTIVATED">*</label></td>
-            </tr>
-        </table>
-        <!--/*@thymesVar id="lbsKey" type="String"*/-->
-        <iframe id="mapPage" width="500px" height="500px" frameborder=0
-                th:src="'https://apis.map.qq.com/tools/locpicker?search=1&type=1&key='+${lbsKey}+'&referer=myapp'">
-        </iframe>
-        <div>
-            <button id="create-location-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">提交</button>
-            <span id="create-location-info" style="color: red"></span>
-        </div>
-    </div>
-
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
-
-    <div>
-        <h3>用户注销</h3>
-        <div style="color: red">注: 账号注销后不可恢复, 不能再进行任何处理, 余额无法退还, 请谨慎处理</div>
-        <div>
-            请输入密码:<label>
-            <input type="password" id="cancellation-password-input">
-        </label>
-        </div>
-        <button id="cancellation-button" th:disabled="${customer.getState()}==UserState.ACTIVATED">确定注销</button>
-        <span id="cancellation-info" style="color: red"></span>
+                    <h4 class="modal-title" id="cancellation-modal-label">
+                        会员注销确认
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="red-text">
+                        <p class="control-label text-left">
+                            注: 账号注销后不可恢复, 不能再进行任何处理, 余额无法退还, 请谨慎处理
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn red-block" data-dismiss="modal" id="cancellation-button">确定注销</button>
+                    <button class="btn btn-success" data-dismiss="modal">再想一下</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
 </th:block>
-<script th:src="@{/js/customerInfo.js}"></script>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/customer/info.js}"></script>
 </body>
 </html>

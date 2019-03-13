@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 我的统计</title>
-    <script th:src="@{/js/tool/echarts.js}"></script>
-    <script th:src="@{/js/tool/jquery.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
@@ -40,6 +40,9 @@
         <div style="width: 80%;height: 400px" id="diagram-restaurant"></div>
     </div>
 </th:block>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/echarts.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
 <script th:src="@{/js/customerStatistics.js}"></script>
 </body>
 </html>

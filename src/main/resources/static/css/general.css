@@ -1,0 +1,29 @@
+body{
+    background: #fff0f4;
+}
+
+.red-block {
+    background: #ff6866;
+    color: white;
+    transition: 0.2s;
+}
+
+.red-text {
+    color: #ff6866;
+}
+
+.red-border {
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    background: #fff0f4;
+    transition: 0.2s;
+}
+
+.red-border:hover {
+    background: #ffe6e5;
+}
+
+em{
+    color: #ff6866;
+}

@@ -1,12 +1,16 @@
-<div xmlns:th="http://www.thymeleaf.org">
-    <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.order.Order"*/-->
-    <div th:text="${#dates.format(order.getTheLastUpdateTime(),'yyyy-MM-dd HH:mm:ss')}"></div>
-    <div th:text="${order.getOrderStateText()}"></div>
-    <h4 th:text="${order.getRestaurant().getName()}"></h4>
-    <p th:text="${#numbers.formatDecimal(order.getTotalPriceAfterDiscount(),0,2)}+'元'" style="float: right"></p>
-    <ul th:with="first=${order.getDetailsByPrice().get(0)}">
-        <li th:each="detail:${order.getDetailsByPrice()}"
-            th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
-    </ul>
-    <a th:href="@{/order/}+${order.getOrderId()}">查看详情</a>
+<div class="row clearfix red-border" xmlns:th="http://www.thymeleaf.org">
+    <div class="col-md-8 column">
+        <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.order.Order"*/-->
+        <div th:text="${#dates.format(order.getTheLastUpdateTime(),'yyyy-MM-dd HH:mm:ss')}"></div>
+        <div th:text="${order.getOrderStateText()}"></div>
+        <h4 th:text="${order.getRestaurant().getName()}"></h4>
+        <p th:text="${#numbers.formatDecimal(order.getTotalPriceAfterDiscount(),0,2)}+'元'" style="float: right"></p>
+        <ul>
+            <li th:each="detail:${order.getDetailsByPrice()}"
+                th:text="${detail.getOffering().getName()}+'×'+${detail.getQuantity()}"></li>
+        </ul>
+    </div>
+    <div class="col-md-4 column">
+        <a th:href="@{/order/}+${order.getOrderId()}" class="btn red-block pull-right">查看详情</a>
+    </div>
 </div>

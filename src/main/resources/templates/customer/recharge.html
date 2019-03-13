@@ -3,38 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 充值页面</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 <th:block>
     <div th:replace="customer/head"></div>
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
 
-    <div>
-        <h3>充值</h3>
-        <input id="recharge-amount-input">
-        <button id="recharge-button">提交</button>
-        <span id="recharge-info" style="color: red"></span>
-    </div>
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div>
+                    <h1>充值</h1>
+                    <div class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <p class="col-sm-3 control-label">充值金额</p>
+                            <div class="col-sm-5">
+                                <input type="email" class="form-control" id="recharge-amount-input"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-9">
+                                <button id="recharge-button" type="submit" class="btn red-block">提交</button>
+                                <span id="recharge-info" class="red-text"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <div>
-        <h3>充值记录</h3>
-        <table cellpadding="20">
-            <tr>
-                <th>时间</th>
-                <th>金额</th>
-            </tr>
-            <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
-            <tr th:each="log:${customer.getRechargeLogsByTimeDesc()}">
-                <td th:text="${#dates.format(log.getTime(),'yyyy-MM-dd HH:mm:ss')}"></td>
-                <th th:text="${#numbers.formatDecimal(log.getAmount(),0,2)}"></th>
-            </tr>
-        </table>
+                <br>
+                <div>
+                    <h1>充值记录</h1>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>时间</th>
+                            <th>金额</th>
+                        </tr>
+                        <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
+                        <tr th:each="log:${customer.getRechargeLogsByTimeDesc()}">
+                            <td th:text="${#dates.format(log.getTime(),'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <th th:text="${#numbers.formatDecimal(log.getAmount(),0,2)}"></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+
 </th:block>
-<script th:src="@{/js/customerRecharge.js}"></script>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/customer/recharge.js}"></script>
 </body>
 </html>

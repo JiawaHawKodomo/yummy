@@ -69,7 +69,7 @@ public class RestaurantController {
         Integer rid = (Integer) request.getSession(true).getAttribute("restaurant");
         if (rid != null)//已登录, 进入主页面
             return "redirect:/restaurant/index/" + rid;
-        return "restaurant/login";
+        return "redirect:/?role=1";
     }
 
     @PostMapping("/login")

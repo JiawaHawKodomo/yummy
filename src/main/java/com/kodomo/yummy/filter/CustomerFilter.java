@@ -36,7 +36,7 @@ public class CustomerFilter extends HttpFilter {
         HttpSession session = request.getSession(true);
         if (url.startsWith("/customer/") && !isUnderShield(url)) {
             if (session.getAttribute("customer") == null) {
-                response.sendRedirect("/customer/login");
+                response.sendRedirect("/?role=0");
             } else {
                 chain.doFilter(request, response);
             }

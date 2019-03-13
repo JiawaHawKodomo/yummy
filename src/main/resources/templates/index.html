@@ -1,12 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Yummy!</title>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
 </head>
-<body>
-<p>欢迎来到Yummy订餐平台!</p>
-<p><a href="/customer/place">个人用户订餐入口</a></p>
-<p><a href="/restaurant">商家入口</a></p>
+<body style="background: black">
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+    </ol>
+
+    <div class="carousel-inner">
+        <div class="item active"><img th:src="@{/pics/index1.png}" style="width:100%"
+                                      data-src="holder.js/900x500/auto/#7cbf00:#fff/text: " alt="First slide">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+            </div>
+        </div>
+        <div class="item"><img th:src="@{/pics/index2.png}" style="width:100%" data-src="" alt="Second slide">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+            </div>
+        </div>
+        <div class="item"><img th:src="@{/pics/index3.png}" style="width:100%" data-src="" alt="Third slide">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">...</a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">...</a>
+</div>
+
+<div class="container">
+    <div class="carousel-caption">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="jumbotron" style="background: transparent">
+                    <h1>Yummy! 订餐平台</h1>
+                    <p>Yummy! 友情提醒:</p>
+                    <p>行规千万条，顾客第一条。顾客不满意，Yummy两行泪。</p>
+                    <p>
+                        <button class="btn btn-danger btn-large" data-toggle="modal" data-target="#customer-modal">
+                            个人用户订餐入口
+                        </button>
+                        <button class="btn btn-danger btn-large" data-toggle="modal" data-target="#restaurant-modal">
+                            商家入口
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="restaurant-modal" tabindex="-1" role="dialog" aria-labelledby="restaurant-modal-label"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="restaurant-modal-label">
+                    餐厅登录
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row clearfix">
+
+                    <div class="col-md-2 column">
+                    </div>
+                    <div class="col-md-8 column">
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">标识码</span>
+                            <input type="text" class="form-control" id="restaurant-id-input">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">密码</span>
+                            <input type="password" class="form-control" id="restaurant-password-input">
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-md-2 column">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success" th:href="@{/restaurant/register}">注册</a>
+                <button type="button" class="btn btn-danger" id="restaurant-login-button"
+                        data-loading-text="登录中...">登录
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="customer-modal" tabindex="-1" role="dialog" aria-labelledby="customer-modal-label"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="customer-modal-label">
+                    会员登录
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row clearfix">
+
+                    <div class="col-md-2 column">
+                    </div>
+                    <div class="col-md-8 column">
+                        <br>
+                        <p class="text-info">若为未注册过的邮箱则自动注册</p>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">邮箱</span>
+                            <input type="text" class="form-control" id="customer-email-input">
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <span class="input-group-addon">密码</span>
+                            <input type="password" class="form-control" id="customer-password-input">
+                        </div>
+                        <br>
+                    </div>
+                    <div class="col-md-2 column">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="customer-login-button"
+                        data-loading-text="登录中...">登录
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/index/index.js}"></script>
 </body>
 </html>
