@@ -3,20 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 统计订单</title>
-    <style>
-        .order-div {
-            margin: 20px;
-            padding: 10px;
-            border: 2px solid black;
-            width: 300px;
-        }
-
-        .order-div-table {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    </style>
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
@@ -26,14 +14,33 @@
 <th:block>
     <th:block th:replace="customer/head"/>
 
-    <h3>统计结果</h3>
-    <!--/*@thymesVar id="orders" type="java.util.List"*/-->
-    <div style="display: flex"></div>
-    <div class="order-div-table">
-        <div th:each="order:${orders}" class="order-div">
-            <div th:replace="order/generalOrder"></div>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h3>统计结果</h3>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a class="panel-title" data-toggle="collapse" data-parent="#panel-799425"
+                           href="#ongoing-orders-div">统计的订单</a>
+                    </div>
+                    <div id="ongoing-orders-div" class="panel-collapse in">
+                        <div class="panel-body">
+                            <div>
+                                <div class="order-div-table">
+                                    <div th:each="order:${orders}"
+                                         class="order-div">
+                                        <th:block th:replace="order/generalOrder"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/bootstrap3.js}"></script>

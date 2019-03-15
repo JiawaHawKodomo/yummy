@@ -64,9 +64,10 @@ function registerOfferingButtons() {
         const id = father.attr('value');
         const startTime = father.find('.offering-start-time-input').val();
         const endTime = father.find('.offering-end-time-input').val();
+        const remaining = father.find('.offering-remaining-input').val();
         const types = [];
 
-        father.find('.offering-type-option:selected').each(function () {
+        father.find('.offering-type-checkbox:checked').each(function () {
             types.push($(this).val());
         });
 
@@ -77,7 +78,8 @@ function registerOfferingButtons() {
             id: id,
             types: types,
             startTime: startTime,
-            endTime: endTime
+            endTime: endTime,
+            remaining: remaining
         };
 
         //发送
@@ -143,7 +145,8 @@ function registerTypeButtons() {
         const thisTr = $(this).parents('.type-tr');
         const prevTr = thisTr.prev();
         if (prevTr.find('.type-name-input').length > 0) {
-            thisTr.insertBefore(prevTr);
+            thisTr.fadeOut().fadeIn();
+            prevTr.before(thisTr);
         }
     });
 
@@ -152,7 +155,10 @@ function registerTypeButtons() {
         const thisTr = $(this).parents('.type-tr');
         const nextTr = thisTr.next();
         if (nextTr.find('.type-name-input').length > 0) {
-            thisTr.insertAfter(nextTr);
+            //thisTr.insertAfter(nextTr);
+
+            thisTr.fadeOut().fadeIn();
+            nextTr.after($thisTrtr);
         }
     });
 
@@ -164,21 +170,10 @@ function registerTypeButtons() {
 
 //类型添加按钮
 $('#type-add-button').on('click', function () {
-    $('#type-table').append(
-        $('<tr></tr>').attr('class', 'type-tr').append(
-            $('<td></td>').append(
-                $('<input>').attr('class', 'type-name-input')
-            )
-        ).append(
-            $('<td></td>').append(
-                $('<button></button>').attr('class', 'type-up-button').text('↑')
-            ).append(
-                $('<button></button>').attr('class', 'type-down-button').text('↓')
-            ).append(
-                $('<button></button>').attr('class', 'type-delete-button').text('删除')
-            )
-        )
-    );
+    var newElement = $('#create-new-type-tr').clone(true);
+    newElement.attr('id', '');
+    $('#type-table').append(newElement);
+    newElement.show();
     registerTypeButtons();
 });
 
@@ -225,60 +220,16 @@ $('#type-save-button').on('click', function () {
 
 //添加菜品按钮
 $('#offering-add-button').on('click', function () {
-    const selectedType = $('.offering-type-radio[name="type"]:checked');
-    $(this).after(
-        $('<div></div>').attr('class', 'offering-div').append(
-            $('<div></div>').append(
-                $('<label></label>').append('名称:').append(
-                    $('<input>').attr('class', 'offering-name-input')
-                )
-            )
-        ).append(
-            $('<div></div>').append(
-                $('<label></label>').append('价格:').append(
-                    $('<input>').attr('class', 'offering-price-input')
-                ).append('元')
-            )
-        ).append(
-            $('<div></div>').append(
-                $('<label></label>').append('备注:').append(
-                    $('<input>').attr('class', 'offering-note-input')
-                )
-            )
-        ).append(
-            $('<div></div>').append(
-                $('<label></label>').append('起售日期:').append(
-                    $('<input>').attr('class', 'offering-start-time-input').attr('type', 'date')
-                )
-            ).append(
-                $('<label></label>').append('结束日期:').append(
-                    $('<input>').attr('class', 'offering-end-time-input').attr('type', 'date')
-                )
-            )
-        ).append(
-            $('<div></div>').append('分类').append(
-                $('<div></div>').attr('class', 'offering-type-div').append(
-                    $('<select></select>').attr('class', 'offering-type-select').attr('disabled', 'disabled').append(
-                        $('<option></option>').val(selectedType.val())
-                            .attr('class', 'offering-type-option')
-                            .text(selectedType.parents('label').text())
-                    )
-                )
-            ).append(
-                $('<button></button>').attr('class', 'offering-type-add-button').text('添加到新的类型')
-            )
-        ).append(
-            $('<button></button>').attr('class', 'offering-save-button').text('保存')
-        ).append(
-            $('<button></button>').attr('class', 'offering-delete-button').text('删除商品')
-        )
-    );
+    var newElement = $('#create-new-offering-div').clone(true);
+    newElement.attr('id', '');
+    $(this).after(newElement);
+    newElement.slideDown();
     registerOfferingButtons();
 });
 
 //展示菜品
 $('.offering-type-radio').on('click', function () {
-    const typeId = $(this).val();
+    const typeId = $(this).attr('value');
     $('.offering-div').each(function () {
         const thisDiv = $(this);
         thisDiv.hide();
@@ -298,7 +249,7 @@ $('.offering-type-radio').on('click', function () {
         }
     });
 });
-$('.offering-type-radio:checked').click();
+$('.offering-type-radio:first').click();
 
 //无类别商品
 $('#offering-non-type-radio').on('click', function () {
@@ -313,21 +264,10 @@ $('#offering-non-type-radio').on('click', function () {
 
 //添加策略
 $('#strategy-add-button').on('click', function () {
-    $('#strategy-table').append(
-        $('<tr></tr>').attr('class', 'strategy-tr').append(
-            $('<td></td>').append(
-                $('<input>').attr('class', 'strategy-m-input')
-            )
-        ).append(
-            $('<td></td>').append(
-                $('<input>').attr('class', 'strategy-n-input')
-            )
-        ).append(
-            $('<td></td>').append(
-                $('<button></button>').attr('class', 'strategy-delete-button').append('删除')
-            )
-        )
-    );
+    var newElement = $('#create-new-strategy-tr').clone(true);
+    newElement.attr('id', '');
+    $('#strategy-table').append(newElement);
+    newElement.show();
     registerStrategyButtons();
 });
 
@@ -335,7 +275,7 @@ $('#strategy-add-button').on('click', function () {
 $('#strategy-save-button').on('click', function () {
     var strategies = [];
     $('.strategy-tr').each(function () {
-        if ($(this).find('.strategy-m-input').length > 0) {
+        if ($(this).find('.strategy-m-input').length > 0 && $(this).attr('id') !== 'create-new-strategy-tr') {
             strategies.push({
                 greaterThan: $(this).find('.strategy-m-input').val(),
                 discount: $(this).find('.strategy-n-input').val()

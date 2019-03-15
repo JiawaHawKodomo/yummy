@@ -1,67 +1,65 @@
 <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
 <div xmlns:th="http://www.thymeleaf.org" th:if="${customer}!=null">
-    <div class="row clearfix">
-        <div class="col-md-12 column">
-            <nav class="navbar navbar-default" role="navigation">
-                <div class="navbar-header red-block">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse"
-                            data-target="#bs-example-navbar-collapse-1"><span
-                            class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
-                            class="icon-bar"></span><span class="icon-bar"></span></button>
-                    <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
-                    <a class="navbar-brand" href="#"
-                       th:text="'Yummy! '+${customer.getName()==null?'':customer.getName()}"
-                       style="color: white">
-                    </a>
-                </div>
+    <div class="column">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="navbar-header red-block">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1"><span
+                        class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                        class="icon-bar"></span><span class="icon-bar"></span></button>
+                <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
+                <a class="navbar-brand" href="#"
+                   th:text="'Yummy! '+${customer.getName()==null?'':customer.getName()}"
+                   style="color: white">
+                </a>
+            </div>
 
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a>
-                                <span class="glyphicon glyphicon-euro"></span>
-                                <span th:text="'余额:'+${#numbers.formatDecimal(customer.getBalance(),0,2)}"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a>
-                                <span class="glyphicon glyphicon-star"></span>
-                                <span th:text="'等级:'+${customer.getLevel()}"></span>
-                            </a>
-                        </li>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a>
+                            <span class="glyphicon glyphicon-euro"></span>
+                            <span th:text="'余额:'+${#numbers.formatDecimal(customer.getBalance(),0,2)}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span th:text="'等级:'+${customer.getLevel()}"></span>
+                        </a>
+                    </li>
 
-                        <th:block th:if="${customer.getState()}==UserState.UNACTIVATED">
-                            <li>
-                                <a class="red-text">还未激活, 请先激活才能进行其他操作</a>
-                            </li>
-                        </th:block>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
+                    <th:block th:if="${customer.getState()}==UserState.UNACTIVATED">
                         <li>
-                            <a th:href="@{/customer/place}">点餐</a>
+                            <a class="red-text">还未激活, 请先激活才能进行其他操作</a>
                         </li>
-                        <li>
-                            <a th:href="@{/customer/info}">个人信息</a>
-                        </li>
-                        <li>
-                            <a th:href="@{/customer/order}">我的订单</a>
-                        </li>
-                        <li>
-                            <a th:href="@{/customer/statistics}">统计</a>
-                        </li>
-                        <li>
-                            <a th:href="@{/customer/recharge}">充值</a>
-                        </li>
-                        <li>
-                            <a th:href="@{/customer/logout}">
-                                <span class="glyphicon glyphicon-log-out"></span>
-                                登出
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                    </th:block>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a th:href="@{/customer/place}">点餐</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/customer/info}">个人信息</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/customer/order}">我的订单</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/customer/statistics}">统计</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/customer/recharge}">充值</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/customer/logout}">
+                            <span class="glyphicon glyphicon-log-out"></span>
+                            登出
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-            </nav>
-        </div>
+        </nav>
     </div>
 </div>

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 我的消息</title>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
@@ -13,19 +15,29 @@
 
     <th:block th:replace="restaurant/head"/>
 
-    <div>
-        <h3>消息</h3>
-        <table border="2">
-            <tr>
-                <th>时间</th>
-                <td>信息</td>
-            </tr>
-            <tr th:each="message:${restaurant.getMessagesByTimeOrderDesc()}">
-                <td th:text="${#dates.format(message.getTime(),'yyyy-MM-dd HH:mm:ss')}"></td>
-                <td th:text="${message.getContent()}"></td>
-            </tr>
-        </table>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h3>我的消息</h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>时间</th>
+                        <td>信息</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="message:${restaurant.getMessagesByTimeOrderDesc()}">
+                        <td th:text="${#dates.format(message.getTime(),'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${message.getContent()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </th:block>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
 </body>
 </html>

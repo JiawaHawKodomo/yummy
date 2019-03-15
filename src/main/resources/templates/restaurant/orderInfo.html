@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 订单详情</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
-
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
     <meta name="orderId" th:content="${order.getOrderId()}">
 </head>
 <body>
@@ -16,16 +16,28 @@
 <th:block th:if="${restaurant ne null&&order ne null}">
     <th:block th:replace="restaurant/head"/>
 
-    <th:block th:replace="order/order"/>
-
-    <div>
-        <h3>操作:</h3>
-        <div>
-            <button id="confirm-button" th:if="${order.isOngoing()}">确认送达</button>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-2 column">
+            </div>
+            <div class="col-md-8 column">
+                <th:block th:replace="order/order"/>
+                <div>
+                    <h3>操作:</h3>
+                    <div>
+                        <button class="btn red-block" id="confirm-button" th:if="${order.isOngoing()}">确认送达</button>
+                    </div>
+                    <span id="order-operation-info" style="color: red"></span>
+                </div>
+            </div>
+            <div class="col-md-2 column">
+            </div>
         </div>
-        <span id="order-operation-info" style="color: red"></span>
     </div>
+
 </th:block>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
 <script th:src="@{/js/restaurantOrderInfo.js}"></script>
 </body>
 </html>

@@ -26,7 +26,7 @@
                     <h3>操作</h3>
                     <div>
                         <div th:if="${order.isUnpaid()}">
-                            <label>请输入密码<input id="pay-password-input" type="password"></label>
+                            <label>请输入密码<input id="pay-password-input" type="password" class="form-control"></label>
                         </div>
                         <button id="pay-button" class="btn red-block"
                                 th:if="${order.isUnpaid()}">付款

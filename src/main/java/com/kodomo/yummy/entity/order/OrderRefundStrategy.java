@@ -35,7 +35,7 @@ public class OrderRefundStrategy {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "strategy_id")
-    private Set<OrderRefundStrategyDetail> details;
+    private List<OrderRefundStrategyDetail> details;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
@@ -54,7 +54,7 @@ public class OrderRefundStrategy {
         return StaticConfig.getOrderRefundDefaultRate();
     }
 
-    @NotNull
+    
     public List<OrderRefundStrategyDetail> getDetailsByOrder() {
         if (getDetails() == null) return new ArrayList<>();
         return getDetails().stream()

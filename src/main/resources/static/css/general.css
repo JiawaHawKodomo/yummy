@@ -1,15 +1,30 @@
-body{
-    background: #fff0f4;
-}
-
 .red-block {
     background: #ff6866;
     color: white;
     transition: 0.2s;
 }
 
+.red-block:hover {
+    color: white;
+}
+
+.red-block:focus{
+    color: white;
+}
+
 .red-text {
     color: #ff6866;
+}
+
+.transparent-block {
+    background: transparent;
+    color: #ff6866;
+    transition: 0.2s;
+}
+
+.transparent-block:hover {
+    background: transparent;
+    color: #731917;
 }
 
 .red-border {
@@ -24,6 +39,10 @@ body{
     background: #ffe6e5;
 }
 
-em{
+em {
     color: #ff6866;
+}
+
+li.type-li {
+    cursor: pointer;
 }

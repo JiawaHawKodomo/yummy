@@ -40,7 +40,7 @@ public class Customer {
     @JoinTable(name = "_relationship_customer_to_location",
             joinColumns = {@JoinColumn(name = "customer_email")},
             inverseJoinColumns = {@JoinColumn(name = "location_id")})
-    private Set<Location> locations;//多对多单向
+    private List<Location> locations;//多对多单向
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.DETACH}, mappedBy = "customer")
     private Set<Order> orders;//一对多双向
@@ -55,7 +55,7 @@ public class Customer {
      */
     public void addLocation(Location location) {
         if (getLocations() == null) {
-            setLocations(new HashSet<>());
+            setLocations(new ArrayList<>());
             getLocations().add(location);
         }
         getLocations().add(location);
@@ -66,7 +66,7 @@ public class Customer {
      *
      * @return set
      */
-    @NotNull
+    
     public Set<Location> getValidLocation() {
         if (getLocations() == null) return new HashSet<>();
         return getLocations().stream().filter(Location::getIsInUse).collect(Collectors.toSet());
@@ -103,7 +103,7 @@ public class Customer {
      *
      * @return set
      */
-    @NotNull
+    
     public List<Order> getUnpaidOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> o.getState() == OrderState.UNPAID)
@@ -116,7 +116,7 @@ public class Customer {
      *
      * @return
      */
-    @NotNull
+    
     public List<Order> getOngoingOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> o.getState() == OrderState.ONGOING)
@@ -129,7 +129,7 @@ public class Customer {
      *
      * @return
      */
-    @NotNull
+    
     public List<Order> getIdleOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> o.getState() == OrderState.CANCELLED || o.getState() == OrderState.DONE)
@@ -142,7 +142,7 @@ public class Customer {
      *
      * @return
      */
-    @NotNull
+    
     public List<Order> getDoneOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream()
@@ -156,7 +156,7 @@ public class Customer {
      *
      * @return
      */
-    @NotNull
+    
     public Double getTotalConsumptionAmount() {
         return getDoneOrders().stream()
                 .mapToDouble(Order::getTotalPriceAfterDiscount)
@@ -223,7 +223,7 @@ public class Customer {
      *
      * @return
      */
-    @NotNull
+    
     public List<CustomerRechargeLog> getRechargeLogsByTimeDesc() {
         if (getRechargeLogs() == null) return new ArrayList<>();
         return getRechargeLogs().stream()

@@ -11,10 +11,15 @@ function submit() {
     const time = $('#business-hours').val();
     const type = $('#restaurant-type').val();
     const note = $('#note').val();
-    const addressNote = $('#restaurant-address').val();
+    const addressNote = $('#create-location-note').val();
 
     if (password !== password2) {
         responseP.html('两次输入的密码不一样');
+        return;
+    }
+
+    if (locationInfo === null) {
+        responseP.html('请先选择地址');
         return;
     }
 
@@ -52,5 +57,10 @@ window.addEventListener('message', function (event) {
     if (loc && loc.module === 'locationPicker') {
         console.log('location', loc);
         locationInfo = loc;
+
+        const poiname = loc.poiname === '我的位置' ? '' : loc.poiname;
+        $('#location-city').val(loc.cityname);
+        $('#location-block').val(loc.poiaddress);
+        $('#location-point').val(poiname);
     }
 }, false);

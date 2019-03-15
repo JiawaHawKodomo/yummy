@@ -139,30 +139,30 @@ $('#offering-selected-toggle-button').on('click', function () {
 });
 
 //展示菜品
-$('.offering-type-radio').on('click', function () {
-    const typeId = $(this).val();
-    $('.offering-div').each(function () {
-        const thisDiv = $(this);
-        thisDiv.hide();
-        const id = thisDiv.attr('id');
-        if (id !== undefined) {
-            var list = id.split('-');
-            list.shift();
-            if (list.indexOf(typeId) >= 0) {
-                thisDiv.slideDown();
-            }
-        }
-    });
-});
-$('.offering-type-radio:checked').click();
+// $('.offering-type-radio').on('click', function () {
+//     const typeId = $(this).attr('value');
+//     $('.offering-div').each(function () {
+//         const thisDiv = $(this);
+//         thisDiv.hide();
+//         const id = thisDiv.attr('id');
+//         if (id !== undefined) {
+//             var list = id.split('-');
+//             list.shift();
+//             if (list.indexOf(typeId) >= 0) {
+//                 thisDiv.slideDown();
+//             }
+//         }
+//     });
+// });
+$('.offering-type-radio:first').click();
 
 //无类别商品
-$('#offering-non-type-radio').on('click', function () {
-    $('.offering-div').each(function () {
-        $(this).hide();
-        const id = $(this).attr('id');
-        if (id !== undefined && id === 'non') {
-            $(this).slideDown();
-        }
-    })
-});
+// $('#offering-non-type-radio').on('click', function () {
+//     $('.offering-div').each(function () {
+//         $(this).hide();
+//         const id = $(this).attr('id');
+//         if (id !== undefined && id === 'non') {
+//             $(this).slideDown();
+//         }
+//     })
+// });

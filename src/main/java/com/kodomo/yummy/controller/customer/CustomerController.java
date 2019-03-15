@@ -94,6 +94,11 @@ public class CustomerController {
         return "customer/info";
     }
 
+    @GetMapping
+    public String index(){
+        return "redirect:/customer/place";
+    }
+
     /**
      * 充值
      *

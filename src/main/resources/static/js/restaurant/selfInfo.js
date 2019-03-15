@@ -3,13 +3,16 @@ $('.type-remove-button').on('click', function () {
 });
 
 $('#type-add-button').on('click', function () {
-    $('#type-add-button-li').attr('class', 'type-li').before(
-        $('<li></li>').append(
-            $('<input>').attr('class', 'type-input')
-        ).append(
-            $('<button></button>').text('删除').attr('class', 'type-remove-button').on('click', function () {
-                $(this).parents('.type-li').remove();
-            })
+    $('#type-add-button-li').before(
+        $('<li></li>').attr('class', 'type-li').append(
+            $('<div></div>').attr('class', 'input-group').append(
+                $('<input>').attr('class', 'type-input form-control')
+            ).append(
+                $('<span></span>').attr('class', 'type-remove-button input-group-addon').text('删除')
+                    .on('click', function () {
+                        $(this).parents('.type-li').remove();
+                    })
+            )
         )
     )
 });

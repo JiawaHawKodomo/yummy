@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>Yummy!</title>
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body style="background: black">
+
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
@@ -45,10 +47,10 @@
                     <p>Yummy! 友情提醒:</p>
                     <p>行规千万条，顾客第一条。顾客不满意，Yummy两行泪。</p>
                     <p>
-                        <button class="btn btn-danger btn-large" data-toggle="modal" data-target="#customer-modal">
+                        <button class="btn red-block btn-large" data-toggle="modal" data-target="#customer-modal">
                             个人用户订餐入口
                         </button>
-                        <button class="btn btn-danger btn-large" data-toggle="modal" data-target="#restaurant-modal">
+                        <button class="btn red-block btn-large" data-toggle="modal" data-target="#restaurant-modal">
                             商家入口
                         </button>
                     </p>
@@ -83,7 +85,7 @@
                         </div>
                         <br>
                         <div class="input-group">
-                            <span class="input-group-addon">密码</span>
+                            <span class="input-group-addon">  密码</span>
                             <input type="password" class="form-control" id="restaurant-password-input">
                         </div>
                         <br>
@@ -93,8 +95,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-success" th:href="@{/restaurant/register}">注册</a>
-                <button type="button" class="btn btn-danger" id="restaurant-login-button"
+                <a class="btn btn-success" th:href="@{/restaurant/register}" target="_blank">注册</a>
+                <button type="button" class="btn red-block" id="restaurant-login-button"
                         data-loading-text="登录中...">登录
                 </button>
             </div>
@@ -139,7 +141,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="customer-login-button"
+                <button type="button" class="btn red-block" id="customer-login-button"
                         data-loading-text="登录中...">登录
                 </button>
             </div>

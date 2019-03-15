@@ -59,6 +59,7 @@ yummy-system:
     order:
       no-such-order-error: 不存在该订单
       time-out: 订单已超时
+      exceed-remaining: 以下商品库存不足
 lbs:
   key: HYVBZ-QI7C5-EBFIA-QJMEN-DAVT2-S7B4Q
   baidu-ak-key: KKdnn1DpFvLwqvo0SNHGAyp6Me2gU8Fy

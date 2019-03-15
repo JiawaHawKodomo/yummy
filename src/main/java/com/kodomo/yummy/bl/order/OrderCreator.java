@@ -12,17 +12,12 @@ import com.kodomo.yummy.entity.order.OrderSettlementStrategy;
 import com.kodomo.yummy.entity.restaurant.Offering;
 import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.entity.restaurant.RestaurantStrategy;
-import com.kodomo.yummy.exceptions.ParamErrorException;
-import com.kodomo.yummy.exceptions.RestaurantHasClosedException;
-import com.kodomo.yummy.exceptions.UnupdatableException;
-import com.kodomo.yummy.exceptions.UserNotExistsException;
+import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Shuaiyu Yao
@@ -55,7 +50,7 @@ public class OrderCreator {
      * @param vo
      * @return
      */
-    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException {
+    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException, ExceedRemainException {
         if (email == null || vo == null) {
             throw new ParamErrorException();
         }
@@ -88,18 +83,14 @@ public class OrderCreator {
             throw new RestaurantHasClosedException();
         }
 
-        //orderSettlementStrategy
-        OrderSettlementStrategy settlementStrategy = orderSettlementStrategyDao.getCurrentOrderSettlementStrategy();
-
-        //customerLevelStrategy
-        CustomerLevelStrategy customerLevelStrategy = customerLevelStrategyDao.getCurrentStrategy();
         //details
-        Set<OrderDetail> details = new HashSet<>();
+        List<OrderDetail> details = new ArrayList<>();
         if (vo.getDetails().size() == 0) {
             errorFields.add("所选商品");
         }
+        List<String> exceededOfferingNames = new ArrayList<>();
         vo.getDetails().forEach(detail -> {
-            if (detail.getQuantity() == null || detail.getQuantity().equals(0)) {
+            if (detail.getQuantity() == null || detail.getQuantity() <= 0) {
                 errorFields.add("商品数量");
                 return;
             }
@@ -108,19 +99,29 @@ public class OrderCreator {
                 errorFields.add("商品id");
                 return;
             }
+            if (offering.getRemainingNumber() != null && offering.getRemainingNumber() - detail.getQuantity() < 0) {
+                exceededOfferingNames.add(offering.getName());
+            }
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setQuantity(detail.getQuantity());
             orderDetail.setOffering(offering);
             details.add(orderDetail);
         });
 
-        //restaurantStrategy
-        RestaurantStrategy restaurantStrategy = restaurant.getAppliedRestaurantStrategy(details.stream().mapToDouble(OrderDetail::getTotalPrice).sum());
-
         //异常处理
+        if (!exceededOfferingNames.isEmpty()) {
+            throw new ExceedRemainException(exceededOfferingNames);
+        }
         if (!errorFields.isEmpty()) {
             throw new ParamErrorException(errorFields);
         }
+
+        //orderSettlementStrategy
+        OrderSettlementStrategy settlementStrategy = orderSettlementStrategyDao.getCurrentOrderSettlementStrategy();
+        //customerLevelStrategy
+        CustomerLevelStrategy customerLevelStrategy = customerLevelStrategyDao.getCurrentStrategy();
+        //restaurantStrategy
+        RestaurantStrategy restaurantStrategy = restaurant.getAppliedRestaurantStrategy(details.stream().mapToDouble(OrderDetail::getTotalPrice).sum());
 
         //生成order
         Order order = new Order();

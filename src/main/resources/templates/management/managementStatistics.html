@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 统计</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
-    <script src="http://api.map.baidu.com/api?v=2.0&ak=KKdnn1DpFvLwqvo0SNHGAyp6Me2gU8Fy"></script>
-    <script th:src="@{/js/tool/echarts.js}"></script>
-    <script th:src="@{/js/tool/bmap.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+    <link th:href="@{/css/statistics.css}" rel="stylesheet">
 </head>
 <body>
 <th:block th:replace="management/head"/>
 
-<div>
-    <h3>餐厅统计</h3>
-    <div style="display: flex;height: 500px">
-        <div style="width: 50%;height: 100%" id="restaurant-region-distribution-chart"></div>
-        <div style="width: 50%;height: 100%" id="restaurant-register-time-chart"></div>
-    </div>
-
-</div>
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
-<div>
-    <h3>会员统计</h3>
-    <div style="display: flex;height: 600px">
-        <div style="width: 40%;height: 100%" id="customer-register-time-chart"></div>
-        <div style="width: 60%;height: 100%; display: flex;flex-wrap: wrap">
-            <div style="width: 50%;height: 50%" id="customer-order-quantity-chart"></div>
-            <div style="width: 50%;height: 50%" id="customer-consumption-amount-chart"></div>
-            <div style="width: 50%;height: 50%" id="customer-level-chart"></div>
+<div class="container">
+    <h1>用户信息统计</h1>
+    <div class="row">
+        <div class="col-xs-3" id="myScrollspy">
+            <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="225">
+                <li class="active"><a href="#restaurant-statistics-h">餐厅统计</a></li>
+                <li><a href="#customer-statistics-h">会员统计</a></li>
+                <li><a href="#order-statistics-h">订单统计</a></li>
+                <li><a href="#financial-statistics-h">财务统计</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-9">
+            <h3 id="restaurant-statistics-h">餐厅统计</h3>
+            <div class="statistics-div" id="restaurant-region-distribution-chart"></div>
+            <div class="statistics-div" id="restaurant-register-time-chart"></div>
+            <h3 id="customer-statistics-h">会员统计</h3>
+            <div class="statistics-div" id="customer-register-time-chart"></div>
+            <div class="statistics-div" style="display: flex;flex-wrap: wrap; width: 100%">
+                <div style="width: 50%;height: 50%" id="customer-order-quantity-chart"></div>
+                <div style="width: 50%;height: 50%" id="customer-consumption-amount-chart"></div>
+                <div style="width: 50%;height: 50%" id="customer-level-chart"></div>
+            </div>
+            <h3 id="order-statistics-h">订单统计</h3>
+            <div class="statistics-div" id="order-time-chart"></div>
+            <h3 id="financial-statistics-h">Yummy! 财务统计</h3>
+            <div id="financial-time-chart" class="statistics-div"></div>
         </div>
     </div>
 </div>
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
-
-<div>
-    <h3>订单统计</h3>
-    <div style="width: 80%;height: 500px" id="order-time-chart"></div>
-</div>
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
-<div>
-    <h3>Yummy! 财务统计</h3>
-    <div style="height: 600px;width:100%;display: flex">
-        <div id="financial-time-chart" style="width: 80%;height: 100%"></div>
-    </div>
-</div>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script src="http://api.map.baidu.com/api?v=2.0&ak=KKdnn1DpFvLwqvo0SNHGAyp6Me2gU8Fy"></script>
+<script th:src="@{/js/tool/echarts.js}"></script>
+<script th:src="@{/js/tool/bmap.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
 <script th:src="@{/js/managementStatistics.js}"></script>
 </body>
 </html>

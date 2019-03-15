@@ -3,23 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy管理系统登录</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
-管理员信息
-<table>
-    <tr>
-        <th>用户名:</th>
-        <th><label for="management-id"></label><input id="management-id"></th>
-    </tr>
-    <tr>
-        <th>密码:</th>
-        <th><label for="management-password"></label><input id="management-password" type="password"></th>
-    </tr>
-</table>
 
-<button id="management-login-button">登录</button>
-<a th:href="@{/}">返回</a>
-<script th:src="@{/js/managementLogin.js}"></script>
+<th:block th:replace="head"/>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="jumbotron">
+                <h1>
+                    Yummy! 管理系统
+                </h1>
+                <p>该管理系统提供了Yummy经理管理平台的UI界面</p>
+                <p>
+                    <a class="btn red-block btn-large" href="/">返回首页</a>
+                </p>
+
+                <div role="form">
+                    <div class="form-group">
+                        <label for="management-id">用户名</label>
+                        <input type="email" class="form-control"
+                               id="management-id"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="management-password">密码</label>
+                        <input type="password" class="form-control"
+                               id="management-password"/>
+                    </div>
+                    <button class="btn red-block" id="management-login-button">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/management/login.js}"></script>
 </body>
 </html>

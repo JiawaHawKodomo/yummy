@@ -4,7 +4,9 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 商家的餐品分类
@@ -28,5 +30,21 @@ public class OfferingType {
     @Column(nullable = false, name = "sequence_number")
     private Integer sequenceNumber;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "offeringTypes")
-    private Set<Offering> offerings;
+    private List<Offering> offerings;
+
+    public boolean contains(Offering offering) {
+        if (getOfferings() == null || offering == null || offering.getOfferingId() == null) return false;
+        for (Offering o : getOfferings()) {
+            if (offering.getOfferingId().equals(o.getOfferingId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Offering> getOnSaleOfferings() {
+        if (getOfferings() == null) return new ArrayList<>();
+        return getOfferings().stream().filter(Offering::isOnSale)
+                .collect(Collectors.toList());
+    }
 }

@@ -3,6 +3,8 @@ package com.kodomo.yummy.bl.restaurant;
 import com.kodomo.yummy.controller.vo.OfferingVo;
 import com.kodomo.yummy.dao.OfferingDao;
 import com.kodomo.yummy.dao.RestaurantDao;
+import com.kodomo.yummy.entity.order.Order;
+import com.kodomo.yummy.entity.order.OrderDetail;
 import com.kodomo.yummy.entity.restaurant.Offering;
 import com.kodomo.yummy.entity.restaurant.OfferingType;
 import com.kodomo.yummy.entity.restaurant.Restaurant;
@@ -56,6 +58,9 @@ public class OfferingHelper {
             offering.setStartTime(new Date());
         }
         offering.setEndTime(vo.getEndTime());
+        if (vo.getRemaining() != null) {
+            offering.setRemainingNumber(vo.getRemaining());
+        }
         return offering;
     }
 
@@ -145,5 +150,30 @@ public class OfferingHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void remainingReduce(Order order) throws ExceedRemainException {
+        List<Offering> offerings = new ArrayList<>();
+
+        List<String> exceedOfferingNames = new ArrayList<>();
+
+        for (OrderDetail detail : order.getDetails()) {
+            Offering offering = offeringDao.find(detail.getId());
+            if (offering.getRemainingNumber() == null) {
+                continue;//库存不限量, 不进行减少操作
+            }
+            if (offering.getRemainingNumber() - detail.getQuantity() < 0) {
+                exceedOfferingNames.add(offering.getName());
+            } else {
+                offering.setRemainingNumber(offering.getRemainingNumber() - detail.getQuantity());
+                offerings.add(offering);
+            }
+        }
+
+        if (!exceedOfferingNames.isEmpty()) {
+            throw new ExceedRemainException(exceedOfferingNames);
+        }
+
+        offeringDao.saveAll(offerings);
     }
 }

@@ -35,9 +35,9 @@ public class OrderSettlementStrategy {
     @Column(name = "end_time", columnDefinition = "timestamp default '2037-01-01'", insertable = false)
     private Date endTime;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "strategy_id")
-    private Set<OrderSettlementStrategyDetail> details;
+    private List<OrderSettlementStrategyDetail> details;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")

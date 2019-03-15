@@ -51,17 +51,17 @@ public class Restaurant {
     @JoinTable(name = "_relationship_restaurant_to_type",
             joinColumns = {@JoinColumn(name = "restaurant_id")},
             inverseJoinColumns = {@JoinColumn(name = "type_id")})
-    private Set<RestaurantType> types;
+    private List<RestaurantType> types;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Set<OfferingType> offeringTypes;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "restaurant")
-    private Set<Offering> offerings;
+    private List<Offering> offerings;
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY, mappedBy = "restaurant")
-    private Set<RestaurantStrategy> strategies;
+    private List<RestaurantStrategy> strategies;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "location_id", nullable = false)
@@ -103,7 +103,7 @@ public class Restaurant {
         return now >= from && now <= to;
     }
 
-    private int dateToMinute(@NotNull Date date) {
+    private int dateToMinute( Date date) {
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
         SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
         return Integer.parseInt(hourFormat.format(date)) * 60 + Integer.parseInt(minuteFormat.format(date));
@@ -116,7 +116,7 @@ public class Restaurant {
                 .count();
     }
 
-    @NotNull
+    
     public List<RestaurantMessage> getMessagesByTimeOrderDesc() {
         if (getMessages() == null) return new ArrayList<>();
         return getMessages().stream()
@@ -133,7 +133,7 @@ public class Restaurant {
         return RestaurantTypeHelper.typesToString(getTypes());
     }
 
-    @NotNull
+    
     public String getLocationInfo() {
         if (getLocation() == null) return "";
         return getLocation().getInfo();
@@ -184,7 +184,7 @@ public class Restaurant {
      *
      * @return
      */
-    @NotNull
+    
     public List<RestaurantStrategy> getRestaurantValidStrategyByAmount() {
         if (getStrategies() == null) return new ArrayList<>();
         return getStrategies().stream().filter(RestaurantStrategy::isValidNow)
@@ -197,7 +197,7 @@ public class Restaurant {
      *
      * @return
      */
-    @NotNull
+    
     public List<Offering> getValidOffering() {
         if (getOfferings() == null) return new ArrayList<>();
         return getOfferings().stream().filter(Offering::isValid)
@@ -209,7 +209,7 @@ public class Restaurant {
      *
      * @return
      */
-    @NotNull
+    
     public List<Offering> getOnSaleOffering() {
         if (getOfferings() == null) return new ArrayList<>();
         return getOfferings().stream().filter(Offering::isOnSale)
@@ -222,7 +222,7 @@ public class Restaurant {
      * @return
      */
     public OfferingType getOfferingTypeById(Integer id) {
-        if (getOfferingTypes() == null || id == null) return null;
+        if (getOnSaleOffering() == null || id == null) return null;
         for (OfferingType type : getOfferingTypes()) {
             if (id.equals(type.getOfferingTypeId())) {
                 return type;
@@ -236,9 +236,9 @@ public class Restaurant {
      *
      * @return
      */
-    @NotNull
+    
     public List<OfferingType> getOfferingTypeByOrder() {
-        if (getOfferingTypes() == null) return new ArrayList<>();
+        if (getOnSaleOffering() == null) return new ArrayList<>();
         return getOfferingTypes().stream().sorted(Comparator.comparingInt(OfferingType::getSequenceNumber))
                 .collect(Collectors.toList());
     }
@@ -248,10 +248,10 @@ public class Restaurant {
      *
      * @return
      */
-    @NotNull
+    
     public List<Offering> getNontypeOfferings() {
-        if (getOfferings() == null) return new ArrayList<>();
-        return getOfferings().stream().filter(o -> o.getOfferingTypes().size() == 0)
+        if (getOnSaleOffering() == null) return new ArrayList<>();
+        return getOnSaleOffering().stream().filter(o -> o.getOfferingTypes().size() == 0)
                 .collect(Collectors.toList());
     }
 
@@ -276,7 +276,7 @@ public class Restaurant {
      *
      * @return
      */
-    @NotNull
+    
     public String getRestaurantStrategyText() {
         if (getRestaurantValidStrategyByAmount() == null) return "无";
         return getRestaurantValidStrategyByAmount().stream().map(RestaurantStrategy::getText)
@@ -361,7 +361,7 @@ public class Restaurant {
         setBalance(getBalance() - amount);
     }
 
-    @NotNull
+    
     public List<Order> getOngoingOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(Order::isOngoing)
@@ -369,7 +369,7 @@ public class Restaurant {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+    
     public List<Order> getUnpaidOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(Order::isUnpaid)
@@ -377,7 +377,7 @@ public class Restaurant {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+    
     public List<Order> getIdleOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> !o.isOngoing() && !o.isUnpaid())
@@ -385,7 +385,7 @@ public class Restaurant {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+    
     public List<Order> getCanceledOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(Order::isCanceled)
@@ -393,7 +393,7 @@ public class Restaurant {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+    
     public List<Order> getDoneOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(Order::isDone)

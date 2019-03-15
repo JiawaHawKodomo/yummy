@@ -5,53 +5,170 @@
     <title>Yummy! 商家注册</title>
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <script th:src="@{/js/tool/jquery.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 
-请输入您的信息:
-<table>
-    <tr>
-        <td>餐厅名称:</td>
-        <td><input id="restaurant-name">*</td>
-    </tr>
-    <tr>
-        <td>设置密码:</td>
-        <td><input id="restaurant-password" type="password">*</td>
-    </tr>
-    <tr>
-        <td>再次输入密码:</td>
-        <td><input id="restaurant-password2" type="password">*</td>
-    </tr>
-    <tr>
-        <td>电话号码:</td>
-        <td><input id="restaurant-telephone">*</td>
-    </tr>
-    <tr>
-        <td>营业时间:</td>
-        <td><input id="business-hours" placeholder="格式如09:00-21:00">*</td>
-    </tr>
-    <tr>
-        <td>餐厅类型:</td>
-        <td><input id="restaurant-type">*</td>
-    </tr>
-    <tr>
-        <td>备注说明:</td>
-        <td><textarea id="note" placeholder="请填写向客户展示的说明" maxlength="240"></textarea></td>
-    </tr>
-</table>
+<th:block th:replace="head"/>
 
-<p>选择餐厅地点</p>
-<div>地址备注:<textarea id="restaurant-address" placeholder="如果选择的地址信息不准确, 请填写地址信息备注"></textarea></div>
-<!--/*@thymesVar id="lbsKey" type="String"*/-->
-<iframe id="mapPage" width="500px" height="500px" frameborder=0
-        th:src="'https://apis.map.qq.com/tools/locpicker?search=1&type=1&key='+${lbsKey}+'&referer=myapp'">
-</iframe>
-<p>
-    <button id="submit-button">提交</button>
-</p>
-<p id="response-p" style="color: red"></p>
-<script th:src="@{/js/restaurantRegister.js}"></script>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h2 class="col-sm-offset-2">注册您的店铺</h2>
+            <br>
+            <div class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="restaurant-name" class="col-sm-3 control-label">餐厅名称</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <input class="form-control" id="restaurant-name"/>
+                            <span class="input-group-addon">*</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-password" class="col-sm-3 control-label">设置密码</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="restaurant-password"/>
+                            <span class="input-group-addon">*</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-password2" class="col-sm-3 control-label">再次输入密码</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="restaurant-password2"/>
+                            <span class="input-group-addon">*</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-telephone" class="col-sm-3 control-label">电话号码</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <input class="form-control" id="restaurant-telephone"/>
+                            <span class="input-group-addon">*</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="business-hours" class="col-sm-3 control-label">营业时间</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <input class="form-control" id="business-hours" placeholder="格式如09:00-21:00">
+                            <span class="input-group-addon">*</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-type" class="col-sm-3 control-label">餐厅类型</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <input class="form-control" id="restaurant-type"/>
+                            <span class="input-group-addon">*</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="note" class="col-sm-3 control-label">备注说明</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <textarea class="form-control" id="note" placeholder="请填写向客户展示的说明"></textarea>
+                            <span class="input-group-addon"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">地址选择</label>
+                    <div class="col-sm-7">
+                        <div class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">城市</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control"
+                                           disabled="disabled"
+                                           id="location-city">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">街/区</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control"
+                                           disabled="disabled"
+                                           id="location-block">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">地点</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control"
+                                           disabled="disabled"
+                                           id="location-point">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">地址备注</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="create-location-note">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn red-block" id="select-location-button"
+                                            data-toggle="modal" data-target="#location-select-modal">
+                                        选择地址
+                                    </button>
+                                    <span id="create-location-info" class="red-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-7">
+                        <button type="submit" class="btn red-block" id="submit-button">注册</button>
+                        <span id="response-p" class="red-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="location-select-modal" tabindex="-1" role="dialog" aria-labelledby="location-select-label"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="location-select-label">
+                    选择地址
+                </h4>
+            </div>
+            <div class="modal-body">
+                <p>选择餐厅地点</p>
+                <!--/*@thymesVar id="lbsKey" type="String"*/-->
+                <iframe id="mapPage" width="500px" height="500px" frameborder=0
+                        th:src="'https://apis.map.qq.com/tools/locpicker?search=1&type=1&key='+${lbsKey}+'&referer=myapp'">
+                </iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn red-block" data-dismiss="modal">返回
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/restaurant/register.js}"></script>
 </body>
 </html>

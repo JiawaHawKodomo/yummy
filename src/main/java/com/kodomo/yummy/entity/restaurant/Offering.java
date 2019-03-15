@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -47,6 +48,9 @@ public class Offering {
             joinColumns = {@JoinColumn(name = "offering_id")},
             inverseJoinColumns = {@JoinColumn(name = "offering_type_id")})
     private Set<OfferingType> offeringTypes;
+
+    @Column(name = "remaining")
+    private Integer remainingNumber;//剩余数量
 
     /**
      * 是否正在销售或者正在预售

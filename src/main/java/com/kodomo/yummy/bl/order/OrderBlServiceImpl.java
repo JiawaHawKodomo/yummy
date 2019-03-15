@@ -1,6 +1,7 @@
 package com.kodomo.yummy.bl.order;
 
 import com.kodomo.yummy.bl.OrderBlService;
+import com.kodomo.yummy.bl.restaurant.OfferingHelper;
 import com.kodomo.yummy.controller.vo.OrderRefundStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderSettlementStrategyVo;
 import com.kodomo.yummy.controller.vo.OrderStatisticsInfoVo;
@@ -40,9 +41,10 @@ public class OrderBlServiceImpl implements OrderBlService {
     private final OrderLogHelper orderLogHelper;
     private final RestaurantDao restaurantDao;
     private final OrderStrategyHelper orderStrategyHelper;
+    private final OfferingHelper offeringHelper;
 
     @Autowired
-    public OrderBlServiceImpl(OrderDao orderDao, OrderCreator orderCreator, OrderLogDao orderLogDao, CustomerDao customerDao, OrderLogHelper orderLogHelper, RestaurantDao restaurantDao, OrderStrategyHelper orderStrategyHelper, OrderHelper orderHelper) {
+    public OrderBlServiceImpl(OrderDao orderDao, OrderCreator orderCreator, OrderLogDao orderLogDao, CustomerDao customerDao, OrderLogHelper orderLogHelper, RestaurantDao restaurantDao, OrderStrategyHelper orderStrategyHelper, OrderHelper orderHelper, OfferingHelper offeringHelper) {
         this.orderDao = orderDao;
         this.orderCreator = orderCreator;
         this.orderLogDao = orderLogDao;
@@ -51,6 +53,7 @@ public class OrderBlServiceImpl implements OrderBlService {
         this.restaurantDao = restaurantDao;
         this.orderStrategyHelper = orderStrategyHelper;
         this.orderHelper = orderHelper;
+        this.offeringHelper = offeringHelper;
     }
 
     @Override
@@ -105,8 +108,11 @@ public class OrderBlServiceImpl implements OrderBlService {
      * @return
      */
     @Override
-    public Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException {
+    public Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException, ExceedRemainException {
         Order order = orderCreator.createNewOrder(email, vo);
+
+        //该订单中的商品库存-1
+        offeringHelper.remainingReduce(order);
 
         //生成新的订单记录
         OrderLog orderLog = new OrderLog();

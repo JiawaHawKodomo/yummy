@@ -3,19 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 我的订单</title>
-    <style>
-        .order-div {
-            margin: 20px;
-            padding: 10px;
-            border: 2px solid black;
-            width: 300px;
-        }
-
-        .order-div-table {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    </style>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 
@@ -26,61 +15,83 @@
 <th:block th:if="${restaurant}!=null">
     <th:block th:replace="restaurant/head"/>
 
-    <th:block th:if="${restaurant.getOngoingOrders().size()}!=0">
-        <div>
-            <h3>进行中的订单:</h3>
-            <div class="order-div-table">
-                <div th:each="order:${restaurant.getOngoingOrders()}"
-                     class="order-div">
-                    <th:block th:replace="order/generalOrder"/>
-                </div>
-            </div>
-        </div>
-        <!--黑线-->
-        <div style="height: 2px;width: 100%;background: black"></div>
-    </th:block>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <h1>我的订单</h1>
+                <br>
+                <div class="panel-group" id="panel-799425">
+                    <th:block th:if="${restaurant.getOngoingOrders().size()}!=0">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title" data-toggle="collapse" data-parent="#panel-799425"
+                                   href="#ongoing-orders-div">进行中的订单</a>
+                            </div>
+                            <div id="ongoing-orders-div" class="panel-collapse in">
+                                <div class="panel-body">
+                                    <div>
+                                        <div class="order-div-table">
+                                            <div th:each="order:${restaurant.getOngoingOrders()}"
+                                                 class="order-div">
+                                                <th:block th:replace="order/generalOrder"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${restaurant.getUnpaidOrders().size()}!=0">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-799425"
+                                   href="#unpaid-orders-div">待支付的订单</a>
+                            </div>
+                            <div id="unpaid-orders-div" class="panel-collapse collapse">
+                                <div class="panel-body">
 
-    <th:block th:if="${restaurant.getUnpaidOrders().size()}!=0">
-        <div>
-            <h3>待支付的订单:</h3>
-            <div class="order-div-table">
-                <div th:each="order:${restaurant.getUnpaidOrders()}"
-                     class="order-div">
-                    <th:block th:replace="order/generalOrder"/>
-                </div>
-            </div>
-        </div>
-        <!--黑线-->
-        <div style="height: 2px;width: 100%;background: black"></div>
-    </th:block>
+                                    <div>
+                                        <div class="order-div-table">
+                                            <div th:each="order:${restaurant.getUnpaidOrders()}"
+                                                 class="order-div">
+                                                <th:block th:replace="order/generalOrder"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${restaurant.getIdleOrders().size()}!=0">
+                        <div class="panel panel-default">
+                            <div class="panel-heading red-block" data-toggle="collapse" data-parent="#panel-799425"
+                                 href="#idle-orders-div"
+                                 style="background: #ff6866;color: white;transition: 0.2s;">
+                                <a class="panel-title collapsed">过去的订单</a>
+                            </div>
+                            <div id="idle-orders-div" class="panel-collapse collapse">
+                                <div class="panel-body">
 
-    <th:block th:if="${restaurant.getCanceledOrders().size()}!=0">
-        <div>
-            <h3>取消的订单:</h3>
-            <div class="order-div-table">
-                <div th:each="order:${restaurant.getCanceledOrders()}"
-                     class="order-div">
-                    <th:block th:replace="order/generalOrder"/>
-                </div>
-            </div>
-        </div>
-        <!--黑线-->
-        <div style="height: 2px;width: 100%;background: black"></div>
-    </th:block>
+                                    <div>
+                                        <div class="order-div-table">
+                                            <div th:each="order:${restaurant.getIdleOrders()}"
+                                                 class="order-div">
+                                                <th:block th:replace="order/generalOrder"/>
+                                            </div>
+                                        </div>
+                                    </div>
 
-    <th:block th:if="${restaurant.getDoneOrders().size()}!=0">
-        <div>
-            <h3>完成的订单:</h3>
-            <div class="order-div-table">
-                <div th:each="order:${restaurant.getDoneOrders()}"
-                     class="order-div">
-                    <th:block th:replace="order/generalOrder"/>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
                 </div>
             </div>
         </div>
-        <!--黑线-->
-        <div style="height: 2px;width: 100%;background: black"></div>
-    </th:block>
+    </div>
 </th:block>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/restaurant/orders.js}"></script>
 </body>
 </html>

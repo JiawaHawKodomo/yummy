@@ -51,57 +51,22 @@ $('.customer-level-strategy-remove-button').on('click', function () {
 });
 
 $('#customer-level-strategy-add-button').on('click', function () {
-    customerLevelStrategyTable.append(
-        $('<tr></tr>').attr('class', 'customer-level-strategy-tr').append(
-            $('<td></td>').append($('<input>').attr('class', 'customer-level-strategy-level-input'))
-        ).append(
-            $('<td></td>').append($('<input>').attr('class', 'customer-level-strategy-amount-input'))
-        ).append(
-            $('<td></td>').append($('<input>').attr('class', 'customer-level-strategy-rate-input'))
-        ).append(
-            $('<td></td>').append($('<button></button>').text('删除').attr('class', 'customer-level-strategy-remove-button')
-                .on('click', function () {
-                    $(this).parents('.customer-level-strategy-tr').remove();
-                }))
-        )
-    )
+    var newElement = $('#create-new-customer-level-strategy-tr').clone(true);
+    customerLevelStrategyTable.append(newElement);
+    newElement.attr('id', '').attr('class', 'customer-level-strategy-tr').show();
 });
 
 $('#refund-strategy-add-button').on('click', function () {
-    refundStrategyTable.append(
-        $('<tr></tr>').attr('class', 'refund-strategy-tr').append(
-            $('<td></td>').append($('<input>').attr('class', 'refund-strategy-more-input'))
-        ).append(
-            $('<td></td>').append($('<input>').attr('class', 'refund-strategy-less-input'))
-        ).append(
-            $('<td></td>').append($('<input>').attr('class', 'refund-strategy-rate-input'))
-        ).append(
-            $('<td></td>').append($('<button></button>').text('删除').attr('class', 'refund-strategy-remove-button')
-                .on('click', function () {
-                    $(this).parents('.refund-strategy-tr').remove();
-                }))
-        )
-    )
+    var newElement = $('#create-new-refund-strategy-tr').clone(true);
+    refundStrategyTable.append(newElement);
+    newElement.attr('id', '').attr('class', 'refund-strategy-tr').show();
 });
 
 $('#strategy-add-button').on('click', function () {
     //添加一行
-    strategyTable.append(
-        $('<tr></tr>').attr('class', 'strategy-tr').append(
-            $('<td></td>').append(
-                $('<select></select>').append($('<option></option>').text('城市').attr('value', '0')).append($('<option></option>').text('订单数量').attr('value', '1'))
-            )
-        ).append(
-            $('<td></td>').append($('<input>').attr('class', 'strategy-key-input'))
-        ).append(
-            $('<td></td>').append($('<input>').attr('class', 'strategy-rate-input'))
-        ).append(
-            $('<td></td>').append($('<button></button>').text('删除').attr('class', 'strategy-remove-button')
-                .on('click', function () {
-                    $(this).parents('.strategy-tr').remove();
-                }))
-        )
-    );
+    var newElement = $('#create-new-order-settlement-strategy-tr').clone(true);
+    strategyTable.append(newElement);
+    newElement.attr('class', 'strategy-tr').attr('id', '').show();
 });
 
 //保存策略结果
@@ -207,10 +172,11 @@ function tryToApprove(id, pass) {
         success: function (data) {
             if (data.result) {
                 if (pass) {
-                    td.html('已通过');
+                    alert('已通过');
                 } else {
-                    td.html('未通过');
+                    alert('未能通过')
                 }
+                history.go(0);
             } else {
                 alert(data.info);
             }

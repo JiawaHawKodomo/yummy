@@ -105,12 +105,12 @@ public class RestaurantEntityHelper {
 
         //检查餐厅类型
         RestaurantType type1 = restaurantTypeDao.findTypeByContent(type);
-        Set<RestaurantType> set = new HashSet<>();
+        List<RestaurantType> set = new ArrayList<>();
         dealWithType(type1, set, type);
         restaurant.setTypes(set);
         restaurant.setNote(note);
 
-        Location location = locationHelper.createLocation(block, point, note, city, tel, lat, lng);
+        Location location = locationHelper.createLocation(block, point, addressNote, city, tel, lat, lng);
         restaurant.setLocation(location);
 
         //存储
@@ -213,7 +213,7 @@ public class RestaurantEntityHelper {
         modificationInfo.setRunTo(times[1]);
         modificationInfo.setLocationNote(vo.getLocationNote());
         //处理type
-        Set<RestaurantType> types = new HashSet<>();
+        List<RestaurantType> types = new ArrayList<>();
         vo.getTypes().forEach(s -> {
             RestaurantType type = restaurantTypeDao.findTypeByContent(s);
             dealWithType(type, types, s);
@@ -224,7 +224,7 @@ public class RestaurantEntityHelper {
         restaurantModificationInfoDao.save(modificationInfo);
     }
 
-    private void dealWithType(RestaurantType type, Set<RestaurantType> types, String content) {
+    private void dealWithType(RestaurantType type, Collection<RestaurantType> types, String content) {
         if (type != null) {
             types.add(type);
         } else {
@@ -294,7 +294,7 @@ public class RestaurantEntityHelper {
         restaurant.setRunFrom(info.getRunFrom());
         restaurant.setRunTo(info.getRunTo());
         restaurant.setLocationNote(info.getLocationNote());
-        restaurant.setTypes(new HashSet<>(info.getTypes()));
+        restaurant.setTypes(new ArrayList<>(info.getTypes()));
 
         try {
             restaurantDao.save(restaurant);

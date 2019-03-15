@@ -42,7 +42,7 @@
                         <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
                         <tr th:each="log:${customer.getRechargeLogsByTimeDesc()}">
                             <td th:text="${#dates.format(log.getTime(),'yyyy-MM-dd HH:mm:ss')}"></td>
-                            <th th:text="${#numbers.formatDecimal(log.getAmount(),0,2)}"></th>
+                            <td th:text="${#numbers.formatDecimal(log.getAmount(),0,2)}"></td>
                         </tr>
                     </table>
                 </div>

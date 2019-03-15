@@ -16,10 +16,7 @@ import com.kodomo.yummy.exceptions.UserNotExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Shuaiyu Yao
@@ -60,11 +57,11 @@ public class OrderStrategyHelper {
 
         //生成新的策略
         OrderSettlementStrategy newStrategy = new OrderSettlementStrategy();
-        Set<OrderSettlementStrategyDetail> details = new HashSet<>();
+        List<OrderSettlementStrategyDetail> details = new ArrayList<>();
         for (OrderSettlementStrategyVo vo : vos) {
             OrderSettlementStrategyType type = OrderSettlementStrategyType.getByIndex(vo.getType());
 
-            if (vo.getKey() == null || type == null) {
+            if (vo.getKey() == null || type == null || vo.getRate() == null || vo.getKey().equals("")) {
                 throw new ParamErrorException("参数填写错误");
             }
 
@@ -101,7 +98,7 @@ public class OrderStrategyHelper {
 
         //生成新的策略
         OrderRefundStrategy orderRefundStrategy = new OrderRefundStrategy();
-        Set<OrderRefundStrategyDetail> details = new HashSet<>();
+        List<OrderRefundStrategyDetail> details = new ArrayList<>();
         for (int i = 0; i < vos.size(); i++) {
             OrderRefundStrategyVo thisVo = vos.get(i);
             if (thisVo.getMore() == null || thisVo.getLess() == null || thisVo.getRate() == null) {

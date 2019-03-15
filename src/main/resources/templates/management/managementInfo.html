@@ -3,267 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 管理页面</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 <th:block th:replace="management/head"/>
-<div>
-    <h3>添加管理员</h3>
-    <table>
-        <tr>
-            <th>账号:</th>
-            <th><input id="manager-register-id"></th>
-        </tr>
-        <tr>
-            <th>密码:</th>
-            <th><input id="manager-register-password" type="password"></th>
-        </tr>
-        <tr>
-            <th>再次输入:</th>
-            <th><input id="manager-register-password2" type="password"></th>
-        </tr>
-    </table>
-    <button id="manager-register-button">提交</button>
-    <p id="manager-register-info" style="color: red"></p>
-</div>
 
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
 
-<div>
-    <h3>审批餐厅注册</h3>
-    <table border="2" cellpadding="5">
-        <tr>
-            <th>餐厅编号</th>
-            <th>餐厅名称</th>
-            <th>申请时间</th>
-            <th>营业时间</th>
-            <th>餐厅类型</th>
-            <th>备注说明</th>
-            <th>城市</th>
-            <th>具体地点</th>
-            <th>地点备注</th>
-            <th>操作</th>
-        </tr>
-        <!--/*@thymesVar id="unactivatedRestaurant" type="java.util.List"*/-->
-        <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
-        <tr th:each="restaurant:${unactivatedRestaurant}">
-            <td th:text="${restaurant.getRestaurantId()}"></td>
-            <td th:text="${restaurant.getName()}"></td>
-            <td th:text="${restaurant.getRegisterTime()}"></td>
-            <td th:text="${restaurant.getBusinessHours()}"></td>
-            <td th:text="${restaurant.getTypeByString()}"></td>
-            <td th:text="${restaurant.getNote()}"></td>
-            <td th:text="${restaurant.getCity()}"></td>
-            <td th:text="${restaurant.getBlockInfo()+restaurant.getPointInfo()}"></td>
-            <td th:text="${restaurant.getLocationNote()}"></td>
-            <td th:id="'td-'+${restaurant.getRestaurantId()}">
-                <button class="restaurant-pass-button" th:id="'pass-button-'+${restaurant.getRestaurantId()}">通过
-                </button>
-                <button class="restaurant-no-pass-button" th:id="'no-pass-button-'+${restaurant.getRestaurantId()}">
-                    不通过
-                </button>
-            </td>
-        </tr>
-    </table>
-</div>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="tabbable" id="tabs-172474">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#add-manager-div" data-toggle="tab">添加管理员</a>
+                    </li>
+                    <li>
+                        <a href="#approve-restaurant-register-div" data-toggle="tab">审批餐厅注册</a>
+                    </li>
+                    <li>
+                        <a href="#approve-restaurant-modify-div" data-toggle="tab">审批餐厅修改</a>
+                    </li>
+                    <li>
+                        <a href="#order-settlement-strategy-div" data-toggle="tab">订单结算策略</a>
+                    </li>
+                    <li>
+                        <a href="#order-refund-strategy-div" data-toggle="tab">订单退款策略</a>
+                    </li>
+                    <li>
+                        <a href="#customer-level-strategy-div" data-toggle="tab">会员等级策略</a>
+                    </li>
+                </ul>
 
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
-<div>
-    <h3>审批餐厅修改信息</h3>
-    <div style="color: red">红色字体为商家修改的内容</div>
-    <table border="2">
-        <tr>
-            <th>商家编号</th>
-            <th>申请修改时间</th>
-            <th>店铺名字</th>
-            <th>电话</th>
-            <th>营业时间</th>
-            <th>地点备注</th>
-            <th>店铺类型</th>
-            <th>操作</th>
-        </tr>
-        <!--/*@thymesVar id="modificationInfos" type="java.util.List"*/-->
-        <!--/*@thymesVar id="info" type="com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo"*/-->
-        <tr th:each="info:${modificationInfos}" th:with="original=${info.getRestaurant()}"
-            class="restaurant-modification-tr"
-            th:value="${info.getRestaurantModificationInfoId()}">
-            <td><a th:href="@{/restaurant/index/}+${original.getRestaurantId()}"
-                   th:text="${original.getRestaurantId()}"
-                   target="_blank"></a></td>
-            <td th:text="${info.getSubmitTime()}"></td>
-            <td>
-                <th:block th:if="${original.getName().equals(info.getName())}" th:text="${original.getName()}"/>
-                <th:block th:if="${!original.getName().equals(info.getName())}">
-                    <span th:text="${original.getName()}"></span>
-                    <br>
-                    <span>→</span>
-                    <br>
-                    <span style="color: red" th:text="${info.getName()}"></span>
-                </th:block>
-            </td>
-            <td>
-                <th:block th:if="${original.getTelephone().equals(info.getTelephone())}"
-                          th:text="${original.getTelephone()}"/>
-                <th:block th:if="${!original.getTelephone().equals(info.getTelephone())}">
-                    <span th:text="${original.getTelephone()}"></span>
-                    <br>
-                    <span>→</span>
-                    <br>
-                    <span th:text="${info.getTelephone()}" style="color: red"></span>
-                </th:block>
-            </td>
-            <td>
-                <th:block th:if="${original.getBusinessHours().equals(info.getBusinessHours())}"
-                          th:text="${original.getBusinessHours()}"/>
-                <th:block th:if="${!original.getBusinessHours().equals(info.getBusinessHours())}">
-                    <span th:text="${original.getBusinessHours()}"></span>
-                    <br>
-                    <span>→</span>
-                    <br>
-                    <span th:text="${info.getBusinessHours()}" style="color: red"></span>
-                </th:block>
-            </td>
-            <td>
-                <th:block th:if="${original.getLocationNote().equals(info.getLocationNote())}"
-                          th:text="${original.getLocationNote()}"/>
-                <th:block th:if="${!original.getLocationNote().equals(info.getLocationNote())}">
-                    <span th:text="${original.getLocationNote()}"></span>
-                    <br>
-                    <span>→</span>
-                    <br>
-                    <span th:text="${info.getLocationNote()}" style="color: red"></span>
-                </th:block>
-            </td>
-            <td>
-                <th:block th:if="${original.getTypeByString().equals(info.getTypeByString())}"
-                          th:text="${original.getTypeByString()}"/>
-                <th:block th:if="${!original.getTypeByString().equals(info.getTypeByString())}">
-                    <span th:text="${original.getTypeByString()}"></span>
-                    <br>
-                    <span>→</span>
-                    <br>
-                    <span th:text="${info.getTypeByString()}" style="color: red"></span>
-                </th:block>
-            </td>
-            <td>
-                <button class="restaurant-modification-pass-button">通过</button>
-                <button class="restaurant-modification-not-pass-button">不通过</button>
-            </td>
-        </tr>
-    </table>
-    <div id="restaurant-modification-info" style="color: red"></div>
-</div>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="add-manager-div">
 
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
+                        <div class="container">
+                            <div class="row clearfix">
+                                <h3>添加管理员</h3>
+                                <div class="col-md-12 column well well-large">
+                                    <div role="form">
+                                        <div class="form-group">
+                                            <label for="manager-register-id">账号</label>
+                                            <input class="form-control"
+                                                   id="manager-register-id">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="manager-register-password">密码</label>
+                                            <input type="password"
+                                                   class="form-control"
+                                                   id="manager-register-password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="manager-register-password">再次输入</label>
+                                            <input type="password"
+                                                   class="form-control"
+                                                   id="manager-register-password2">
+                                        </div>
+                                        <button class="btn red-block" id="manager-register-button">提交</button>
+                                        <p id="manager-register-info" class="red-text"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="approve-restaurant-register-div">
+                        <div>
+                            <h3>审批餐厅注册</h3>
 
-<div>
-    <h3>制定订单结算策略</h3>
-    <div style="color: red">注: 对于阈值一栏, 如果类型为城市, 则表示在该城市执行</div>
-    <!--/*@thymesVar id="currentOrderSettlementStrategy" type="com.kodomo.yummy.entity.order.OrderSettlementStrategy"*/-->
-    <div th:unless="${currentOrderSettlementStrategy}!=null" style="color: red">
-        无法找到当前策略, 请新建策略
+                            <p th:if="${unactivatedRestaurant.size()==0}" class="red-text">
+                                当前没有餐厅申请注册
+                            </p>
+
+                            <!--/*@thymesVar id="unactivatedRestaurant" type="java.util.List<com.kodomo.yummy.entity.restaurant.Restaurant>"*/-->
+                            <div th:each="restaurant:${unactivatedRestaurant}" class="well well-large">
+                                <table class="table table-hover">
+                                    <tr>
+                                        <td>餐厅编号</td>
+                                        <td th:text="${restaurant.getRestaurantId()}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>餐厅名称</td>
+                                        <td th:text="${restaurant.getName()}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>申请时间</td>
+                                        <td th:text="${restaurant.#dates.format(restaurant.getRegisterTime(),'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>营业时间</td>
+                                        <td th:text="${restaurant.getBusinessHours()}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>餐厅类型</td>
+                                        <td th:text="${restaurant.getTypeByString()}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>备注说明</td>
+                                        <td th:text="${restaurant.getNote()}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>地址</td>
+                                        <td>
+                                            <ul class="list-unstyled">
+                                                <li th:text="${restaurant.getCity()}"></li>
+                                                <li th:text="${restaurant.getBlockInfo()}"></li>
+                                                <li th:text="${restaurant.getPointInfo()}"></li>
+                                                <li th:text="${restaurant.getLocationNote()}"></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <button class="restaurant-pass-button btn red-block"
+                                        th:id="'pass-button-'+${restaurant.getRestaurantId()}">通过
+                                </button>
+                                <button class="restaurant-no-pass-button btn red-block"
+                                        th:id="'no-pass-button-'+${restaurant.getRestaurantId()}">
+                                    不通过
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="approve-restaurant-modify-div">
+                        <div>
+                            <h3>审批餐厅修改信息</h3>
+                            <!--/*@thymesVar id="modificationInfos" type="java.util.List<com.kodomo.yummy.entity.restaurant.RestaurantModificationInfo>"*/-->
+                            <p class="red-text" th:if="${modificationInfos.size()==0}">
+                                当前没有餐厅提交修改信息
+                            </p>
+
+                            <p id="restaurant-modification-info" class="red-block"></p>
+                            <div class="well well-large restaurant-modification-tr" th:each="info:${modificationInfos}"
+                                 th:with="original=${info.getRestaurant()}"
+                                 th:value="${info.getRestaurantModificationInfoId()}">
+                                <em class="red-text">该字体为商家修改的内容</em>
+
+                                <table class="table table-hover">
+                                    <tr>
+                                        <td>商家编号</td>
+                                        <td>
+                                            <a th:href="@{/restaurant/index/}+${original.getRestaurantId()}"
+                                               th:text="${original.getRestaurantId()}"
+                                               target="_blank"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>申请提交时间</td>
+                                        <td th:text="${#dates.format(info.getSubmitTime(),'yyyy-MM-dd HH:mm:ss')}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>店铺名字</td>
+                                        <td>
+                                            <th:block th:if="${original.getName().equals(info.getName())}"
+                                                      th:text="${original.getName()}"/>
+                                            <th:block th:if="${!original.getName().equals(info.getName())}">
+                                                <span th:text="${original.getName()}"></span>
+                                                <span>→</span>
+                                                <em class="red-text" th:text="${info.getName()}"></em>
+                                            </th:block>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>电话</td>
+                                        <td>
+                                            <th:block th:if="${original.getTelephone().equals(info.getTelephone())}"
+                                                      th:text="${original.getTelephone()}"/>
+                                            <th:block th:if="${!original.getTelephone().equals(info.getTelephone())}">
+                                                <span th:text="${original.getTelephone()}"></span>
+                                                <span>→</span>
+                                                <em th:text="${info.getTelephone()}" class="red-text"></em>
+                                            </th:block>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>营业时间</td>
+                                        <td>
+                                            <th:block
+                                                    th:if="${original.getBusinessHours().equals(info.getBusinessHours())}"
+                                                    th:text="${original.getBusinessHours()}"/>
+                                            <th:block
+                                                    th:if="${!original.getBusinessHours().equals(info.getBusinessHours())}">
+                                                <span th:text="${original.getBusinessHours()}"></span>
+                                                <span>→</span>
+                                                <em th:text="${info.getBusinessHours()}" class="red-text"></em>
+                                            </th:block>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>地点</td>
+                                        <td>
+                                            <ul class="list-unstyled">
+                                                <li th:text="${original.getCity()}"></li>
+                                                <li th:text="${original.getBlockInfo()}"></li>
+                                                <li th:text="${original.getPointInfo()}"></li>
+                                                <li>
+                                                    <th:block
+                                                            th:if="${original.getLocationNote().equals(info.getLocationNote())}"
+                                                            th:text="${original.getLocationNote()}"/>
+                                                    <th:block
+                                                            th:if="${!original.getLocationNote().equals(info.getLocationNote())}">
+                                                        <span th:text="${original.getLocationNote()}"></span>
+                                                        <span>→</span>
+                                                        <em th:text="${info.getLocationNote()}" class="red-text"></em>
+                                                    </th:block>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>店铺类型</td>
+                                        <td>
+                                            <th:block
+                                                    th:if="${original.getTypeByString().equals(info.getTypeByString())}"
+                                                    th:text="${original.getTypeByString()}"/>
+                                            <th:block
+                                                    th:if="${!original.getTypeByString().equals(info.getTypeByString())}">
+                                                <span th:text="${original.getTypeByString()}"></span>
+                                                <span>→</span>
+                                                <em th:text="${info.getTypeByString()}" class="red-text"></em>
+                                            </th:block>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <button class="restaurant-modification-pass-button btn red-block">通过</button>
+                                <button class="restaurant-modification-not-pass-button btn red-block">不通过</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="order-settlement-strategy-div">
+
+                        <div>
+                            <h3>制定订单结算策略</h3>
+                            <div class="red-text">注: 对于阈值一栏, 如果类型为城市, 则表示在该城市执行</div>
+                            <!--/*@thymesVar id="currentOrderSettlementStrategy" type="com.kodomo.yummy.entity.order.OrderSettlementStrategy"*/-->
+                            <div th:unless="${currentOrderSettlementStrategy}!=null" class="red-text">
+                                无法找到当前策略, 请新建策略
+                            </div>
+                            <table id="strategy-table" class="table table=hover">
+                                <tr>
+                                    <th>类型</th>
+                                    <th>阈值</th>
+                                    <th>折算率</th>
+                                    <th>操作</th>
+                                </tr>
+
+                                <th:block th:if="${currentOrderSettlementStrategy}!=null">
+                                    <tr th:each="strategy:${currentOrderSettlementStrategy.getDetails()}"
+                                        class="strategy-tr">
+                                        <td><select class="form-control">
+                                            <option th:selected="${strategy.getType().ordinal()==0}" value="0">城市
+                                            </option>
+                                            <option th:selected="${strategy.getType().ordinal()==1}" value="1">订单数量
+                                            </option>
+                                        </select></td>
+                                        <td><input th:value="${strategy.getKey()}"
+                                                   class="strategy-key-input form-control"></td>
+                                        <td><input th:value="${strategy.getRate()}"
+                                                   class="strategy-rate-input form-control"></td>
+                                        <td>
+                                            <button class="strategy-remove-button btn red-block">删除</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr id="create-new-order-settlement-strategy-tr"
+                                        style="display: none;">
+                                        <td><select class="form-control">
+                                            <option value="0">城市
+                                            </option>
+                                            <option value="1">订单数量
+                                            </option>
+                                        </select></td>
+                                        <td><input class="strategy-key-input form-control"></td>
+                                        <td><input class="strategy-rate-input form-control"></td>
+                                        <td>
+                                            <button class="strategy-remove-button btn red-block">删除</button>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                            </table>
+                            <button id="strategy-add-button" class="btn red-block">添加</button>
+                            <button id="strategy-save-button" class="btn red-block">保存</button>
+                            <div id="strategy-info-div" class="red-text"></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="order-refund-strategy-div">
+                        <div>
+                            <h3>制定订单退款策略</h3>
+                            <!--/*@thymesVar id="currentOrderRefundStrategy" type="com.kodomo.yummy.entity.order.OrderRefundStrategy"*/-->
+                            <div th:unless="${currentOrderRefundStrategy}!=null" class="red-text">
+                                无法找到当前策略, 请新建策略
+                            </div>
+
+                            <div class="red-text">注: 单位为分钟</div>
+                            <table id="refund-strategy-table" class="table table-hover">
+                                <tr>
+                                    <th>大于等于时间</th>
+                                    <th>小于时间</th>
+                                    <th>退款比例</th>
+                                    <th>操作</th>
+                                </tr>
+                                <th:block th:if="${currentOrderRefundStrategy}!=null">
+                                    <tr th:each="strategy:${currentOrderRefundStrategy.getDetailsByOrder()}"
+                                        class="refund-strategy-tr">
+                                        <td><input th:value="${strategy.getMoreThanOrEquals()}"
+                                                   class="refund-strategy-more-input form-control"></td>
+                                        <td><input th:value="${strategy.getLessThan()}"
+                                                   class="refund-strategy-less-input form-control"></td>
+                                        <td><input th:value="${strategy.getRefundRate()}"
+                                                   class="refund-strategy-rate-input form-control"></td>
+                                        <td>
+                                            <button class="refund-strategy-remove-button btn red-block">删除</button>
+                                        </td>
+                                    </tr>
+
+                                    <tr id="create-new-refund-strategy-tr" style="display: none">
+                                        <td><input class="refund-strategy-more-input form-control"></td>
+                                        <td><input class="refund-strategy-less-input form-control"></td>
+                                        <td><input class="refund-strategy-rate-input form-control"></td>
+                                        <td>
+                                            <button class="refund-strategy-remove-button btn red-block">删除</button>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                            </table>
+                            <button id="refund-strategy-add-button" class="btn red-block">添加</button>
+                            <button id="refund-strategy-save-button" class="btn red-block">保存</button>
+                            <div id="refund-strategy-info-div" class="red-text"></div>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="customer-level-strategy-div">
+
+                        <div>
+                            <h3>制定会员等级策略</h3>
+                            <!--/*@thymesVar id="currentCustomerLevelStrategy" type="com.kodomo.yummy.entity.customer.CustomerLevelStrategy"*/-->
+                            <div th:if="${currentCustomerLevelStrategy}==null" class="red-text">
+                                无法找到当前策略, 请新建策略
+                            </div>
+
+                            <table id="customer-level-strategy-table" class="table table-hover">
+                                <tr>
+                                    <th>等级</th>
+                                    <th>消费金额</th>
+                                    <th>折扣率</th>
+                                    <th>操作</th>
+                                </tr>
+                                <th:block th:if="${currentCustomerLevelStrategy}!=null">
+                                    <tr th:each="detail:${currentCustomerLevelStrategy.getDetailsByOrder()}"
+                                        class="customer-level-strategy-tr">
+                                        <td><input th:value="${detail.getLevel()}"
+                                                   class="customer-level-strategy-level-input form-control"></td>
+                                        <td><input th:value="${detail.getConsumptionAmount()}"
+                                                   class="customer-level-strategy-amount-input form-control">
+                                        </td>
+                                        <td><input th:value="${detail.getDiscountRate()}"
+                                                   class="customer-level-strategy-rate-input form-control"></td>
+                                        <td>
+                                            <button class="customer-level-strategy-remove-button btn red-block">删除
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </th:block>
+
+                                <tr id="create-new-customer-level-strategy-tr" style="display: none">
+                                    <td><input class="customer-level-strategy-level-input form-control"></td>
+                                    <td><input class="customer-level-strategy-amount-input form-control"></td>
+                                    <td><input class="customer-level-strategy-rate-input form-control"></td>
+                                    <td>
+                                        <button class="customer-level-strategy-remove-button btn red-block">删除</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button id="customer-level-strategy-add-button" class="btn red-block">添加</button>
+                            <button id="customer-level-strategy-save-button" class="btn red-block">保存</button>
+                            <p id="customer-level-strategy-info-div" class="red-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <table id="strategy-table" border="2 solid" cellpadding="5">
-        <tr>
-            <th>类型</th>
-            <th>阈值</th>
-            <th>折算率</th>
-            <th>操作
-                <button id="strategy-add-button">添加</button>
-            </th>
-        </tr>
-
-        <th:block th:if="${currentOrderSettlementStrategy}!=null">
-            <tr th:each="strategy:${currentOrderSettlementStrategy.getDetails()}" class="strategy-tr">
-                <td><select>
-                    <option th:selected="${strategy.getType().ordinal()==0}" value="0">城市</option>
-                    <option th:selected="${strategy.getType().ordinal()==1}" value="1">订单数量</option>
-                </select></td>
-                <td><input th:value="${strategy.getKey()}" class="strategy-key-input"></td>
-                <td><input th:value="${strategy.getRate()}" class="strategy-rate-input"></td>
-                <td>
-                    <button class="strategy-remove-button">删除</button>
-                </td>
-            </tr>
-        </th:block>
-    </table>
-    <button id="strategy-save-button">保存</button>
-    <div id="strategy-info-div" style="color: red"></div>
 </div>
 
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
 
-<div>
-    <h3>制定订单退款策略</h3>
-    <!--/*@thymesVar id="currentOrderRefundStrategy" type="com.kodomo.yummy.entity.order.OrderRefundStrategy"*/-->
-    <div th:unless="${currentOrderRefundStrategy}!=null" style="color: red">
-        无法找到当前策略, 请新建策略
-    </div>
-
-    <div style="color: red">注: 单位为分钟</div>
-    <table id="refund-strategy-table" border="2 solid" cellpadding="5">
-        <tr>
-            <th>大于等于时间</th>
-            <th>小于时间</th>
-            <th>退款比例</th>
-            <th>操作
-                <button id="refund-strategy-add-button">添加</button>
-            </th>
-        </tr>
-
-        <th:block th:if="${currentOrderRefundStrategy}!=null">
-            <tr th:each="strategy:${currentOrderRefundStrategy.getDetailsByOrder()}" class="refund-strategy-tr">
-                <td><input th:value="${strategy.getMoreThanOrEquals()}" class="refund-strategy-more-input"></td>
-                <td><input th:value="${strategy.getLessThan()}" class="refund-strategy-less-input"></td>
-                <td><input th:value="${strategy.getRefundRate()}" class="refund-strategy-rate-input"></td>
-                <td>
-                    <button class="refund-strategy-remove-button">删除</button>
-                </td>
-            </tr>
-        </th:block>
-    </table>
-    <button id="refund-strategy-save-button">保存</button>
-    <div id="refund-strategy-info-div" style="color: red"></div>
-</div>
-
-<!--黑线-->
-<div style="height: 2px;width: 100%;background: black"></div>
-<div>
-    <h3>制定会员等级策略</h3>
-    <!--/*@thymesVar id="currentCustomerLevelStrategy" type="com.kodomo.yummy.entity.customer.CustomerLevelStrategy"*/-->
-    <div th:if="${currentCustomerLevelStrategy}==null" style="color: red">
-        无法找到当前策略, 请新建策略
-    </div>
-
-    <table id="customer-level-strategy-table" border="2 solid" cellpadding="5">
-        <tr>
-            <th>等级</th>
-            <th>消费金额</th>
-            <th>折扣率</th>
-            <th>操作
-                <button id="customer-level-strategy-add-button">添加</button>
-            </th>
-        </tr>
-        <th:block th:if="${currentCustomerLevelStrategy}!=null">
-            <tr th:each="detail:${currentCustomerLevelStrategy.getDetailsByOrder()}"
-                class="customer-level-strategy-tr">
-                <td><input th:value="${detail.getLevel()}" class="customer-level-strategy-level-input"></td>
-                <td><input th:value="${detail.getConsumptionAmount()}" class="customer-level-strategy-amount-input">
-                </td>
-                <td><input th:value="${detail.getDiscountRate()}" class="customer-level-strategy-rate-input"></td>
-                <td>
-                    <button class="customer-level-strategy-remove-button">删除</button>
-                </td>
-            </tr>
-        </th:block>
-    </table>
-    <button id="customer-level-strategy-save-button">保存</button>
-    <div id="customer-level-strategy-info-div" style="color: red"></div>
-</div>
-<script th:src="@{/js/managementInfo.js}"></script>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/management/info.js}"></script>
 </body>
 </html>

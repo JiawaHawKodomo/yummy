@@ -45,6 +45,8 @@ public class CustomerOrderController {
     private String lackOfBalanceText;
     @Value("${yummy-system.text.customer.pay-password-error}")
     private String payPasswordErrorText;
+    @Value("${yummy-system.text.order.exceed-remaining}")
+    private String exceedRemainingText;
 
     private final CustomerBlService customerBlService;
     private final RestaurantBlService restaurantBlService;
@@ -104,6 +106,10 @@ public class CustomerOrderController {
         model.addAttribute("customer", customer);
         Restaurant restaurant = restaurantBlService.getRestaurantById(restaurantId);
         model.addAttribute("restaurant", restaurant);
+        if (customer == null || restaurant == null) {
+            return "redirect:/customer";
+        }
+
         if (locationId != null) {
             model.addAttribute("locationId", locationId);
         }
@@ -138,6 +144,8 @@ public class CustomerOrderController {
             result.put("info", stateErrorText + ":" + e.getCurrentStateText());
         } catch (RestaurantHasClosedException e) {
             result.put("info", restaurantHasClosedText);
+        } catch (ExceedRemainException e) {
+            result.put("info", exceedRemainingText + ":" + e.getOfferingNames());
         }
 
         return result;

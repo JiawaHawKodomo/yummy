@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Shuaiyu Yao
@@ -54,7 +54,7 @@ public class RestaurantModificationInfo {
     @JoinTable(name = "_relationship_restaurant_modification_to_type",
             joinColumns = {@JoinColumn(name = "restaurant_modification_info_id")},
             inverseJoinColumns = {@JoinColumn(name = "type_id")})
-    private Set<RestaurantType> types;
+    private List<RestaurantType> types;
     @Column(name = "location_note")
     private String locationNote;
 

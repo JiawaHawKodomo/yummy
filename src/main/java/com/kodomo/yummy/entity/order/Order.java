@@ -47,9 +47,9 @@ public class Order {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
-    private Set<OrderDetail> details;
+    private List<OrderDetail> details;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "order")
     private Set<OrderLog> logs;
@@ -113,7 +113,7 @@ public class Order {
      *
      * @return 如果没有记录则返回0时间戳
      */
-    @NotNull
+    
     public Date getTheLastUpdateTime() {
         if (getLogs() == null) return new Date(0);
         return getLogs().stream().map(OrderLog::getDate).reduce((a, b) -> {
@@ -191,13 +191,13 @@ public class Order {
      *
      * @return
      */
-    @NotNull
+    
     public List<OrderSettlementStrategyDetail> getAppliedOrderSettlementStrategyDetails() {
         if (getOrderSettlementStrategy() == null || getRestaurant() == null) return new ArrayList<>();
         return getOrderSettlementStrategy().getAppliedDetails(getRestaurant());
     }
 
-    @NotNull
+    
     public List<OrderLog> getLogsByTimeDesc() {
         if (getLogs() == null) return new ArrayList<>();
         return getLogs().stream()
@@ -210,7 +210,7 @@ public class Order {
      *
      * @return
      */
-    @NotNull
+    
     public double getRefundAmount() {
         if (!isCanceled() || getOrderRefundStrategy() == null || getLogs() == null) return 0;
         Date ongoingTime = null;

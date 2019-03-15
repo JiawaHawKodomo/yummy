@@ -20,4 +20,5 @@ public class OfferingVo {
     private List<Integer> types;
     private Date startTime;
     private Date endTime;
+    private Integer remaining;
 }

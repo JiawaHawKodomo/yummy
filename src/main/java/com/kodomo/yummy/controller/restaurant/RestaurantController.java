@@ -60,6 +60,9 @@ public class RestaurantController {
         }
 
         Restaurant restaurant = restaurantBlService.getRestaurantById(rid);
+        if (restaurant == null) {
+            return "redirect:/restaurant";
+        }
         model.addAttribute("restaurant", restaurant);
         return "restaurant/info";
     }

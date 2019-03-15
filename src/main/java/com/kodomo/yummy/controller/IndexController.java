@@ -28,9 +28,9 @@ public class IndexController {
     public String index(HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (session.getAttribute("customer") != null) {
-            return "customer/place";
+            return "redirect:/customer/place";
         } else if (session.getAttribute("restaurant") != null) {
-            return "restaurant";
+            return "redirect:/restaurant";
         } else {
             return "index";
         }

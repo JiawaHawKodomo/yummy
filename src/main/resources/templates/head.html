@@ -1,5 +1,4 @@
-<!--/*@thymesVar id="manager" type="com.kodomo.yummy.entity.Manager"*/-->
-<div xmlns:th="http://www.thymeleaf.org" th:if="${manager}!=null">
+<div xmlns:th="http://www.thymeleaf.org">
     <div class="column">
         <nav class="navbar navbar-default" role="navigation">
             <div class="navbar-header red-block">
@@ -17,26 +16,22 @@
                 <ul class="nav navbar-nav">
                     <li>
                         <a>
-                            <span th:text="'你好:'+${manager.getManagerId()}"></span>
+                            <span>欢迎来到Yummy! 订餐平台</span>
                         </a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a th:href="@{/management}">管理</a>
+                        <a th:href="@{/}">首页</a>
                     </li>
                     <li>
-                        <a th:href="@{/management/statistics}">统计</a>
+                        <a th:href="@{/customer}">会员入口</a>
                     </li>
                     <li>
-                        <a th:href="@{/management/logout}">
-                            <span class="glyphicon glyphicon-log-out"></span>
-                            登出
-                        </a>
+                        <a th:href="@{/restaurant}">餐厅入口</a>
                     </li>
                 </ul>
             </div>
-
         </nav>
     </div>
 </div>

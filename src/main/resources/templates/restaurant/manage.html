@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Yummy! 管理店铺</title>
-    <script th:src="@{/js/tool/jquery.js}"></script>
-    <style>
-        .offering-div {
-            border: 1px #3d3d3d solid;
-            margin: 5px
-        }
-    </style>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
@@ -19,127 +14,310 @@
 <th:block th:if="${restaurant}!=null">
     <th:block th:replace="restaurant/head"/>
 
-    <div>
-        <h3>分类管理</h3>
-        <table id="type-table" border="1" cellspacing="0" cellpadding="5">
-            <tr>
-                <th>分类名称</th>
-                <th>操作
-                    <button id="type-add-button">添加</button>
-                </th>
-            </tr>
-            <tr th:each="type:${restaurant.getOfferingTypeByOrder()}" class="type-tr"
-                th:value="${type.getOfferingTypeId()}">
-                <td>
-                    <input class="type-name-input" th:value="${type.getName()}">
-                </td>
-                <td>
-                    <button class="type-up-button">↑</button>
-                    <button class="type-down-button">↓</button>
-                    <button class="type-delete-button">删除</button>
-                </td>
-            </tr>
-        </table>
-        <button id="type-save-button">保存</button>
-        <span style="color: red" id="type-info"></span>
-    </div>
-
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
-
-    <div>
-        <h3>商品管理</h3>
-        <div id="offering-info" style="color: red"></div>
-        <div style="display: flex">
-            <div>
-                <ul>
-                    <li>商品分类</li>
-                    <li th:each="type:${restaurant.getOfferingTypeByOrder()}">
-                        <label class="offering-type-select-label">
-                            <input type="radio" class="offering-type-radio" name="type"
-                                   th:value="${type.getOfferingTypeId()}">
-                            <th:block th:text="${type.getName()}"/>
-                        </label>
-                    </li>
-                    <li>
-                        <label style="color: red">
-                            <input type="radio" id="offering-non-type-radio" name="type">
-                            无类别商品
-                        </label>
-                    </li>
-                </ul>
-            </div>
-            <div style="background: black;width: 2px;height: auto; margin: 10px"></div>
-            <div>
-                <button id="offering-add-button">添加菜品</button>
-                <div th:each="offering:${restaurant.getValidOffering()}"
-                     style="display: none;"
-                     class="offering-div"
-                     th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}"
-                     th:value="${offering.getOfferingId()}">
-                    <div><label>名称:<input th:value="${offering.getName()}" class="offering-name-input"></label>
-                    </div>
-                    <div><label>价格:<input th:value="${offering.getPrice()}" class="offering-price-input">元</label></div>
-                    <div><label>备注:<input placeholder="客户可以看到你的备注" class="offering-note-input"></label></div>
-                    <div>
-                        <label>起售日期:<input type="date" class="offering-start-time-input"
-                                           th:value="${#dates.format(offering.getStartTime(),'yyyy-MM-dd')}"
-                                           th:disabled="${offering.getStartTime().before(#dates.createNow())}"></label>
-                        <label>结束日期:<input type="date" class="offering-end-time-input"
-                                           th:value="${#dates.format(offering.getEndTime(),'yyyy-MM-dd')}"></label>
-                    </div>
-                    <div>
-                        分类:
-                        <div th:each="myType:${offering.getOfferingTypes()}" class="offering-type-div">
-                            <select class="offering-type-select">
-                                <option th:each="theType:${restaurant.getOfferingTypes()}"
-                                        th:selected="${myType.getOfferingTypeId().equals(theType.getOfferingTypeId())}"
-                                        th:value="${theType.getOfferingTypeId()}"
-                                        th:text="${theType.getName()}"
-                                        class="offering-type-option">
-                                </option>
-                            </select>
-                            <button class="offering-type-remove-button">×</button>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="tabbable" id="tabs-873502">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#type-management-div" data-toggle="tab">分类管理</a>
+                        </li>
+                        <li>
+                            <a href="#offering-management-div" data-toggle="tab">商品管理</a>
+                        </li>
+                        <li>
+                            <a href="#strategy-management-div" data-toggle="tab">满减策略管理</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active fade in" id="type-management-div">
+                            <div>
+                                <h2>分类管理</h2>
+                                <br>
+                                <table id="type-table" class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>分类名称</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tr th:each="type:${restaurant.getOfferingTypeByOrder()}" class="type-tr"
+                                        th:value="${type.getOfferingTypeId()}">
+                                        <td>
+                                            <input class="type-name-input form-control" th:value="${type.getName()}">
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="type-up-button btn red-block">
+                                                    <span class="glyphicon glyphicon-upload"></span>
+                                                </button>
+                                                <button class="type-down-button btn red-block">
+                                                    <span class="glyphicon glyphicon-download"></span>
+                                                </button>
+                                                <button class="type-delete-button btn red-block">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <button id="type-add-button" class="btn red-block">添加</button>
+                                <button id="type-save-button" class="btn red-block">保存</button>
+                                <span id="type-info" class="red-text"></span>
+                            </div>
                         </div>
+                        <div class="tab-pane fade" id="offering-management-div">
+                            <div>
+                                <h2>商品管理</h2>
+                                <div id="offering-info" class="red-text"></div>
 
-                        <button class="offering-type-add-button">添加到新的类型</button>
+                                <div class="row">
+                                    <div class="col-xs-1"></div>
+                                    <div class="col-xs-1" id="myScrollspy">
+                                        <div class="btn-group-vertical" data-spy="affix"
+                                             data-offset-top="125"
+                                             data-toggle="buttons">
+                                            <label class="btn red-block offering-type-radio" style="width: 100%"
+                                                   th:each="type:${restaurant.getOfferingTypeByOrder()}"
+                                                   th:value="${type.getOfferingTypeId()}">
+                                                <input type="radio"
+                                                       name="type"
+
+                                                       th:text="${type.getName()}"
+                                                       style="width: 100%">
+                                            </label>
+                                            <label class="btn red-block" style="width: 100%"
+                                                   id="offering-non-type-radio">
+                                                <input type="radio" name="type"
+                                                       th:text="'无类别商品'">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <button id="offering-add-button" class="btn red-block col-md-3">添加菜品
+                                        </button>
+                                        <div class="col-md-12 column offering-div red-border"
+                                             th:each="offering:${restaurant.getOnSaleOffering()}"
+                                             style="display: none;"
+                                             th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}"
+                                             th:value="${offering.getOfferingId()}">
+
+                                            <div class="col-md-8 column">
+                                                <div class="row clearfix">
+                                                    <div class="col-md-12 column">
+                                                        <div class="form-horizontal" role="form">
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">名称</label>
+                                                                <div class="col-sm-10">
+                                                                    <input class="form-control offering-name-input"
+                                                                           th:value="${offering.getName()}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="inputPassword3"
+                                                                       class="col-sm-2 control-label">价格</label>
+                                                                <div class="col-sm-10">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control offering-price-input"
+                                                                               id="inputPassword3"
+                                                                               th:value="${#numbers.formatDecimal(offering.getPrice(),0,2)}">
+                                                                        <span class="input-group-addon">元</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">备注</label>
+                                                                <div class="col-sm-10">
+                                                                    <input class="form-control offering-note-input"
+                                                                           placeholder="客户可以看到你的备注"
+                                                                           th:value="${offering.getNote()}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">库存数量</label>
+                                                                <div class="col-sm-10">
+                                                                    <input class="form-control offering-remaining-input"
+                                                                           th:value="${offering.getRemainingNumber()}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">起售日期</label>
+                                                                <div class="col-sm-4">
+                                                                    <input class="form-control offering-start-time-input"
+                                                                           th:value="${#dates.format(offering.getStartTime(),'yyyy-MM-dd')}"
+                                                                           th:disabled="${offering.getStartTime().before(#dates.createNow())}"
+                                                                           type="date">
+                                                                </div>
+                                                                <label class="col-sm-2 control-label">结束日期</label>
+                                                                <div class="col-sm-4">
+                                                                    <input class="form-control offering-end-time-input"
+                                                                           th:value="${#dates.format(offering.getEndTime(),'yyyy-MM-dd')}"
+                                                                           type="date">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <button class="offering-save-button btn red-block">保存</button>
+                                                        <button class="offering-delete-button btn red-block">删除商品
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 column">
+                                                <p>商品分类选择</p>
+                                                <div>
+                                                    <div class="checkbox"
+                                                         th:each="theType:${restaurant.getOfferingTypeByOrder()}">
+                                                        <label><input type="checkbox" class="offering-type-checkbox"
+                                                                      th:value="${theType.getOfferingTypeId()}"
+                                                                      th:text="${theType.getName()}"
+                                                                      th:checked="${theType.contains(offering)}"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="strategy-management-div">
+                            <div>
+                                <h2>满减策略管理</h2>
+                                <div>
+                                    <table class="table table-hover" id="strategy-table">
+                                        <tr>
+                                            <th>满</th>
+                                            <th>减</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        <tr th:each="strategy:${restaurant.getRestaurantValidStrategyByAmount()}"
+                                            class="strategy-tr"
+                                            th:value="${strategy.getStrategyId()}">
+                                            <td th:text="${strategy.getGreaterThan()}" class="strategy-m-td"></td>
+                                            <td th:text="${strategy.getDiscount()}" class="strategy-n-td"></td>
+                                            <td>
+                                                <button class="strategy-delete-button btn red-block">删除</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <button id="strategy-add-button" class="btn red-block">添加</button>
+                                    <button id="strategy-save-button" class="btn red-block">保存</button>
+                                    <span id="strategy-info" style="color: red"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="offering-save-button">保存</button>
-                    <button class="offering-delete-button">删除商品</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!--黑线-->
-    <div style="height: 2px;width: 100%;background: black"></div>
+    <!--新生成的类型-->
+    <table style="display: none">
+        <tr class="type-tr" id="create-new-type-tr">
+            <td>
+                <input class="type-name-input form-control">
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button class="type-up-button btn red-block">
+                        <span class="glyphicon glyphicon-upload"></span>
+                    </button>
+                    <button class="type-down-button btn red-block">
+                        <span class="glyphicon glyphicon-download"></span>
+                    </button>
+                    <button class="type-delete-button btn red-block">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </div>
+            </td>
+        </tr>
 
-    <div>
-        <h3>满减策略管理</h3>
-        <div>
-            <table cellspacing="0" border="1" cellpadding="3" id="strategy-table">
-                <tr>
-                    <th>满</th>
-                    <th>减</th>
-                    <th>操作
-                        <button id="strategy-add-button">添加</button>
-                    </th>
-                </tr>
-                <tr th:each="strategy:${restaurant.getRestaurantValidStrategyByAmount()}"
-                    class="strategy-tr"
-                    th:value="${strategy.getStrategyId()}">
-                    <td th:text="${strategy.getGreaterThan()}" class="strategy-m-td"></td>
-                    <td th:text="${strategy.getDiscount()}" class="strategy-n-td"></td>
-                    <td>
-                        <button class="strategy-delete-button">删除</button>
-                    </td>
-                </tr>
-            </table>
-            <button id="strategy-save-button">保存</button>
-            <span id="strategy-info" style="color: red"></span>
+        <tr class="strategy-tr" id="create-new-strategy-tr">
+            <td class="strategy-m-td">
+                <input class="strategy-m-input form-control">
+            </td>
+            <td class="strategy-n-td">
+                <input class="strategy-n-input form-control">
+            </td>
+            <td>
+                <button class="strategy-delete-button btn red-block">删除</button>
+            </td>
+        </tr>
+    </table>
+
+    <!--新生成的菜品-->
+    <div class="col-md-12 column offering-div red-border" id="create-new-offering-div"
+         style="display: none">
+        <div class="col-md-8 column">
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <div class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">名称</label>
+                            <div class="col-sm-10">
+                                <input class="form-control offering-name-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3"
+                                   class="col-sm-2 control-label">价格</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <input class="form-control offering-price-input">
+                                    <span class="input-group-addon">元</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注</label>
+                            <div class="col-sm-10">
+                                <input class="form-control offering-note-input"
+                                       placeholder="客户可以看到你的备注">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">库存数量</label>
+                            <div class="col-sm-10">
+                                <input class="form-control offering-remaining-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">起售日期</label>
+                            <div class="col-sm-4">
+                                <input class="form-control offering-start-time-input"
+                                       th:value="${#dates.format(#dates.createNow(),'yyyy-MM-dd')}"
+                                       type="date">
+                            </div>
+                            <label class="col-sm-2 control-label">结束日期</label>
+                            <div class="col-sm-4">
+                                <input class="form-control offering-end-time-input"
+                                       type="date">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="offering-save-button btn red-block">保存</button>
+                    <button class="offering-delete-button btn red-block">删除商品
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 column">
+            <p>商品分类选择</p>
+            <div>
+                <div class="checkbox"
+                     th:each="theType:${restaurant.getOfferingTypeByOrder()}">
+                    <label><input type="checkbox" class="offering-type-checkbox"
+                                  th:value="${theType.getOfferingTypeId()}"
+                                  th:text="${theType.getName()}"></label>
+                </div>
+            </div>
         </div>
     </div>
+
+
 </th:block>
-<script th:src="@{/js/restaurantManage.js}"></script>
+<script th:src="@{/js/tool/jquery.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/restaurant/manage.js}"></script>
 </body>
 </html>

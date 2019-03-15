@@ -59,7 +59,7 @@ public interface OrderBlService {
      * @param vo    vo
      * @return
      */
-    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException;
+    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException, ExceedRemainException;
 
     /**
      * 支付订单

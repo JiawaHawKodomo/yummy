@@ -41,7 +41,7 @@ public class CustomerLevelStrategy {
     @JoinColumn(name = "customer_level_strategy_id")
     private Set<CustomerLevelStrategyDetail> details;
 
-    @NotNull
+    
     public List<CustomerLevelStrategyDetail> getDetailsByOrder() {
         if (getDetails() == null) return new ArrayList<>();
         return getDetails().stream()
@@ -49,7 +49,7 @@ public class CustomerLevelStrategy {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
+    
     public Integer calculateLevel(Double totalConsumptionAmount) {
         int result = 0;
         for (CustomerLevelStrategyDetail detail : getDetailsByOrder()) {
@@ -62,7 +62,7 @@ public class CustomerLevelStrategy {
         return result;
     }
 
-    @NotNull
+    
     public double getDiscountRate(Customer customer) {
         Integer level = customer.getLevel() == null ? 0 : customer.getLevel();
         if (level == 0) return 0;
