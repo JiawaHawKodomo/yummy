@@ -10,8 +10,9 @@ $('#cancellation-button').on('click', function () {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                alert('注销成功');
-                location = '/';
+                bootbox.alert('注销成功',function () {
+                    location = '/';
+                });
             } else {
                 $('#cancellation-info').text('失败:' + data.info);
             }
@@ -29,8 +30,9 @@ $('.delete-location-button').on('click', function () {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                alert('删除成功');
-                history.go(0);
+                bootbox.alert('删除成功',function () {
+                    history.go(0);
+                });
             } else {
                 $('#delete-location-info').text('失败:' + data.info);
             }
@@ -63,8 +65,9 @@ $('#create-location-button').on('click', function () {
         success: function (data) {
             console.info(data);
             if (data.result) {
-                alert('成功');
-                history.go(0);
+                bootbox.alert('成功',function () {
+                    history.go(0);
+                });
             } else {
                 $('#create-location-info').text('失败:' + data.info);
             }

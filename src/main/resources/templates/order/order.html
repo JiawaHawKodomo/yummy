@@ -50,12 +50,33 @@
             </td>
         </tr>
         <tr>
-            <th>满减策略</th>
-            <td th:text="${order.getRestaurantStrategyText()}"></td>
+            <th>满减</th>
+            <td>
+                <span class="label label-success" th:text="${order.getRestaurantStrategyText()}"></span>
+            </td>
         </tr>
         <tr>
-            <th>最终金额</th>
-            <td th:text="${#numbers.formatDecimal(order.getTotalPriceAfterDiscount(),0,2)}"></td>
+            <th>会员等级折扣</th>
+            <td>
+                <span th:text="'等级:'+${order.getCustomer().getLevel()}+',折扣率'"></span>
+                <span class="label label-success"
+                      th:text="'-'+${#numbers.formatDecimal(order.getLevelStrategyDiscountRate()*100,0,0)}+'%'"></span>
+            </td>
+        </tr>
+        <tr>
+            <th>最终支付金额</th>
+            <td>
+                <span th:if="${order.getTotalPriceAfterDiscount()==order.getTotalPriceBeforeDiscount()}"
+                      th:text="${#numbers.formatDecimal(order.getTotalPriceAfterDiscount(),0,2)}">
+                </span>
+                <th:block th:if="${order.getTotalPriceAfterDiscount()!=order.getTotalPriceBeforeDiscount()}">
+                    <span th:text="${#numbers.formatDecimal(order.getTotalPriceBeforeDiscount(),0,2)}"
+                          class="red-text"
+                          style="text-decoration: line-through"></span>
+                    <span th:text="${#numbers.formatDecimal(order.getTotalPriceAfterDiscount(),0,2)}"></span>
+                </th:block>
+                <span>元</span>
+            </td>
         </tr>
         <tr>
             <th>配餐时长</th>

@@ -10,7 +10,7 @@ $('#management-login-button').on('click', function () {
             if (data.result) {
                 location = '/management'
             } else {
-                alert('登录失败');
+                bootbox.alert('登录失败');
             }
         }
     })

@@ -37,8 +37,9 @@ $('#offering-submit-button').on('click', function () {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                alert('成功');
-                location = '/customer/order/' + data.result;
+                bootbox.alert('成功', function () {
+                    location = '/customer/order/' + data.result;
+                });
             } else {
                 infoText.hide().text(data.info).fadeIn();
             }
@@ -46,60 +47,72 @@ $('#offering-submit-button').on('click', function () {
     });
 });
 
-function offeringNumberPlus(tr) {
-    const text = tr.find('.offering-selected-number');
-    text.text(Number(text.text()) + 1);
-}
-
-//添加点菜菜品
-$('.offering-div').on('click', function () {
-    const father = $(this);
+$('.offering-div-plus-button').on('click', function () {
+    const father = $(this).parents('.offering-div');
     const offeringId = father.attr('value');
-    const tr = $('#offering-selected-tr-' + offeringId);
-    if (tr.length > 0) {
-        offeringNumberPlus(tr);
-        console.log('offering number plus')
+    const name = father.find('.offering-div-name-span').text();
+    const price = father.find('.offering-div-price-span').text();
+    var elem = findSelectedOffering(offeringId);
+    if (elem.length > 0) {
+        var numberElem = elem.find('.offering-selected-number');
+        numberElem.text(Number(numberElem.text()) + 1);
     } else {
-        $('#offering-selected-table').append(
-            $('<tr></tr>').attr('value', offeringId).attr('class', 'offering-selected-tr')
-                .attr('id', 'offering-selected-tr-' + offeringId).append(
-                $('<td></td>').text(father.find('.offering-name-h3').text())
-            ).append(
-                $('<td></td>').text(father.find('.offering-price-h3').text())
-                    .attr('class', 'offering-price-td')
-            ).append(
-                $('<td></td>').append(
-                    $('<span></span>').text('×')
-                ).append(
-                    $('<span></span>').text('1').attr('class', 'offering-selected-number')
-                ).append(
-                    $('<button></button>').text('+').attr('class', 'offering-selected-plus-button')
-                        .on('click', function () {
-                            //加
-                            const father = $(this).parents('.offering-selected-tr');
-                            offeringNumberPlus(father);
-                            calculateTotal();
-                        })
-                ).append(
-                    $('<button></button>').text('-').attr('class', 'offering-selected-minus-button')
-                        .on('click', function () {
-                            //减
-                            const father = $(this).parents('.offering-selected-tr');
-                            const text = father.find('.offering-selected-number');
-                            const num = Number(text.text());
-                            if (num <= 1) {
-                                father.remove();
-                            } else {
-                                text.text(num - 1);
-                            }
-                            calculateTotal();
-                        })
-                )
-            )
-        );
+        createNewSelectedOffering(offeringId, name, price);
     }
     calculateTotal();
 });
+
+$('.offering-div-minus-button').on('click', function () {
+    const offeringId = $(this).parents('.offering-div').attr('value');
+    var elem = findSelectedOffering(offeringId);
+    if (elem.length > 0) {
+        var numberElem = elem.find('.offering-selected-number');
+        const num = Number(numberElem.text());
+        if (num === 1) {
+            elem.remove();
+        } else {
+            numberElem.text(num - 1);
+        }
+        calculateTotal();
+    }
+});
+
+
+function createNewSelectedOffering(id, name, price) {
+    var newElement = $('#create-new-offering-selected-tr').clone(true);
+    $('#offering-selected-table').append(newElement);
+    newElement.find('.offering-name-id').text(name);
+    newElement.find('.offering-price-td').text(price);
+    newElement.attr('id', '').attr('class', 'offering-selected-tr').attr('value', id).show();
+    newElement.find('.selected-offering-plus-button').on('click', function () {
+        var numberElem = newElement.find('.offering-selected-number');
+        numberElem.text(Number(numberElem.text()) + 1);
+        calculateTotal();
+    });
+    newElement.find('.selected-offering-minus-button').on('click', function () {
+        var numberElem = newElement.find('.offering-selected-number');
+        const num = Number(numberElem.text());
+        if (num === 1) {
+            newElement.remove();
+        } else {
+            numberElem.text(num - 1);
+        }
+        calculateTotal();
+    });
+    newElement.find('.selected-offering-remove-button').on('click', function () {
+        newElement.remove();
+        calculateTotal();
+    });
+}
+
+$('#offering-selected-clear-button').on('click', function () {
+    $('.offering-selected-tr').remove();
+    calculateTotal();
+});
+
+function findSelectedOffering(id) {
+    return $('.offering-selected-tr[value="' + id + '"]');
+}
 
 function calculateTotal() {
     const beforeSpan = $('#offering-total-before-price-span');
@@ -138,31 +151,4 @@ $('#offering-selected-toggle-button').on('click', function () {
     }
 });
 
-//展示菜品
-// $('.offering-type-radio').on('click', function () {
-//     const typeId = $(this).attr('value');
-//     $('.offering-div').each(function () {
-//         const thisDiv = $(this);
-//         thisDiv.hide();
-//         const id = thisDiv.attr('id');
-//         if (id !== undefined) {
-//             var list = id.split('-');
-//             list.shift();
-//             if (list.indexOf(typeId) >= 0) {
-//                 thisDiv.slideDown();
-//             }
-//         }
-//     });
-// });
 $('.offering-type-radio:first').click();
-
-//无类别商品
-// $('#offering-non-type-radio').on('click', function () {
-//     $('.offering-div').each(function () {
-//         $(this).hide();
-//         const id = $(this).attr('id');
-//         if (id !== undefined && id === 'non') {
-//             $(this).slideDown();
-//         }
-//     })
-// });

@@ -87,7 +87,7 @@ public class Order {
         return restaurantStrategy.getDiscount();
     }
 
-    private double getTotalPriceBeforeDiscount() {
+    public double getTotalPriceBeforeDiscount() {
         if (details == null) return 0;
         return details.stream().mapToDouble(OrderDetail::getTotalPrice).sum();
     }
@@ -97,8 +97,12 @@ public class Order {
         double tmp = getTotalPriceBeforeDiscount() - getRestaurantDiscount();
         double min = StaticConfig.getMinPayment();
         //会员折扣
-        tmp = tmp * (1 - getCustomerLevelStrategy().getDiscountRate(customer));
+        tmp = tmp * (1 - getLevelStrategyDiscountRate());
         return tmp < min ? min : tmp;
+    }
+
+    public double getLevelStrategyDiscountRate() {
+        return getCustomerLevelStrategy().getDiscountRate(customer);
     }
 
     public List<OrderDetail> getDetailsByPrice() {
@@ -113,7 +117,7 @@ public class Order {
      *
      * @return 如果没有记录则返回0时间戳
      */
-    
+
     public Date getTheLastUpdateTime() {
         if (getLogs() == null) return new Date(0);
         return getLogs().stream().map(OrderLog::getDate).reduce((a, b) -> {
@@ -191,13 +195,13 @@ public class Order {
      *
      * @return
      */
-    
+
     public List<OrderSettlementStrategyDetail> getAppliedOrderSettlementStrategyDetails() {
         if (getOrderSettlementStrategy() == null || getRestaurant() == null) return new ArrayList<>();
         return getOrderSettlementStrategy().getAppliedDetails(getRestaurant());
     }
 
-    
+
     public List<OrderLog> getLogsByTimeDesc() {
         if (getLogs() == null) return new ArrayList<>();
         return getLogs().stream()
@@ -210,7 +214,7 @@ public class Order {
      *
      * @return
      */
-    
+
     public double getRefundAmount() {
         if (!isCanceled() || getOrderRefundStrategy() == null || getLogs() == null) return 0;
         Date ongoingTime = null;

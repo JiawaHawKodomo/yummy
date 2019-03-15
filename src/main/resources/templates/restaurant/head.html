@@ -1,4 +1,3 @@
-<!--/*@thymesVar id="self0" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
 <div xmlns:th="http://www.thymeleaf.org" th:if="${restaurant}!=null" th:with="self0=${restaurant}">
     <div class="column">
         <!--/*@thymesVar id="self0" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
@@ -46,7 +45,10 @@
                         <a th:href="@{/restaurant/info}">修改信息</a>
                     </li>
                     <li>
-                        <a th:href="@{/restaurant/order}">我的订单</a>
+                        <a th:href="@{/restaurant/order}">我的订单
+                            <span class="label label-default" th:if="${!self0.getOngoingOrders().isEmpty()}"
+                                  th:text="${self0.getOngoingOrders().size()}"></span>
+                        </a>
                     </li>
                     <li>
                         <a th:href="@{/restaurant/statistics}">统计</a>

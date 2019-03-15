@@ -30,7 +30,7 @@ function loadDetails(data) {
             ).append(
                 $('<td></td>').text(e.orderId)
             ).append(
-                $('<td></td>').text(e.moneyToRestaurant + '元')
+                $('<td></td>').text(e.moneyToRestaurant.toFixed(2) + '元')
             ).append(
                 $('<td></td>').text(e.customerEmail)
             ).append(

@@ -7,6 +7,7 @@ const customerOrderQuantityChart = echarts.init(document.getElementById('custome
 const orderTimeChart = echarts.init(document.getElementById('order-time-chart'));
 const financialTimeChart = echarts.init(document.getElementById('financial-time-chart'));
 
+
 //餐厅
 $.ajax({
     type: 'get',

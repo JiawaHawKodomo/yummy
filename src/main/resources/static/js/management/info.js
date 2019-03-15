@@ -57,9 +57,7 @@ $('#customer-level-strategy-add-button').on('click', function () {
 });
 
 $('#refund-strategy-add-button').on('click', function () {
-    var newElement = $('#create-new-refund-strategy-tr').clone(true);
-    refundStrategyTable.append(newElement);
-    newElement.attr('id', '').attr('class', 'refund-strategy-tr').show();
+    addNewRefundStrategy();
 });
 
 $('#strategy-add-button').on('click', function () {
@@ -172,11 +170,14 @@ function tryToApprove(id, pass) {
         success: function (data) {
             if (data.result) {
                 if (pass) {
-                    alert('已通过');
+                    bootbox.alert('已通过',function () {
+                        history.go(0);
+                    });
                 } else {
-                    alert('未能通过')
+                    bootbox.alert('未能通过',function () {
+                        history.go(0);
+                    })
                 }
-                history.go(0);
             } else {
                 alert(data.info);
             }
@@ -206,4 +207,40 @@ $('#manager-register-button').on('click', function () {
             }
         }
     });
+});
+
+//线性添加
+$('#refund-strategy-function-add-button').on('click', function () {
+    const granularity = Number($('#granularity-input').val());
+    const gradient = Number($('#gradient-input').val());
+    const start = Number($('#refund-start-input').val());
+    const end = Number($('#refund-end-input').val());
+    const firstValue = Number($('#first-value-input').val());
+
+    $.each(calculateIntervals(start, end, granularity), function (i, e) {
+        addNewRefundStrategy(e[0], e[1], firstValue - i * gradient);
+    })
+});
+
+function addNewRefundStrategy(start, end, value) {
+    var newElement = $('#create-new-refund-strategy-tr').clone(true);
+    refundStrategyTable.append(newElement);
+    newElement.attr('id', '').attr('class', 'refund-strategy-tr').show();
+    if (start !== undefined && end !== undefined && value !== undefined) {
+        newElement.find('.refund-strategy-more-input').val(start);
+        newElement.find('.refund-strategy-less-input').val(end);
+        newElement.find('.refund-strategy-rate-input').val(value.toFixed(2));
+    }
+}
+
+function calculateIntervals(start, end, granularity) {
+    var result = [];
+    for (var i = start; i < end; i += granularity) {
+        result.push([i, i + granularity - 1]);
+    }
+    return result;
+}
+
+$('#refund-strategy-clear-button').on('click', function () {
+    $('.refund-strategy-tr').remove();
 });

@@ -1,4 +1,4 @@
-<div class="row clearfix red-border" xmlns:th="http://www.thymeleaf.org">
+<div class="row clearfix red-border well" xmlns:th="http://www.thymeleaf.org">
     <div class="col-md-8 column">
         <!--/*@thymesVar id="order" type="com.kodomo.yummy.entity.order.Order"*/-->
         <div th:text="${#dates.format(order.getTheLastUpdateTime(),'yyyy-MM-dd HH:mm:ss')}"></div>

@@ -12,7 +12,7 @@
     <link th:href="@{/css/general.css}" rel="stylesheet">
     <link th:href="@{/css/statistics.css}" rel="stylesheet">
 </head>
-<body th:with="self=${session.restaurant}">
+<body th:with="self=${session.restaurant}" data-spy="scroll" data-target="#myScrollspy">
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
 <th:block th:if="${restaurant}==null">
     出错了
@@ -109,17 +109,28 @@
                                 <div class="row">
                                     <div class="col-xs-offset-1 col-xs-8">
                                         <h4>
-                                            <th:block th:text="${offering.getName()}"/>
-                                            <small th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}+'元'"></small>
+                                            <span th:text="${offering.getName()}" class="offering-div-name-span"></span>
+                                            <small>
+                                                <span th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}"
+                                                      class="offering-div-price-span"></span>
+                                                <span>元</span>
+                                            </small>
                                         </h4>
                                         <p th:text="${offering.getNote()}"></p>
+                                        <h5>
+                                            <small th:if="${offering.getRemainingNumber()==null}">无限量</small>
+                                            <small th:if="${offering.getRemainingNumber()!=null}"
+                                                   th:text="'剩余'+${offering.getRemainingNumber()}+'个'"></small>
+                                        </h5>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="btn-group pull-right">
-                                            <button class="btn transparent-block" type="button">
+                                            <button class="btn transparent-block offering-div-plus-button"
+                                                    type="button">
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
                                             </button>
-                                            <button class="btn transparent-block" type="button">
+                                            <button class="btn transparent-block offering-div-minus-button"
+                                                    type="button">
                                                 <span class="glyphicon glyphicon-minus-sign"></span>
                                             </button>
                                         </div>
@@ -138,17 +149,23 @@
                                 <div class="row">
                                     <div class="col-xs-offset-1 col-xs-8">
                                         <h4>
-                                            <th:block th:text="${offering.getName()}"/>
-                                            <small th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}+'元'"></small>
+                                            <span th:text="${offering.getName()}" class="offering-div-name-span"></span>
+                                            <small>
+                                                <span th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}"
+                                                      class="offering-div-price-span"></span>
+                                                <span>元</span>
+                                            </small>
                                         </h4>
                                         <p th:text="${offering.getNote()}"></p>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="btn-group pull-right">
-                                            <button class="btn transparent-block" type="button">
+                                            <button class="btn transparent-block offering-div-plus-button"
+                                                    type="button">
                                                 <span class="glyphicon glyphicon-plus-sign"></span>
                                             </button>
-                                            <button class="btn transparent-block" type="button">
+                                            <button class="btn transparent-block offering-div-minus-button"
+                                                    type="button">
                                                 <span class="glyphicon glyphicon-minus-sign"></span>
                                             </button>
                                         </div>
@@ -164,7 +181,7 @@
     </div>
 
     <th:block th:if="${customer}!=null">
-        <div style="position: fixed;right:0;bottom: 0;width: 300px;">
+        <div style="position: fixed;right:0;bottom: 0;width: 350px;">
             <div class="panel-group" id="panel-670143">
                 <div class="panel panel-default">
                     <div class="panel-heading red-block" style="background: #ff6866">
@@ -172,25 +189,49 @@
                            href="#panel-element-296503">购物车</a>
                     </div>
                     <div id="panel-element-296503" class="panel-collapse in">
-                        <div>
-                            <div th:if="${restaurant.isOpenNow()}">
-                                <div id="offering-selected-div">
-                                    <h3>已选:</h3>
-                                    <table id="offering-selected-table">
+                        <div th:if="${restaurant.isOpenNow()}">
+                            <div id="offering-selected-div col-md-12">
+                                <em>已选:</em>
+                                <table id="offering-selected-table" class="table table-hover">
+                                    <tr id="create-new-offering-selected-tr" style="display: none">
+                                        <td><p class="offering-name-id"></p></td>
+                                        <td><p class="offering-price-td"></p></td>
+                                        <td>
+                                            <span>×</span>
+                                            <span class="offering-selected-number">1</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn transparent-block selected-offering-plus-button">
+                                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                            </button>
+                                            <button class="btn transparent-block selected-offering-minus-button">
+                                                <span class="glyphicon glyphicon-minus-sign"></span>
+                                            </button>
+                                            <button class="btn transparent-block selected-offering-remove-button">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
 
-                                    </table>
-                                    <button id="offering-submit-button">提交订单</button>
-                                    <span>总价: </span>
-                                    <span id="offering-total-before-price-span"
-                                          style="text-decoration: line-through"></span>
-                                    <span id="offering-total-price-span">0</span>
-                                    <span>元</span>
-                                    <span class="red-text" id="offering-submit-info"></span>
+                                <div style="width: 100%" class="well">
+                                    <div class="pull-right">
+                                        <span>总价: </span>
+                                        <span id="offering-total-before-price-span"
+                                              style="text-decoration: line-through"></span>
+                                        <span id="offering-total-price-span">0</span>
+                                        <span>元</span>
+                                        <button id="offering-submit-button" class="btn red-block">提交订单</button>
+                                        <button id="offering-selected-clear-button" class="btn red-block">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </div>
                                 </div>
+                                <span class="red-text" id="offering-submit-info"></span>
                             </div>
-                            <div th:if="${!restaurant.isOpenNow()}">
-                                <h3>该餐厅已经打烊, 无法点餐</h3>
-                            </div>
+                        </div>
+                        <div th:if="${!restaurant.isOpenNow()}">
+                            <h3>该餐厅已经打烊, 无法点餐</h3>
                         </div>
                     </div>
                 </div>
@@ -198,8 +239,10 @@
         </div>
     </th:block>
 </th:block>
+
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/tool/bootbox.min.js}"></script>
 <script th:src="@{/js/restaurant/info.js}"></script>
 </body>
 </html>

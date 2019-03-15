@@ -7,7 +7,7 @@
     <link th:href="@{/css/general.css}" rel="stylesheet">
     <link th:href="@{/css/statistics.css}" rel="stylesheet">
 </head>
-<body>
+<body data-spy="scroll" data-target="#myScrollspy">
 <th:block th:replace="management/head"/>
 
 <div class="container">
@@ -44,6 +44,7 @@
 <script th:src="@{/js/tool/echarts.js}"></script>
 <script th:src="@{/js/tool/bmap.js}"></script>
 <script th:src="@{/js/tool/bootstrap.js}"></script>
-<script th:src="@{/js/managementStatistics.js}"></script>
+<script th:src="@{/js/tool/bootbox.min.js}"></script>
+<script th:src="@{/js/management/statistics.js}"></script>
 </body>
 </html>

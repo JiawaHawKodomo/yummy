@@ -158,7 +158,7 @@ public class OfferingHelper {
         List<String> exceedOfferingNames = new ArrayList<>();
 
         for (OrderDetail detail : order.getDetails()) {
-            Offering offering = offeringDao.find(detail.getId());
+            Offering offering = offeringDao.find(detail.getOfferingId());
             if (offering.getRemainingNumber() == null) {
                 continue;//库存不限量, 不进行减少操作
             }
@@ -174,6 +174,25 @@ public class OfferingHelper {
             throw new ExceedRemainException(exceedOfferingNames);
         }
 
+        offeringDao.saveAll(offerings);
+    }
+
+    /**
+     * 当取消订单时增加响应库存
+     *
+     * @param order
+     */
+    public void remainingIncreaseWhenCancelOrder(Order order) {
+        List<Offering> offerings = new ArrayList<>();
+        for (OrderDetail detail : order.getDetails()) {
+            Offering offering = offeringDao.find(detail.getOfferingId());
+            if (offering.getRemainingNumber() == null) {
+                continue;//库存不限量, 不进行操作
+            }
+
+            offering.setRemainingNumber(offering.getRemainingNumber() + detail.getQuantity());
+            offerings.add(offering);
+        }
         offeringDao.saveAll(offerings);
     }
 }

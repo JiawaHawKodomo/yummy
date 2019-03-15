@@ -12,8 +12,9 @@ $('#recharge-button').on('click', function () {
         data: {amount: amount},
         success: function (data) {
             if (data.result) {
-                alert('成功');
-                history.go(0);
+                bootbox.alert('成功',function () {
+                    history.go(0);
+                });
             } else {
                 infoText.hide().text(data.info).fadeIn();
             }

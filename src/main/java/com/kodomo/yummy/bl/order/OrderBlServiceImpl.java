@@ -112,7 +112,12 @@ public class OrderBlServiceImpl implements OrderBlService {
         Order order = orderCreator.createNewOrder(email, vo);
 
         //该订单中的商品库存-1
-        offeringHelper.remainingReduce(order);
+        try {
+            offeringHelper.remainingReduce(order);
+        } catch (ExceedRemainException e) {
+            //消减库存出错, 回滚, 删除订单
+            orderDao.deleteById(order.getOrderId());
+        }
 
         //生成新的订单记录
         OrderLog orderLog = new OrderLog();
@@ -282,6 +287,9 @@ public class OrderBlServiceImpl implements OrderBlService {
             refund = order.getRefundAmount();
             customer.increaceBalance(refund);
         }
+
+        //库存回退
+        offeringHelper.remainingIncreaseWhenCancelOrder(order);
 
         //数据库处理
         orderDao.save(order);

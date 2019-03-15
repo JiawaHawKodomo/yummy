@@ -92,8 +92,9 @@ function registerOfferingButtons() {
             success: function (data) {
                 console.log(data);
                 if (data.result) {
-                    alert('成功');
-                    history.go(0);
+                    bootbox.alert('成功',function () {
+                        history.go(0);
+                    });
                 } else {
                     $('#offering-info').hide().text('失败:' + data.info).fadeIn();
                 }
@@ -110,23 +111,23 @@ function registerOfferingButtons() {
             return;
         }
 
-        if (!confirm('确定删除该商品吗?')) {
-            return;
-        }
-
-        //发送
-        $.ajax({
-            type: 'delete',
-            url: '/restaurant/offering',
-            data: {id: id},
-            success: function (data) {
-                console.log(data);
-                if (data.result) {
-                    father.remove();
-                    $('#offering-info').hide().text('成功').fadeIn();
-                } else {
-                    $('#offering-info').hide().text('失败:' + data.info).fadeIn();
-                }
+        bootbox.confirm('确定删除该商品吗?',function (data) {
+            if (data){
+                //发送
+                $.ajax({
+                    type: 'delete',
+                    url: '/restaurant/offering',
+                    data: {id: id},
+                    success: function (data) {
+                        console.log(data);
+                        if (data.result) {
+                            father.remove();
+                            $('#offering-info').hide().text('成功').fadeIn();
+                        } else {
+                            $('#offering-info').hide().text('失败:' + data.info).fadeIn();
+                        }
+                    }
+                });
             }
         });
     });
@@ -209,8 +210,9 @@ $('#type-save-button').on('click', function () {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                alert('成功');
-                history.go(0);
+                bootbox.alert('成功',function () {
+                    history.go(0);
+                });
             } else {
                 typeInfo.text('失败:' + data.info);
             }
@@ -293,8 +295,9 @@ $('#strategy-save-button').on('click', function () {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                alert('成功');
-                history.go(0);
+                bootbox.alert('成功',function () {
+                    history.go(0);
+                });
             } else {
                 $('#strategy-info').hide().text(data.info).fadeIn();
             }

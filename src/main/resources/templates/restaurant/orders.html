@@ -23,9 +23,9 @@
                 <div class="panel-group" id="panel-799425">
                     <th:block th:if="${restaurant.getOngoingOrders().size()}!=0">
                         <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <a class="panel-title" data-toggle="collapse" data-parent="#panel-799425"
-                                   href="#ongoing-orders-div">进行中的订单</a>
+                            <div class="panel-heading" data-toggle="collapse" data-parent="#panel-799425"
+                                 href="#ongoing-orders-div">
+                                <a class="panel-title">进行中的订单</a>
                             </div>
                             <div id="ongoing-orders-div" class="panel-collapse in">
                                 <div class="panel-body">
@@ -43,9 +43,9 @@
                     </th:block>
                     <th:block th:if="${restaurant.getUnpaidOrders().size()}!=0">
                         <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <a class="panel-title collapsed" data-toggle="collapse" data-parent="#panel-799425"
-                                   href="#unpaid-orders-div">待支付的订单</a>
+                            <div class="panel-heading" data-toggle="collapse" data-parent="#panel-799425"
+                                 href="#unpaid-orders-div">
+                                <a class="panel-title collapsed">待支付的订单</a>
                             </div>
                             <div id="unpaid-orders-div" class="panel-collapse collapse">
                                 <div class="panel-body">
@@ -64,9 +64,8 @@
                     </th:block>
                     <th:block th:if="${restaurant.getIdleOrders().size()}!=0">
                         <div class="panel panel-default">
-                            <div class="panel-heading red-block" data-toggle="collapse" data-parent="#panel-799425"
-                                 href="#idle-orders-div"
-                                 style="background: #ff6866;color: white;transition: 0.2s;">
+                            <div class="panel-heading" data-toggle="collapse" data-parent="#panel-799425"
+                                 href="#idle-orders-div">
                                 <a class="panel-title collapsed">过去的订单</a>
                             </div>
                             <div id="idle-orders-div" class="panel-collapse collapse">
@@ -92,6 +91,5 @@
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/bootstrap.js}"></script>
-<script th:src="@{/js/restaurant/orders.js}"></script>
 </body>
 </html>

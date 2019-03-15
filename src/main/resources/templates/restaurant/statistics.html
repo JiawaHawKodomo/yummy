@@ -7,7 +7,7 @@
     <link th:href="@{/css/general.css}" rel="stylesheet">
     <link th:href="@{/css/statistics.css}" rel="stylesheet">
 </head>
-<body>
+<body data-spy="scroll" data-target="#myScrollspy">
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
 <th:block th:if="${restaurant}==null">
     出错了
@@ -19,7 +19,7 @@
         <h1>用户信息统计</h1>
         <div class="row">
             <div class="col-xs-3" id="myScrollspy">
-                <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="225">
+                <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="150">
                     <li class="active"><a href="#financial-detail-h">财务明细</a></li>
                     <li><a href="#order-quantity-h">订单数统计</a></li>
                     <li><a href="#amount-h">销售额</a></li>
@@ -49,8 +49,8 @@
     </div>
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
-<script th:src="@{/js/tool/bootstrap.js}"></script>
 <script th:src="@{/js/tool/echarts.js}"></script>
-<script th:src="@{/js/restaurantStatistics.js}"></script>
+<script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/restaurant/statistics.js}"></script>
 </body>
 </html>

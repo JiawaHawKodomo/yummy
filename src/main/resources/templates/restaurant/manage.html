@@ -6,7 +6,7 @@
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
     <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
-<body>
+<body data-spy="scroll" data-target="#myScrollspy">
 <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
 <th:block th:if="${restaurant}==null">
     出错了
@@ -96,7 +96,7 @@
                                     <div class="col-xs-9">
                                         <button id="offering-add-button" class="btn red-block col-md-3">添加菜品
                                         </button>
-                                        <div class="col-md-12 column offering-div red-border"
+                                        <div class="col-md-12 column offering-div red-border well"
                                              th:each="offering:${restaurant.getOnSaleOffering()}"
                                              style="display: none;"
                                              th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}"
@@ -246,7 +246,7 @@
     </table>
 
     <!--新生成的菜品-->
-    <div class="col-md-12 column offering-div red-border" id="create-new-offering-div"
+    <div class="col-md-12 column offering-div red-border well" id="create-new-offering-div"
          style="display: none">
         <div class="col-md-8 column">
             <div class="row clearfix">
@@ -318,6 +318,7 @@
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/tool/bootbox.min.js}"></script>
 <script th:src="@{/js/restaurant/manage.js}"></script>
 </body>
 </html>

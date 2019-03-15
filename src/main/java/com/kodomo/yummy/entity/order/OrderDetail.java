@@ -27,6 +27,11 @@ public class OrderDetail {
     @JoinColumn(name = "offering_id", nullable = false)
     private Offering offering;//购买商品
 
+    public Integer getOfferingId() {
+        if (offering == null) return null;
+        return offering.getOfferingId();
+    }
+
     private double getSinglePrice() {
         if (offering == null || offering.getPrice() == null) return 0;
         return offering.getPrice();

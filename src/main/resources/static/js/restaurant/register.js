@@ -43,8 +43,9 @@ function submit() {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                alert('注册成功');
-                location = '/restaurant';
+                bootbox.alert('注册成功',function () {
+                    location = '/restaurant';
+                });
             } else {
                 responseP.html(data.info);
             }

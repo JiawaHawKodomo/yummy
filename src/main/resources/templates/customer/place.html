@@ -49,11 +49,11 @@
                 <div class="container">
                     <div class="row clearfix">
                         <div class="col-md-12 column">
-                            <div class="col-md-11 column red-border blockquote"
+                            <div class="col-md-11 column red-border well"
                                  th:each="restaurant:${resultRestaurants}">
                                 <div class="row clearfix">
                                     <div class="col-md-10 column">
-                                        <h1 th:text="${restaurant.getName()}"></h1>
+                                        <h2 th:text="${restaurant.getName()}"></h2>
                                         <p th:text="${restaurant.getLocationInfo()}+' 距您'+${restaurant.getLocation().distanceBetweenByMeter(customer.getLocationById(locationId))}+'米'"></p>
                                         <p th:text="'类型:'+${restaurant.getTypeByString()}"></p>
                                         <p th:text="${restaurant.isMatched(keyWord)}" class="restaurant-search-tip"></p>
@@ -76,6 +76,7 @@
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/bootstrap.js}"></script>
+<script th:src="@{/js/tool/bootbox.min.js}"></script>
 <script th:src="@{/js/customer/place.js}"></script>
 </body>
 </html>
