@@ -28,9 +28,14 @@
                         </a>
                     </li>
                     <!--/*@thymesVar id="UserState" type="com.kodomo.yummy.entity.entity_enum.UserState"*/-->
-                    <th:block th:if="${self0.getState()}==UserState.UNACTIVATED">
+                    <th:block th:if="${self0.getState().getText().equals('未激活')}">
                         <li class="red-text">
-                            <a class="red-text">还未激活, 请先激活才能进行其他操作</a>
+                            <a class="red-text">还未通过审核, 请等待通过审核后进行操作</a>
+                        </li>
+                    </th:block>
+                    <th:block th:if="${self0.getState().getText().equals('未通过审批')}">
+                        <li class="red-text">
+                            <a class="red-text">未通过审核, 餐厅已锁定, 无法进行操作</a>
                         </li>
                     </th:block>
                 </ul>
