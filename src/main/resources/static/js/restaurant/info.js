@@ -77,7 +77,6 @@ $('.offering-div-minus-button').on('click', function () {
     }
 });
 
-
 function createNewSelectedOffering(id, name, price) {
     var newElement = $('#create-new-offering-selected-tr').clone(true);
     $('#offering-selected-table').append(newElement);

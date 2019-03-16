@@ -19,7 +19,7 @@
             <div class="col-md-12 column">
                 <h3>选择地址</h3>
                 <th:block th:if="${customer.getLocations().size()}==0">
-                    <p style="color: red">您当前没有填写地址信息, 请进入个人信息填写</p>
+                    <p class="red-text">您当前没有填写地址信息, 请进入个人信息填写</p>
                 </th:block>
                 <ul class="list-unstyled">
                     <li th:each="location:${customer.getLocations()}">
@@ -36,6 +36,7 @@
                 </ul>
                 <div>
                     <div class="input-group">
+                        <!--/*@thymesVar id="keyWord" type="java.lang.String"*/-->
                         <input type="text" class="form-control" placeholder="请先选择地址, 再输入搜索内容" id="search-input"
                                th:value="${keyWord}==null?'':${keyWord}">
                         <span class="input-group-addon btn red-block" id="search-button">搜索</span>
@@ -49,19 +50,26 @@
                 <div class="container">
                     <div class="row clearfix">
                         <div class="col-md-12 column">
+                            <!--/*@thymesVar id="resultRestaurants" type="java.util.List<com.kodomo.yummy.entity.restaurant.Restaurant>"*/-->
                             <div class="col-md-11 column red-border well"
                                  th:each="restaurant:${resultRestaurants}">
                                 <div class="row clearfix">
                                     <div class="col-md-10 column">
                                         <h2 th:text="${restaurant.getName()}"></h2>
-                                        <p th:text="${restaurant.getLocationInfo()}+' 距您'+${restaurant.getLocation().distanceBetweenByMeter(customer.getLocationById(locationId))}+'米'"></p>
+                                        <p th:with="distance=${restaurant.getLocation().distanceBetweenByMeter(customer.getLocationById(locationId))}">
+                                            <span th:text="${restaurant.getLocationInfo()}"></span>
+                                            <span th:class="'label '+${distance<1000?'label-success':(distance<3000?'label-warning':'label-danger')}">
+                                                <span>距您</span>
+                                                <span th:text="${distance}"></span>
+                                                <span>米</span>
+                                            </span>
+                                        </p>
                                         <p th:text="'类型:'+${restaurant.getTypeByString()}"></p>
                                         <p th:text="${restaurant.isMatched(keyWord)}" class="restaurant-search-tip"></p>
                                     </div>
                                     <div class="col-md-2 column">
                                         <a class="btn red-block pull-right"
-                                           th:href="@{/customer/ordering/}+${restaurant.getRestaurantId()}+'?location_id='+${locationId}"
-                                        >
+                                           th:href="@{/customer/ordering/}+${restaurant.getRestaurantId()}+'?location_id='+${locationId}">
                                             前往点餐
                                         </a>
                                     </div>
@@ -73,6 +81,8 @@
             </div>
         </div>
     </div>
+
+    <th:block th:replace="tail"/>
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/bootstrap.js}"></script>

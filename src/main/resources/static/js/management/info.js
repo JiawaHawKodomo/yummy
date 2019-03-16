@@ -4,6 +4,9 @@ const refundStrategyTable = $('#refund-strategy-table');
 const customerLevelStrategyTable = $('#customer-level-strategy-table');
 const restaurantModificationInfo = $('#restaurant-modification-info');
 
+const restaurantRigisterBadge = $('#approve-restaurant-register-badge');
+const restaurantModifyBadge = $('#approve-restaurant-modify-badge');
+
 $('.restaurant-modification-pass-button').on('click', function () {
     restaurantModificationConfirm(true, $(this).parents('.restaurant-modification-tr'));
 });
@@ -21,6 +24,12 @@ function restaurantModificationConfirm(pass, elem) {
             if (data.result) {
                 restaurantModificationInfo.hide().text('成功').fadeIn();
                 elem.remove();
+                const num = Number(restaurantModifyBadge.text());
+                if (num === 1) {
+                    restaurantModifyBadge.remove();
+                } else {
+                    restaurantModifyBadge.text(num - 1);
+                }
             } else {
                 restaurantModificationInfo.hide().text('失败:' + data.info).fadeIn();
             }
@@ -170,16 +179,23 @@ function tryToApprove(id, pass) {
         success: function (data) {
             if (data.result) {
                 if (pass) {
-                    bootbox.alert('已通过',function () {
+                    bootbox.alert('已通过', function () {
                         history.go(0);
                     });
                 } else {
-                    bootbox.alert('未能通过',function () {
+                    bootbox.alert('未能通过', function () {
                         history.go(0);
                     })
                 }
+
+                const num = Number(restaurantRigisterBadge.text());
+                if (num === 1) {
+                    restaurantRigisterBadge.remove();
+                } else {
+                    restaurantRigisterBadge.text(num - 1);
+                }
             } else {
-                alert(data.info);
+                bootbox.alert(data.info);
             }
         }
     });

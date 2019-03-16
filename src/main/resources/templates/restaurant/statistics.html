@@ -16,7 +16,9 @@
     <th:block th:replace="restaurant/head"/>
 
     <div class="container">
-        <h1>用户信息统计</h1>
+        <h1>用户信息统计
+            <small>点击图标项查看详细信息</small>
+        </h1>
         <div class="row">
             <div class="col-xs-3" id="myScrollspy">
                 <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="150">
@@ -27,17 +29,27 @@
             </div>
             <div class="col-xs-9">
                 <h3 id="financial-detail-h">财务明细</h3>
-                <table id="detail-table" class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>时间</th>
-                        <th>订单号</th>
-                        <th>实收款</th>
-                        <th>买家</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                </table>
+                <div class="panel-group well" id="panel-799425">
+                    <div class="panel-heading" data-toggle="collapse" data-parent="#panel-799425"
+                         href="#ongoing-orders-div">
+                        <a class="panel-title">展开/收回</a>
+                    </div>
+                    <div id="ongoing-orders-div" class="panel-collapse in">
+                        <div class="panel-body">
+                            <table id="detail-table" class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>订单号</th>
+                                    <th>实收款</th>
+                                    <th>买家</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 <h3 id="order-quantity-h">订单数统计</h3>
                 <div id="day-order-quantity" style="height: 500px" class="statistics-div"></div>
                 <div id="month-order-quantity" style="height: 500px" class="statistics-div"></div>
@@ -47,6 +59,8 @@
             </div>
         </div>
     </div>
+
+    <th:block th:replace="tail"/>
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/echarts.js}"></script>

@@ -1,171 +1,129 @@
-registerAll();
+$('.strategy-delete-button').on('click', function () {
+    const father = $(this).parents('.strategy-tr');
+    const id = father.attr('value');
+    if (id === undefined) {
+        father.remove();
+    } else {
+    //已有的策略, 删除
+        $.ajax({
+            type: 'delete',
+            url: '/restaurant/strategy',
+            data: {id: id},
+            success: function (data) {
+                if (data.result) {
+                    $('#strategy-info').hide().text('成功').fadeIn();
+                    father.remove();
+                } else {
+                    $('#strategy-info').hide().text('失败:' + data.info).fadeIn();
+                }
+            }
+        });
+    }
+});
 
-function registerAll() {
-    registerTypeButtons();
-    registerOfferingButtons();
-    registerStrategyButtons();
-}
+//删除商品
+$('.offering-delete-button').on('click', function () {
+    const father = $(this).parents('.offering-div');
+    const id = father.attr('value');
+    if (id === undefined || id === null) {
+        father.remove();
+        return;
+    }
 
-function registerStrategyButtons() {
-    $('.strategy-delete-button').on('click', function () {
-        const father = $(this).parents('.strategy-tr');
-        if (father.find('.strategy-m-input').length === 0) {
-            //已有的策略, 删除
-            const id = father.attr('value');
+    bootbox.confirm('确定删除该商品吗?', function (data) {
+        if (data) {
+            //发送
             $.ajax({
                 type: 'delete',
-                url: '/restaurant/strategy',
+                url: '/restaurant/offering',
                 data: {id: id},
                 success: function (data) {
+                    console.log(data);
                     if (data.result) {
-                        $('#strategy-info').hide().text('成功').fadeIn();
                         father.remove();
+                        $('#offering-info').hide().text('成功').fadeIn();
                     } else {
-                        $('#strategy-info').hide().text('失败:' + data.info).fadeIn();
+                        $('#offering-info').hide().text('失败:' + data.info).fadeIn();
                     }
                 }
-            })
-        } else {
-            father.remove();
+            });
         }
     });
-}
+});
 
-function registerOfferingButtons() {
-    registerOfferingTypeRemoveButton();
-    var options = [];
-    $('.offering-type-radio').each(function () {
-        options.push(
-            $('<option></option>').attr('class', 'offering-type-option').val($(this).val())
-                .text($(this).parents('label').text())
-        )
+//保存
+$('.offering-save-button').on('click', function () {
+    tryToSaveNewOffering($(this).parents('.offering-div'));
+});
+
+//上升按钮
+$('.type-up-button').on('click', function () {
+    const thisTr = $(this).parents('.type-tr');
+    const prevTr = thisTr.prev();
+    if (prevTr.find('.type-name-input').length > 0) {
+        thisTr.fadeOut().fadeIn();
+        prevTr.before(thisTr);
+    }
+});
+
+//下降按钮
+$('.type-down-button').on('click', function () {
+    const thisTr = $(this).parents('.type-tr');
+    const nextTr = thisTr.next();
+    if (nextTr.find('.type-name-input').length > 0) {
+        //thisTr.insertAfter(nextTr);
+        thisTr.fadeOut().fadeIn();
+        nextTr.after(thisTr);
+    }
+});
+
+//删除按钮
+$('.type-delete-button').on('click', function () {
+    $(this).parents('.type-tr').remove();
+});
+
+function tryToSaveNewOffering(father) {
+    const name = father.find('.offering-name-input').val();
+    const price = father.find('.offering-price-input').val();
+    const note = father.find('.offering-note-input').val();
+    const id = father.attr('value');
+    const startTime = father.find('.offering-start-time-input').val();
+    const endTime = father.find('.offering-end-time-input').val();
+    const remaining = father.find('.offering-remaining-input').val();
+    const types = [];
+
+    father.find('.offering-type-checkbox:checked').each(function () {
+        types.push($(this).val());
     });
 
-    //添加种类按钮
-    $('.offering-type-add-button').on('click', function () {
-        $(this).before(
-            $('<div></div>').attr('class', 'offering-type-div').append(
-                $('<select></select>').attr('class', 'offering-type-select').append(
-                    options
-                )
-            ).append(
-                $('<button></button>').attr('class', 'offering-type-remove-button').text('×')
-            )
-        );
-        registerOfferingTypeRemoveButton();
-    });
+    const data = {
+        name: name,
+        price: price,
+        note: note,
+        id: id,
+        types: types,
+        startTime: startTime,
+        endTime: endTime,
+        remaining: remaining
+    };
 
-    //保存
-    $('.offering-save-button').on('click', function () {
-        const father = $(this).parents('.offering-div');
-        const name = father.find('.offering-name-input').val();
-        const price = father.find('.offering-price-input').val();
-        const note = father.find('.offering-note-input').val();
-        const id = father.attr('value');
-        const startTime = father.find('.offering-start-time-input').val();
-        const endTime = father.find('.offering-end-time-input').val();
-        const remaining = father.find('.offering-remaining-input').val();
-        const types = [];
-
-        father.find('.offering-type-checkbox:checked').each(function () {
-            types.push($(this).val());
-        });
-
-        const data = {
-            name: name,
-            price: price,
-            note: note,
-            id: id,
-            types: types,
-            startTime: startTime,
-            endTime: endTime,
-            remaining: remaining
-        };
-
-        //发送
-        $.ajax({
-            type: 'post',
-            url: '/restaurant/offering',
-            dataType: 'json',
-            contentType: 'application/json;charsetset=UTF-8',
-            data: JSON.stringify(data),
-            success: function (data) {
-                console.log(data);
-                if (data.result) {
-                    bootbox.alert('成功',function () {
-                        history.go(0);
-                    });
-                } else {
-                    $('#offering-info').hide().text('失败:' + data.info).fadeIn();
-                }
-            }
-        });
-    });
-
-    //删除商品
-    $('.offering-delete-button').on('click', function () {
-        const father = $(this).parents('.offering-div');
-        const id = father.attr('value');
-        if (id === undefined || id === null) {
-            father.remove();
-            return;
-        }
-
-        bootbox.confirm('确定删除该商品吗?',function (data) {
-            if (data){
-                //发送
-                $.ajax({
-                    type: 'delete',
-                    url: '/restaurant/offering',
-                    data: {id: id},
-                    success: function (data) {
-                        console.log(data);
-                        if (data.result) {
-                            father.remove();
-                            $('#offering-info').hide().text('成功').fadeIn();
-                        } else {
-                            $('#offering-info').hide().text('失败:' + data.info).fadeIn();
-                        }
-                    }
+    //发送
+    $.ajax({
+        type: 'post',
+        url: '/restaurant/offering',
+        dataType: 'json',
+        contentType: 'application/json;charsetset=UTF-8',
+        data: JSON.stringify(data),
+        success: function (data) {
+            console.log(data);
+            if (data.result) {
+                bootbox.alert('成功', function () {
+                    history.go(0);
                 });
+            } else {
+                $('#offering-info').hide().text('失败:' + data.info).fadeIn();
             }
-        });
-    });
-}
-
-function registerOfferingTypeRemoveButton() {
-    //删除
-    $('.offering-type-remove-button').on('click', function () {
-        $(this).parents('.offering-type-div').remove();
-    });
-}
-
-function registerTypeButtons() {
-    //上升按钮
-    $('.type-up-button').on('click', function () {
-        const thisTr = $(this).parents('.type-tr');
-        const prevTr = thisTr.prev();
-        if (prevTr.find('.type-name-input').length > 0) {
-            thisTr.fadeOut().fadeIn();
-            prevTr.before(thisTr);
         }
-    });
-
-    //下降按钮
-    $('.type-down-button').on('click', function () {
-        const thisTr = $(this).parents('.type-tr');
-        const nextTr = thisTr.next();
-        if (nextTr.find('.type-name-input').length > 0) {
-            //thisTr.insertAfter(nextTr);
-
-            thisTr.fadeOut().fadeIn();
-            nextTr.after($thisTrtr);
-        }
-    });
-
-    //删除按钮
-    $('.type-delete-button').on('click', function () {
-        $(this).parents('.type-tr').remove();
     });
 }
 
@@ -175,7 +133,6 @@ $('#type-add-button').on('click', function () {
     newElement.attr('id', '');
     $('#type-table').append(newElement);
     newElement.show();
-    registerTypeButtons();
 });
 
 //保存按钮
@@ -210,7 +167,7 @@ $('#type-save-button').on('click', function () {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                bootbox.alert('成功',function () {
+                bootbox.alert('成功', function () {
                     history.go(0);
                 });
             } else {
@@ -226,7 +183,6 @@ $('#offering-add-button').on('click', function () {
     newElement.attr('id', '');
     $(this).after(newElement);
     newElement.slideDown();
-    registerOfferingButtons();
 });
 
 //展示菜品
@@ -270,7 +226,6 @@ $('#strategy-add-button').on('click', function () {
     newElement.attr('id', '');
     $('#strategy-table').append(newElement);
     newElement.show();
-    registerStrategyButtons();
 });
 
 //保存策略
@@ -295,7 +250,7 @@ $('#strategy-save-button').on('click', function () {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                bootbox.alert('成功',function () {
+                bootbox.alert('成功', function () {
                     history.go(0);
                 });
             } else {

@@ -39,7 +39,6 @@ public class OrderHelper {
         if (orders == null) return new ArrayList<>();
         return orders.stream()
                 .filter(order -> Objects.equals(time, new SimpleDateFormat(timeFormat).format(order.getCreateTime())))
-                .filter(Order::isDone)
                 .collect(Collectors.toList());
     }
 
@@ -47,7 +46,6 @@ public class OrderHelper {
         if (orders == null) return new ArrayList<>();
         return orders.stream()
                 .filter(order -> Objects.equals(restaurantId, order.getRestaurantId()))
-                .filter(Order::isDone)
                 .collect(Collectors.toList());
     }
 }

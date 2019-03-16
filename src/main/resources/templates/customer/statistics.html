@@ -15,7 +15,9 @@
 <th:block th:if="${customer}!=null">
     <div th:replace="customer/head"></div>
     <div class="container">
-        <h1>用户信息统计</h1>
+        <h1>用户信息统计
+            <small>点击图标项查看相关信息</small>
+        </h1>
         <div class="row">
             <div class="col-xs-3" id="myScrollspy">
                 <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="150">
@@ -37,6 +39,8 @@
             </div>
         </div>
     </div>
+
+    <th:block th:replace="tail"/>
 </th:block>
 <script th:src="@{/js/tool/jquery.js}"></script>
 <script th:src="@{/js/tool/echarts.js}"></script>
