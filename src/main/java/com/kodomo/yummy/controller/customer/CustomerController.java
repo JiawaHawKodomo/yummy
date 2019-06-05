@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,7 +96,7 @@ public class CustomerController {
     }
 
     @GetMapping
-    public String index(){
+    public String index() {
         return "redirect:/customer/place";
     }
 
@@ -120,7 +121,7 @@ public class CustomerController {
         String customerEmail = (String) request.getSession(true).getAttribute("customer");
 
         try {
-            customerBlService.recharge(customerEmail, amount);
+            customerBlService.recharge(customerEmail, amount, new Date());
             result.put("result", true);
         } catch (ParamErrorException e) {
             result.put("info", parameterErrorText + e.getErrorFieldsInfo());

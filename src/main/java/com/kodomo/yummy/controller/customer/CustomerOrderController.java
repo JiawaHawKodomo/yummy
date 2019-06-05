@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,7 @@ public class CustomerOrderController {
         }
 
         try {
-            Order order = orderBlService.createNewOrder(email, orderVo);
+            Order order = orderBlService.createNewOrder(email, orderVo, new Date());
             result.put("result", order.getOrderId());
         } catch (ParamErrorException e) {
             result.put("info", parameterErrorText + e.getErrorFieldsInfo());
@@ -199,7 +200,7 @@ public class CustomerOrderController {
         }
 
         try {
-            orderBlService.payOrder(email, password, orderId);
+            orderBlService.payOrder(email, password, orderId, new Date());
             result.put("result", true);
         } catch (ParamErrorException e) {
             result.put("info", parameterErrorText + e.getErrorFieldsInfo());
@@ -230,7 +231,7 @@ public class CustomerOrderController {
         }
 
         try {
-            orderBlService.customerConfirmOrder(email, orderId);
+            orderBlService.customerConfirmOrder(email, orderId, new Date());
             result.put("result", true);
         } catch (ParamErrorException e) {
             result.put("info", parameterErrorText + e.getErrorFieldsInfo());

@@ -13,6 +13,7 @@ import com.kodomo.yummy.entity.restaurant.RestaurantType;
 import com.kodomo.yummy.entity.entity_enum.RestaurantModificationState;
 import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.*;
+import com.kodomo.yummy.util.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -78,7 +79,7 @@ public class RestaurantEntityHelper {
         }
         Time[] times = new Time[0];
         try {
-            times = formatTimes(time);
+            times = Utility.formatTimes(time);
         } catch (Exception e) {
             errorField.add("营业时间");
         }
@@ -123,36 +124,6 @@ public class RestaurantEntityHelper {
     }
 
     /**
-     * 根据字符串返回两个时间
-     *
-     * @param s
-     * @return
-     * @throws Exception
-     */
-    private Time[] formatTimes(String s) throws Exception {
-        try {
-            String[] tmp = s.split("-");
-            String time0 = tmp[0];
-            String time1 = tmp[1];
-            String[] tmp0 = time0.split(":");
-            int t0h = Integer.parseInt(tmp0[0]);
-            int t0m = Integer.parseInt(tmp0[1]);
-            String[] tmp1 = time1.split(":");
-            int t1h = Integer.parseInt(tmp1[0]);
-            int t1m = Integer.parseInt(tmp1[1]);
-            if (t0h > 23 || t1h > 23 || t0m > 59 || t1m > 59)
-                throw new Exception();
-            Time r0 = Time.valueOf(tmp[0] + ":00");
-            Time r1 = Time.valueOf(tmp[1] + ":00");
-            if (r0.after(r1))
-                throw new Exception();
-            return new Time[]{r0, r1};
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
-    }
-
-    /**
      * 保存餐厅修改信息请求
      *
      * @param vo
@@ -183,7 +154,7 @@ public class RestaurantEntityHelper {
         }
         Time[] times = new Time[0];
         try {
-            times = formatTimes(vo.getBusinessHours());
+            times = Utility.formatTimes(vo.getBusinessHours());
         } catch (Exception e) {
             errors.add("营业时间");
         }

@@ -108,7 +108,7 @@ public class OrderBlServiceImpl implements OrderBlService {
      * @return
      */
     @Override
-    public Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException, ExceedRemainException {
+    public Order createNewOrder(String email, OrderVo vo, Date date) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException, ExceedRemainException {
         Order order = orderCreator.createNewOrder(email, vo);
 
         //该订单中的商品库存-1
@@ -122,6 +122,7 @@ public class OrderBlServiceImpl implements OrderBlService {
         //生成新的订单记录
         OrderLog orderLog = new OrderLog();
         orderLog.setOrder(order);
+        orderLog.setDate(date);
         orderLog.setToState(OrderState.UNPAID);
         orderLogDao.save(orderLog);
 
@@ -141,7 +142,7 @@ public class OrderBlServiceImpl implements OrderBlService {
      * @throws LackOfBalanceException   余额不足
      */
     @Override
-    public void payOrder(String email, String password, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, OrderTimeOutException, LackOfBalanceException, UnupdatableException, PasswordErrorException {
+    public void payOrder(String email, String password, Integer orderId, Date date) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, OrderTimeOutException, LackOfBalanceException, UnupdatableException, PasswordErrorException {
         if (email == null || orderId == null || password == null) {
             throw new ParamErrorException();
         }
@@ -164,7 +165,7 @@ public class OrderBlServiceImpl implements OrderBlService {
 
         //时间判断
         Date createTime = order.getCreateTime();
-        if (createTime == null || new Date().getTime() - createTime.getTime() >= maxPayTime * 60 * 1000) {
+        if (createTime == null || date.getTime() - createTime.getTime() >= maxPayTime * 60 * 1000) {
             //超时
             throw new OrderTimeOutException(createTime);
         }
@@ -177,7 +178,7 @@ public class OrderBlServiceImpl implements OrderBlService {
         //数据库处理
         customerDao.save(customer);
         orderDao.save(order);
-        orderLogHelper.createOrderLog(order, OrderState.ONGOING);
+        orderLogHelper.createOrderLog(order, OrderState.ONGOING, date);
     }
 
     /**
@@ -191,7 +192,7 @@ public class OrderBlServiceImpl implements OrderBlService {
      * @throws UnupdatableException     订单状态不正确
      */
     @Override
-    public void customerConfirmOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException {
+    public void customerConfirmOrder(String email, Integer orderId, Date date) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException {
         if (email == null || orderId == null) {
             throw new ParamErrorException();
         }
@@ -218,7 +219,7 @@ public class OrderBlServiceImpl implements OrderBlService {
         //数据库处理
         orderDao.save(order);
         restaurantDao.save(restaurant);
-        orderLogHelper.createOrderLog(order, OrderState.DONE);
+        orderLogHelper.createOrderLog(order, OrderState.DONE, date);
         //增加经验
         setLevelForCustomer(customer.getEmail(), order.getCustomerLevelStrategy());
     }
@@ -248,7 +249,7 @@ public class OrderBlServiceImpl implements OrderBlService {
         //数据库处理
         orderDao.save(order);
         restaurantDao.save(restaurant);
-        orderLogHelper.createOrderLog(order, OrderState.DONE);
+        orderLogHelper.createOrderLog(order, OrderState.DONE, new Date());
         //增加经验
         setLevelForCustomer(order.getCustomerEmail(), order.getCustomerLevelStrategy());
     }
@@ -294,7 +295,7 @@ public class OrderBlServiceImpl implements OrderBlService {
         //数据库处理
         orderDao.save(order);
         customerDao.save(customer);
-        orderLogHelper.createOrderLog(order, OrderState.CANCELLED);
+        orderLogHelper.createOrderLog(order, OrderState.CANCELLED, new Date());
     }
 
     private void setLevelForCustomer(String email, CustomerLevelStrategy strategy) {

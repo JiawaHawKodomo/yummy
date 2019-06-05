@@ -10,6 +10,7 @@ import com.kodomo.yummy.entity.order.Order;
 import com.kodomo.yummy.entity.restaurant.Restaurant;
 import com.kodomo.yummy.exceptions.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -130,7 +131,7 @@ public interface CustomerBlService {
      * @param customerEmail email
      * @param amount        数值
      */
-    void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException;
+    void recharge(String customerEmail, Double amount, Date date) throws ParamErrorException, UserNotExistsException, UnupdatableException;
 
     /**
      * 获取统计数据列表

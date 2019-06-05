@@ -28,7 +28,7 @@ public class CustomerRechargeLog {
     private Customer customer;
     @Column(updatable = false, nullable = false)
     private Double amount;
-    @Column(updatable = false, nullable = false, insertable = false, columnDefinition = "timestamp default now()")
+    @Column(updatable = false, nullable = false)
     private Date time;
 
     @Override

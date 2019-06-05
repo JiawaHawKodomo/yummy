@@ -21,6 +21,8 @@ import com.kodomo.yummy.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -292,7 +294,8 @@ public class CustomerBlServiceImpl implements CustomerBlService {
      * @param amount        数值
      */
     @Override
-    public void recharge(String customerEmail, Double amount) throws ParamErrorException, UserNotExistsException, UnupdatableException {
+    @Transactional
+    public void recharge(String customerEmail, Double amount, Date date) throws ParamErrorException, UserNotExistsException, UnupdatableException {
         if (customerEmail == null) {
             throw new ParamErrorException("用户");
         }
@@ -315,6 +318,7 @@ public class CustomerBlServiceImpl implements CustomerBlService {
         CustomerRechargeLog log = new CustomerRechargeLog();
         log.setCustomer(customer);
         log.setAmount(amount);
+        log.setTime(date);
         customerRechargeLogDao.save(log);
     }
 

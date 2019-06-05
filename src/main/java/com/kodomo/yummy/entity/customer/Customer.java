@@ -7,6 +7,7 @@ import com.kodomo.yummy.entity.entity_enum.UserState;
 import com.kodomo.yummy.exceptions.LackOfBalanceException;
 import com.kodomo.yummy.exceptions.ParamErrorException;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -29,11 +30,11 @@ public class Customer {
     private String telephone;
     @Column(name = "state", nullable = false, columnDefinition = "integer default 0")
     private UserState state;
-    @Column(nullable = false, columnDefinition = "double default 0", insertable = false)
+    @Column(name = "balance", columnDefinition = "double default 0", insertable = false)
     private Double balance;
-    @Column(nullable = false, columnDefinition = "integer default 0", insertable = false)
+    @Column(name = "level", columnDefinition = "int default 0", insertable = false, nullable = false)
     private Integer level;//等级
-    @Column(nullable = false, columnDefinition = "timestamp default now()", insertable = false)
+    @Column(name = "register_time", updatable = false, columnDefinition = "timestamp default current_timestamp()")
     private Date registerTime;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -66,7 +67,7 @@ public class Customer {
      *
      * @return set
      */
-    
+
     public Set<Location> getValidLocation() {
         if (getLocations() == null) return new HashSet<>();
         return getLocations().stream().filter(Location::getIsInUse).collect(Collectors.toSet());
@@ -103,7 +104,7 @@ public class Customer {
      *
      * @return set
      */
-    
+
     public List<Order> getUnpaidOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> o.getState() == OrderState.UNPAID)
@@ -116,7 +117,7 @@ public class Customer {
      *
      * @return
      */
-    
+
     public List<Order> getOngoingOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> o.getState() == OrderState.ONGOING)
@@ -129,7 +130,7 @@ public class Customer {
      *
      * @return
      */
-    
+
     public List<Order> getIdleOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream().filter(o -> o.getState() == OrderState.CANCELLED || o.getState() == OrderState.DONE)
@@ -142,7 +143,7 @@ public class Customer {
      *
      * @return
      */
-    
+
     public List<Order> getDoneOrders() {
         if (getOrders() == null) return new ArrayList<>();
         return getOrders().stream()
@@ -156,7 +157,7 @@ public class Customer {
      *
      * @return
      */
-    
+
     public Double getTotalConsumptionAmount() {
         return getDoneOrders().stream()
                 .mapToDouble(Order::getTotalPriceAfterDiscount)
@@ -188,8 +189,10 @@ public class Customer {
             throw new ParamErrorException("金额");
         }
 
-        if (getBalance() == null) setBalance(amount);
-        setBalance(getBalance() + amount);
+        if (getBalance() == null)
+            setBalance(amount);
+        else
+            setBalance(getBalance() + amount);
     }
 
     /**
@@ -223,7 +226,7 @@ public class Customer {
      *
      * @return
      */
-    
+
     public List<CustomerRechargeLog> getRechargeLogsByTimeDesc() {
         if (getRechargeLogs() == null) return new ArrayList<>();
         return getRechargeLogs().stream()

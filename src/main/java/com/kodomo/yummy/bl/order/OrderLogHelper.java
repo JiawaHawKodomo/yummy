@@ -8,6 +8,8 @@ import com.kodomo.yummy.exceptions.ParamErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 /**
  * @author Shuaiyu Yao
  * @create 2019-02-25 8:22
@@ -30,7 +32,7 @@ public class OrderLogHelper {
      * @return
      * @throws ParamErrorException 参数错误
      */
-    OrderLog createOrderLog(Order order, OrderState state) throws ParamErrorException {
+    OrderLog createOrderLog(Order order, OrderState state, Date date) throws ParamErrorException {
         if (order == null || state == null) {
             throw new ParamErrorException("订单编号, 状态");
         }
@@ -38,6 +40,7 @@ public class OrderLogHelper {
         OrderLog orderLog = new OrderLog();
         orderLog.setOrder(order);
         orderLog.setToState(state);
+        orderLog.setDate(date);
         return orderLogDao.save(orderLog);
     }
 }

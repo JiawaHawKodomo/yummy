@@ -8,11 +8,14 @@ spring:
     url: jdbc:mysql://localhost:3306/yummy?characterEncoding=UTF-8&useSSL=true&serverTimezone=GMT%2B8
   jpa:
     database: mysql
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
 
 yummy-system:
   min-payment: 0.01
@@ -67,3 +70,27 @@ lbs:
 smtp:
   key: goulheucygtrbjci
   email: 260386109@qq.com
+
+testdata:
+  restaurant:
+    size: 100
+    password: 123456
+    registerStartingTime: 2019-05-04
+    registerEndingTime: 2019-06-04
+    offering:
+      typeSize: 4
+      offeringSize: 30
+      maxPrice: 100
+      offeringRemaining: 50
+  customer:
+    size: 200
+    password: 123456
+    registerStartingTime: 2019-05-04
+    registerEndingTime: 2019-06-04
+    rechargeAmount: 100
+  order:
+    maxOfferingTypeNum: 3
+    endingTime: 2019-06-04
+    maxDailyOrderNum: 2
+    minDeliveryTime: 15
+    maxDeliveryTime: 45

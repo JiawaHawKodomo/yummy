@@ -26,7 +26,7 @@ public class OrderLog {
     @GenericGenerator(name = "generator_odl", strategy = "native")
     private Integer orderLogId;
 
-    @Column(updatable = false, insertable = false, nullable = false, columnDefinition = "timestamp default now()")
+    @Column(updatable = false, nullable = false)
     private Date date;//记录时间
 
     @Column(name = "to_state", updatable = false, nullable = false)

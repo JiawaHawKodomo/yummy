@@ -9,6 +9,7 @@ import com.kodomo.yummy.entity.order.OrderRefundStrategy;
 import com.kodomo.yummy.entity.order.OrderSettlementStrategy;
 import com.kodomo.yummy.exceptions.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ public interface OrderBlService {
      * @param vo    vo
      * @return
      */
-    Order createNewOrder(String email, OrderVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException, ExceedRemainException;
+    Order createNewOrder(String email, OrderVo vo, Date date) throws ParamErrorException, UserNotExistsException, UnupdatableException, RestaurantHasClosedException, ExceedRemainException;
 
     /**
      * 支付订单
@@ -73,7 +74,7 @@ public interface OrderBlService {
      * @throws OrderTimeOutException    订单超时
      * @throws LackOfBalanceException   余额不足
      */
-    void payOrder(String email, String password, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, OrderTimeOutException, LackOfBalanceException, UnupdatableException, PasswordErrorException;
+    void payOrder(String email, String password, Integer orderId, Date date) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, OrderTimeOutException, LackOfBalanceException, UnupdatableException, PasswordErrorException;
 
     /**
      * 确认订单
@@ -85,7 +86,7 @@ public interface OrderBlService {
      * @throws NoSuchAttributeException 订单不存在
      * @throws UnupdatableException     订单状态不正确
      */
-    void customerConfirmOrder(String email, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
+    void customerConfirmOrder(String email, Integer orderId, Date date) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
 
     void restaurantConfirmOrder(Integer restaurantId, Integer orderId) throws ParamErrorException, UserNotExistsException, NoSuchAttributeException, UnupdatableException;
 
