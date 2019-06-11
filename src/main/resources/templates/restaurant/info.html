@@ -1,112 +1,104 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Yummy! 商家信息</title>
-    <!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
-    <meta th:each="strategy:${restaurant.getRestaurantValidStrategyByAmount()}"
-          th:content="${strategy.getGreaterThan()}+'-'+${strategy.getDiscount()}"
-          name="strategy">
-    <meta name="restaurantId" th:content="${restaurant.getRestaurantId()}">
-    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
-    <link th:href="@{/css/general.css}" rel="stylesheet">
-    <link th:href="@{/css/statistics.css}" rel="stylesheet">
-</head>
-<body th:with="self=${session.restaurant}" data-spy="scroll" data-target="#myScrollspy">
-<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
-<th:block th:if="${restaurant}==null">
-    出错了
-</th:block>
-<th:block th:if="${restaurant}!=null">
-    <!--餐厅登录-->
-    <th:block th:if="${restaurant.getRestaurantId().equals(self)}">
-        <th:block th:replace="restaurant/head"/>
-    </th:block>
 
-    <!--客户登录-->
-    <!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
-    <th:block th:if="${customer}!=null">
-        <th:block th:replace="customer/head"/>
+	<head>
+		<meta charset="UTF-8">
+		<title>Yummy! 商家信息</title>
+		<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
+		<meta th:each="strategy:${restaurant.getRestaurantValidStrategyByAmount()}" th:content="${strategy.getGreaterThan()}+'-'+${strategy.getDiscount()}" name="strategy">
+		<meta name="restaurantId" th:content="${restaurant.getRestaurantId()}">
+		<link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+		<link th:href="@{/css/general.css}" rel="stylesheet">
+		<link th:href="@{/css/statistics.css}" rel="stylesheet">
+	</head>
 
-    </th:block>
+	<body th:with="self=${session.restaurant}" data-spy="scroll" data-target="#myScrollspy">
+		<!--/*@thymesVar id="restaurant" type="com.kodomo.yummy.entity.restaurant.Restaurant"*/-->
+		<th:block th:if="${restaurant}==null">
+			出错了
+		</th:block>
+		<th:block th:if="${restaurant}!=null">
+			<!--餐厅登录-->
+			<th:block th:if="${restaurant.getRestaurantId().equals(self)}">
+				<th:block th:replace="restaurant/head" />
+			</th:block>
 
-    <div class="container">
-        <div class="row clearfix">
-            <div class="col-md-12 column">
+			<!--客户登录-->
+			<!--/*@thymesVar id="customer" type="com.kodomo.yummy.entity.customer.Customer"*/-->
+			<th:block th:if="${customer}!=null">
+				<th:block th:replace="customer/head" />
 
-                <div th:if="${customer}!=null" class="well well-large">
-                    <h3>地址</h3>
-                    <th:block th:if="${customer.getLocations().size()}==0">
-                        <p class="red-color">您当前没有填写地址信息, 请进入个人信息填写</p>
-                    </th:block>
-                    <ul class="list-unstyled">
-                        <li th:each="location:${customer.getLocations()}">
-                            <div class="radio">
-                                <label>
+			</th:block>
+
+			<div class="container">
+				<div class="row clearfix">
+					<div class="col-md-12 column">
+
+						<div style="display: none;" th:if="${customer}!=null" class="well well-large">
+							<h3>地址</h3>
+							<th:block th:if="${customer.getLocations().size()}==0">
+								<p class="red-color">您当前没有填写地址信息, 请进入个人信息填写</p>
+							</th:block>
+
+							<ul class="list-unstyled">
+								<li th:each="location:${customer.getLocations()}">
+									<div class="radio">
+										<label>
                                     <!--/*@thymesVar id="locationId" type="java.lang.Integer"*/-->
                                     <input type="radio" name="location" th:value="${location.getLocationId()}"
                                            class="location-select-radio"
                                            th:checked="${location.getLocationId().equals(locationId)}">
                                     <th:block th:text="${location.getInfo()}"/>
                                 </label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="well well-large">
-                    <div class="page-header">
-                        <h1>
-                            <th:block th:text="${restaurant.getName()}"/>
-                            <small th:text="${restaurant.getLocationInfo()}"></small>
-                        </h1>
-                    </div>
-                    <div class="alert red-block alert-dismissable"
-                         th:if="${restaurant.getRestaurantValidStrategyByAmount().size()!=0}">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4>
-                            满减优惠
-                        </h4>
-                        <strong th:text="${restaurant.getRestaurantStrategyText()}"></strong>
-                    </div>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="well well-large">
+							<div  style="margin-top:-10px ; " class="page-header">
+								<h1>
+		                            <th:block th:text="${restaurant.getName()}"/>
+		                            <small style="font-size: 12px;" th:text="${restaurant.getLocationInfo()}"></small>
+		                            
+									<small style="margin-top:10px;float: right;font-size: 14px;" th:text="${restaurant.getBusinessHours()}"></small>
+									<small style="margin-top:10px;float: right;font-size: 14px;">营业时间:</small>
+	                       		 </h1>
+							</div>
 
-                    <h4>商家备注:</h4>
-                    <pre th:text="${restaurant.getNote()}"></pre>
+							<div style="width:200px" class="alert red-block alert-dismissable" th:if="${restaurant.getRestaurantValidStrategyByAmount().size()!=0}">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+								<div style="font-size: 15px;">
+                           				<strong th:text="${restaurant.getRestaurantStrategyText()}"></strong>
+                        		</div>
 
-                    <div>
-                        <span>营业时间:</span>
-                        <span th:text="${restaurant.getBusinessHours()}"></span>
-                    </div>
-                </div>
-                <h5 class="page-header"></h5>
-                <div class="row well">
-                    <div class="col-xs-3" id="myScrollspy">
-                        <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="500">
-                            <li th:each="type:${restaurant.getOfferingTypeByOrder()}"
-                                th:value="${type.getOfferingTypeId()}">
-                                <a th:href="'#type-'+${type.getOfferingTypeId()}"
-                                   th:text="${type.getName()}">
-                                </a>
-                            </li>
-                            <li id="offering-non-type-radio"
-                                th:if="${restaurant.getNontypeOfferings().size()>0}">
-                                <a href="#type-non">
-                                    无类别商品
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-9">
-                        <div th:each="type:${restaurant.getOfferingTypeByOrder()}"
-                             class="row">
-                            <h3 th:text="${type.getName()}" th:id="'type-'+${type.getOfferingTypeId()}"></h3>
+							</div>
 
-                            <div class="col-xs-5 column offering-div red-border well"
-                                 th:each="offering:${type.getOnSaleOfferings()}"
-                                 th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}"
-                                 th:value="${offering.getOfferingId()}">
-                                <div class="row">
-                                    <div class="col-xs-offset-1 col-xs-8">
-                                        <h4>
+							<div style="margin-left:15px;color: lightslategrey;" th:text="${restaurant.getNote()}"></div>
+
+						</div>
+						<h5 class="page-header"></h5>
+						<div class="row well">
+							<div class="col-xs-3" id="myScrollspy">
+								<ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="500">
+									<li th:each="type:${restaurant.getOfferingTypeByOrder()}" th:value="${type.getOfferingTypeId()}">
+										<a th:href="'#type-'+${type.getOfferingTypeId()}" th:text="${type.getName()}">
+										</a>
+									</li>
+									<li id="offering-non-type-radio" th:if="${restaurant.getNontypeOfferings().size()>0}">
+										<a href="#type-non">
+											无类别商品
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="col-xs-9">
+								<div th:each="type:${restaurant.getOfferingTypeByOrder()}" class="row">
+									<h3 th:text="${type.getName()}" th:id="'type-'+${type.getOfferingTypeId()}"></h3>
+
+									<div class="col-xs-5 column offering-div red-border well" th:each="offering:${type.getOnSaleOfferings()}" th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}" th:value="${offering.getOfferingId()}">
+										<div class="row">
+											<div class="col-xs-offset-1 col-xs-8">
+												<h4>
                                             <span th:text="${offering.getName()}" class="offering-div-name-span"></span>
                                             <small>
                                                 <span th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}"
@@ -114,39 +106,36 @@
                                                 <span>元</span>
                                             </small>
                                         </h4>
-                                        <p th:text="${offering.getNote()}"></p>
-                                        <h5>
+												<p th:text="${offering.getNote()}"></p>
+												<h5>
                                             <small th:if="${offering.getRemainingNumber()==null}">不限量</small>
                                             <small th:if="${offering.getRemainingNumber()!=null}"
                                                    th:text="'剩余'+${offering.getRemainingNumber()}+'个'"></small>
                                         </h5>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="btn-group pull-right">
-                                            <button class="btn transparent-block offering-div-plus-button"
-                                                    type="button">
-                                                <span class="glyphicon glyphicon-plus-sign"></span>
-                                            </button>
-                                            <button class="btn transparent-block offering-div-minus-button"
-                                                    type="button">
+											</div>
+											<div class="col-md-2">
+												<div class="btn-group pull-right">
+
+													<button class="btn transparent-block offering-div-minus-button" type="button">
                                                 <span class="glyphicon glyphicon-minus-sign"></span>
                                             </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                            </div>
-                        </div>
 
-                        <div class="row" th:if="${restaurant.getNontypeOfferings().size()>0}">
-                            <h3 id="type-non">无类别商品</h3>
-                            <div class="col-xs-5 column offering-div red-border well"
-                                 th:each="offering:${restaurant.getNontypeOfferings()}"
-                                 th:id="${'non'+'-'+offering.getOfferingTypeJoinBy('-')}"
-                                 th:value="${offering.getOfferingId()}">
-                                <div class="row">
-                                    <div class="col-xs-offset-1 col-xs-8">
-                                        <h4>
+													<button class="btn transparent-block offering-div-plus-button" type="button">
+                                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                            </button>
+												</div>
+											</div>
+										</div>
+										<br>
+									</div>
+								</div>
+
+								<div class="row" th:if="${restaurant.getNontypeOfferings().size()>0}">
+									<h3 id="type-non">无类别商品</h3>
+									<div class="col-xs-5 column offering-div red-border well" th:each="offering:${restaurant.getNontypeOfferings()}" th:id="${'non'+'-'+offering.getOfferingTypeJoinBy('-')}" th:value="${offering.getOfferingId()}">
+										<div class="row">
+											<div class="col-xs-offset-1 col-xs-8">
+												<h4>
                                             <span th:text="${offering.getName()}" class="offering-div-name-span"></span>
                                             <small>
                                                 <span th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}"
@@ -154,100 +143,109 @@
                                                 <span>元</span>
                                             </small>
                                         </h4>
-                                        <p th:text="${offering.getNote()}"></p>
-                                        <h5>
+												<p th:text="${offering.getNote()}"></p>
+												<h5>
                                             <small th:if="${offering.getRemainingNumber()==null}">不限量</small>
                                             <small th:if="${offering.getRemainingNumber()!=null}"
                                                    th:text="'剩余'+${offering.getRemainingNumber()}+'个'"></small>
                                         </h5>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="btn-group pull-right">
-                                            <button class="btn transparent-block offering-div-plus-button"
-                                                    type="button">
-                                                <span class="glyphicon glyphicon-plus-sign"></span>
-                                            </button>
-                                            <button class="btn transparent-block offering-div-minus-button"
-                                                    type="button">
-                                                <span class="glyphicon glyphicon-minus-sign"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+											</div>
+											<div class="col-md-2">
+												<div class="btn-group pull-right">
 
-    <th:block th:if="${customer}!=null">
-        <div style="position: fixed;right:0;bottom: 0;width: 350px;">
-            <div class="panel-group" id="panel-670143">
-                <div class="panel panel-default">
-                    <div class="panel-heading red-block" style="background: #ff6866">
-                        <a class="panel-title btn red-block" data-toggle="collapse" data-parent="#panel-670143"
-                           href="#panel-element-296503">购物车</a>
-                    </div>
-                    <div id="panel-element-296503" class="panel-collapse in">
-                        <div th:if="${restaurant.isOpenNow()}">
-                            <div id="offering-selected-div col-md-12">
-                                <em>已选:</em>
-                                <table id="offering-selected-table" class="table table-hover">
-                                    <tr id="create-new-offering-selected-tr" style="display: none">
-                                        <td><p class="offering-name-id"></p></td>
-                                        <td><p class="offering-price-td"></p></td>
-                                        <td>
-                                            <span>×</span>
-                                            <span class="offering-selected-number">1</span>
-                                        </td>
-                                        <td>
-                                            <button class="btn transparent-block selected-offering-plus-button">
-                                                <span class="glyphicon glyphicon-plus-sign"></span>
-                                            </button>
-                                            <button class="btn transparent-block selected-offering-minus-button">
+													<button class="btn transparent-block offering-div-minus-button" type="button">
                                                 <span class="glyphicon glyphicon-minus-sign"></span>
                                             </button>
-                                            <button class="btn transparent-block selected-offering-remove-button">
+
+													<button class="btn transparent-block offering-div-plus-button" type="button">
+                                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                            </button>
+												</div>
+											</div>
+										</div>
+										<br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<th:block th:if="${customer}!=null">
+				<div style="position: fixed;right:0;bottom: 0;width: 350px;">
+					<div class="panel-group" id="panel-670143">
+						<div class="panel panel-default">
+							<div class="panel-heading red-block" style="background: #ff6866">
+								<a class="panel-title btn red-block" data-toggle="collapse" data-parent="#panel-670143" href="#panel-element-296503">购物车</a>
+							</div>
+							<div id="panel-element-296503" class="panel-collapse in">
+								<div th:if="${restaurant.isOpenNow()}">
+									<div id="offering-selected-div col-md-12">
+										<em>已选:</em>
+										<table id="offering-selected-table" class="table table-hover">
+											<tr id="create-new-offering-selected-tr" style="display: none">
+												<td>
+													<p style="margin-top: 6px;" class="offering-name-id"></p>
+												</td>
+												<td>
+													<p style="margin-top: 6px;"  class="offering-price-td"></p>
+												</td>
+												<td>
+									<!--				<span>×</span>-->
+
+												</td>
+												<td>
+
+													<button class="btn transparent-block selected-offering-minus-button">
+                                                <span  class="glyphicon glyphicon-minus-sign"></span>
+                                            </button>
+													<button disabled="disabled" class="btn transparent-block selected-offering-minus-button">
+                                                	<span style="font-size: 15px;"  class="offering-selected-number">1</span>
+                                            </button>
+
+													<button class="btn transparent-block selected-offering-plus-button">
+                                                <span class="glyphicon glyphicon-plus-sign"></span>
+                                            </button>
+
+													<button class="btn transparent-block selected-offering-remove-button">
                                                 <span class="glyphicon glyphicon-trash"></span>
                                             </button>
-                                        </td>
-                                    </tr>
-                                </table>
+												</td>
+											</tr>
+										</table>
 
-                                <div style="width: 100%" class="well">
-                                    <div class="pull-right">
-                                        <span>总价: </span>
-                                        <span id="offering-total-before-price-span"
-                                              style="text-decoration: line-through"></span>
-                                        <span id="offering-total-price-span">0</span>
-                                        <span>元</span>
-                                        <button id="offering-submit-button" class="btn red-block">提交订单</button>
-                                        <button id="offering-selected-clear-button" class="btn red-block">
+										<div style="width: 100%" class="well">
+											<div class="pull-right">
+												<span>总价: </span>
+												<span id="offering-total-before-price-span" style="text-decoration: line-through"></span>
+												<span id="offering-total-price-span">0</span>
+												<span>元</span>
+												<button id="offering-submit-button" class="btn red-block">提交订单</button>
+												<button id="offering-selected-clear-button" class="btn red-block">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
-                                    </div>
-                                </div>
-                                <span class="red-text" id="offering-submit-info"></span>
-                            </div>
-                        </div>
-                        <div th:if="${!restaurant.isOpenNow()}">
-                            <h3>该餐厅已经打烊, 无法点餐</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </th:block>
+											</div>
+										</div>
+										<span class="red-text" id="offering-submit-info"></span>
+									</div>
+								</div>
+								<div th:if="${!restaurant.isOpenNow()}">
+									<h3>该餐厅已经打烊, 无法点餐</h3>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</th:block>
 
-    <th:block th:replace="tail"/>
-</th:block>
+			<th:block th:replace="tail" />
+		</th:block>
 
-<script th:src="@{/js/tool/jquery.js}"></script>
-<script th:src="@{/js/tool/bootstrap.js}"></script>
-<script th:src="@{/js/tool/bootbox.min.js}"></script>
-<script th:src="@{/js/restaurant/info.js}"></script>
-</body>
+		<script th:src="@{/js/tool/jquery.js}"></script>
+		<script th:src="@{/js/tool/bootstrap.js}"></script>
+		<script th:src="@{/js/tool/bootbox.min.js}"></script>
+		<script th:src="@{/js/restaurant/info.js}"></script>
+	</body>
+
 </html>
