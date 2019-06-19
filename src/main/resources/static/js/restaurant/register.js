@@ -43,8 +43,10 @@ function submit() {
         success: function (data) {
             console.log(data);
             if (data.result) {
-                bootbox.alert('注册成功',function () {
-                    location = '/restaurant';
+                bootbox.alert({
+                    title: "操作提示",
+                    message: "     操作成功   ",
+                    callback: function () {location = '/restaurant';}
                 });
             } else {
                 responseP.html(data.info);
