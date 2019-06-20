@@ -18,6 +18,7 @@
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <h3>选择地址</h3>
+                <br />
                 <th:block th:if="${customer.getLocations().size()}==0">
                     <p class="red-text">您当前没有填写地址信息, 请进入个人信息填写</p>
                 </th:block>
@@ -35,7 +36,7 @@
                     </li>
                 </ul>
                 <div>
-                    <div class="input-group">
+                    <div id="searchBox"  th:if="${resultRestaurants!=null&&resultRestaurants.size()>0}"  class="input-group">
                         <!--/*@thymesVar id="keyWord" type="java.lang.String"*/-->
                         <input type="text" class="form-control" placeholder="请先选择地址, 再输入搜索内容" id="search-input"
                                th:value="${keyWord}==null?'':${keyWord}">
@@ -46,7 +47,7 @@
         </div>
         <div class="row clearfix">
             <div class="col-md-12 column">
-                <h3>选择餐厅</h3>
+                <h3  th:if="${resultRestaurants!=null&&resultRestaurants.size()>0}" >选择餐厅</h3>
                 <div class="container">
                     <div class="row clearfix">
                         <div class="col-md-12 column">
@@ -70,7 +71,7 @@
                                     <div class="col-md-2 column">
                                         <a class="btn red-block pull-right"
                                            th:href="@{/customer/ordering/}+${restaurant.getRestaurantId()}+'?location_id='+${locationId}">
-                                            前往点餐
+                                            			前往点餐
                                         </a>
                                     </div>
                                 </div>
