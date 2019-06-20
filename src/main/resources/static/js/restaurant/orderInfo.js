@@ -8,14 +8,9 @@ $('#confirm-button').on('click', function () {
                 data: {orderId: $('meta[name="orderId"]').attr('content')},
                 success: function (data) {
                     if (data.result) {
-                        bootbox.alert(
-                            {
-                                title:"操作提示",
-                                message:"成功",
-                                callback:function () {
-                                    history.go(0);
-                                }
-                            });
+                        bootbox.alert('成功', function () {
+                            history.go(0);
+                        });
                     } else {
                         $('#order-operation-info').hide().text('失败:' + data.info).fadeIn();
                     }
