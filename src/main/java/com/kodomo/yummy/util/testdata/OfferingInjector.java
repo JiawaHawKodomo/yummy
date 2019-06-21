@@ -46,9 +46,13 @@ public class OfferingInjector {
 
     private void injectOfferingTypes(List<Restaurant> restaurants) {
         for (Restaurant restaurant : restaurants) {
+            List<String> typeNames = randomHelper.randomOfferingTypeNames(offeringTypeSize);
             Set<OfferingType> types = new HashSet<>();
-            for (int i = 0; i < offeringTypeSize; i++) {
-                types.add(randomType(i));
+            for (int i = 0; i < typeNames.size(); i++) {
+                OfferingType type = new OfferingType();
+                type.setName(typeNames.get(i));
+                type.setSequenceNumber(i);
+                types.add(type);
             }
 
             restaurant.setOfferingTypes(types);
@@ -67,16 +71,9 @@ public class OfferingInjector {
         offeringDao.saveAll(offerings);
     }
 
-    private OfferingType randomType(int index) {
-        OfferingType type = new OfferingType();
-        type.setName("类型" + index);
-        type.setSequenceNumber(index);
-        return type;
-    }
-
     private Offering randomOffering(Restaurant restaurant) {
         Offering offering = new Offering();
-        offering.setName("菜品" + randomHelper.randomIndex(1000));
+        offering.setName(randomHelper.randomOfferingName());
         offering.setNote("这是" + offering.getName());
         offering.setPrice((double) randomHelper.randomInt(offeringMaxPrice));
 

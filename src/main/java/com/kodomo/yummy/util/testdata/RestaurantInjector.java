@@ -84,7 +84,7 @@ public class RestaurantInjector {
     private Restaurant getRandomRestaurant() {
         Restaurant restaurant = new Restaurant();
 
-        restaurant.setName("餐厅" + randomHelper.randomIndex(10000));
+        restaurant.setName(randomHelper.randomRestaurantName());
         restaurant.setTelephone(randomHelper.randomTelephone());
         restaurant.setPassword(Utility.getSHA256Str(password));
         try {

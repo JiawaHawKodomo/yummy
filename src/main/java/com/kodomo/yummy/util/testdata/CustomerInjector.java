@@ -1,13 +1,9 @@
 package com.kodomo.yummy.util.testdata;
 
-import com.kodomo.yummy.bl.CustomerBlService;
 import com.kodomo.yummy.dao.CustomerDao;
 import com.kodomo.yummy.entity.Location;
 import com.kodomo.yummy.entity.customer.Customer;
 import com.kodomo.yummy.entity.entity_enum.UserState;
-import com.kodomo.yummy.exceptions.ParamErrorException;
-import com.kodomo.yummy.exceptions.UnupdatableException;
-import com.kodomo.yummy.exceptions.UserNotExistsException;
 import com.kodomo.yummy.util.AddressGetter;
 import com.kodomo.yummy.util.Utility;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +70,7 @@ public class CustomerInjector {
         Customer customer = new Customer();
         customer.setEmail(randomHelper.randomEmail());
         customer.setPassword(Utility.getSHA256Str(password));
-        customer.setName("顾客" + randomHelper.randomIndex(10000));
+        customer.setName(randomHelper.randomCustomerName());
         customer.setTelephone(randomHelper.randomTelephone());
         customer.setState(UserState.ACTIVATED);
         try {
