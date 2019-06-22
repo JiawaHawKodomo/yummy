@@ -1,5 +1,7 @@
 package com.kodomo.yummy.util.testdata;
 
+import com.kodomo.yummy.bl.restaurant.OfferingHelper;
+import com.kodomo.yummy.controller.vo.OfferingVo;
 import com.kodomo.yummy.dao.OfferingDao;
 import com.kodomo.yummy.dao.RestaurantDao;
 import com.kodomo.yummy.entity.restaurant.Offering;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Shuaiyu Yao
@@ -29,12 +32,14 @@ public class OfferingInjector {
     private final RestaurantDao restaurantDao;
     private final RandomHelper randomHelper;
     private final OfferingDao offeringDao;
+    private final OfferingHelper offeringHelper;
 
     @Autowired
-    public OfferingInjector(RestaurantDao restaurantDao, RandomHelper randomHelper, OfferingDao offeringDao) {
+    public OfferingInjector(RestaurantDao restaurantDao, RandomHelper randomHelper, OfferingDao offeringDao, OfferingHelper offeringHelper) {
         this.restaurantDao = restaurantDao;
         this.randomHelper = randomHelper;
         this.offeringDao = offeringDao;
+        this.offeringHelper = offeringHelper;
     }
 
     void injectTypeAndOffering(List<Restaurant> restaurants) {
@@ -61,6 +66,8 @@ public class OfferingInjector {
     }
 
     private void injectOfferings(List<Restaurant> restaurants) {
+        //更新restaurants
+        restaurants = restaurantDao.findAllById(restaurants.stream().map(Restaurant::getRestaurantId).collect(Collectors.toList()));
         List<Offering> offerings = new LinkedList<>();
         for (Restaurant restaurant : restaurants) {
             for (int i = 0; i < offeringSize; i++) {
@@ -69,6 +76,19 @@ public class OfferingInjector {
         }
 
         offeringDao.saveAll(offerings);
+    }
+
+    private OfferingVo randomOfferingVo(Restaurant restaurant) {
+        OfferingVo vo = new OfferingVo();
+        vo.setName(randomHelper.randomOfferingName());
+        vo.setNote("这是" + vo.getName());
+        vo.setPrice((double) randomHelper.randomInt(offeringMaxPrice));
+        if (randomHelper.randomBoolean()) {
+            vo.setRemaining(offeringRemaining);
+        }
+
+        vo.setTypes(randomHelper.randomCollection(restaurant.getOfferingTypes().stream().map(OfferingType::getOfferingTypeId).collect(Collectors.toList())));
+        return vo;
     }
 
     private Offering randomOffering(Restaurant restaurant) {

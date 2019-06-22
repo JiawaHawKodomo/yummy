@@ -43,7 +43,7 @@ public class Offering {
     @Column(name = "end_time")
     private Date endTime;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "_relationship_type_to_offering",
             joinColumns = {@JoinColumn(name = "offering_id")},
             inverseJoinColumns = {@JoinColumn(name = "offering_type_id")})
