@@ -55,7 +55,7 @@
 							</ul>
 						</div>
 						<div class="well well-large">
-							<div  style="margin-top:-10px ; " class="page-header">
+							<div style="margin-top:-10px ; " class="page-header">
 								<h1>
 		                            <th:block th:text="${restaurant.getName()}"/>
 		                            <small style="font-size: 12px;" th:text="${restaurant.getLocationInfo()}"></small>
@@ -68,8 +68,8 @@
 							<div style="width:200px" class="alert red-block alert-dismissable" th:if="${restaurant.getRestaurantValidStrategyByAmount().size()!=0}">
 								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 								<div style="font-size: 15px;">
-                           				<strong th:text="${restaurant.getRestaurantStrategyText()}"></strong>
-                        		</div>
+									<strong th:text="${restaurant.getRestaurantStrategyText()}"></strong>
+								</div>
 
 							</div>
 
@@ -97,46 +97,40 @@
 
 									<div class="col-xs-5 column offering-div red-border well" th:each="offering:${type.getOnSaleOfferings()}" th:id="${offering.isNonTyped()?'non':offering.getOfferingId()+'-'+offering.getOfferingTypeJoinBy('-')}" th:value="${offering.getOfferingId()}">
 										<div class="row">
-											<div style="margin-top:-20px;padding: 20px;" >
+											<div class="col-xs-offset-1 col-xs-8">
 												<h4>
-                                            		<span th:text="${offering.getName()}" class="offering-div-name-span"></span>
-                                            		
-                                            		<span style="font-size: 13px;" class="pull-right" th:if="${offering.getRemainingNumber()==null}">不限量</span>
-                                          			<span style="font-size: 13px;"  class="pull-right" th:if="${offering.getRemainingNumber()!=null}"
-                                                   	th:text="'剩余    '+${offering.getRemainingNumber()}+'份 '"></span>
-                                        			
-                                            	 </h4>
-												<p  style="color:gray;font-size: 13px;" th:text="${offering.getNote()}"></p>
-												
+                                           			<span th:text="${offering.getName()}" class="offering-div-name-span"></span>
+                                           			<small>
+                                                		<span th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}"
+                                                     	 class="offering-div-price-span"></span>
+                                                		<span>元</span>
+                                           			</small>
+                                       			</h4>
+												<p th:text="${offering.getNote()}"></p>
+												<h5>
+                                          		  	<small th:if="${offering.getRemainingNumber()==null}">不限量</small>
+                                            		<small th:if="${offering.getRemainingNumber()!=null}" th:text="'剩余'+${offering.getRemainingNumber()}+'个'"></small>
+                                       			</h5>
 											</div>
-											
-											<div style="margin-bottom: -30px;" class="row">
-												<divv style="margin-left: 30px;"  class="col-xs-6 pull-left " >
-	                                                <span style="color: darkred;font-size: 26px;" th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}"
-	                                                      class="offering-div-price-span"></span>
-	                                                <span style="color: darkred;font-size: 15px;">&nbsp;&nbsp;元</span>
-	                                            </div>
-	                                            <div style="margin-right: -30px;" class="col-xs-6 btn-group pull-right " >
-													<button class="btn transparent-block offering-div-minus-button" type="button">
-                                                		<span style="font-size: 16px;"  class="glyphicon glyphicon-minus-sign"></span>
-                                            		</button>
-													<button disabled="disabled" style=" cursor:default " class="btn transparent-block selected-offering-minus-button">
-                                                		<span style="font-size: 16px;"   class="offering-selected-number">1</span>
-                                            		</button>
+											<div class="col-md-2">
+												<div class="btn-group pull-right">
 													<button class="btn transparent-block offering-div-plus-button" type="button">
-		                                                <span style="font-size: 16px;"  class="glyphicon glyphicon-plus-sign"></span>
-		                                        	</button>
+	                                                	<span class="glyphicon glyphicon-plus-sign"></span>
+	                                            	</button>
+													<button class="btn transparent-block offering-div-minus-button" type="button">
+	                                                	<span class="glyphicon glyphicon-minus-sign"></span>
+	                                            	</button>
 												</div>
-											</div>	
-										<br>
+											</div>
+											<br>
+										</div>
 									</div>
 								</div>
-
 								<div class="row" th:if="${restaurant.getNontypeOfferings().size()>0}">
 									<h3 id="type-non">其他</h3>
 									<div class="col-xs-5 column offering-div red-border well" th:each="offering:${restaurant.getNontypeOfferings()}" th:id="${'non'+'-'+offering.getOfferingTypeJoinBy('-')}" th:value="${offering.getOfferingId()}">
 										<div class="row">
-											<div style="margin-top:-20px;padding: 20px;" >
+											<div style="margin-top:-20px;padding: 20px;">
 												<h4>
                                             		<span th:text="${offering.getName()}" class="offering-div-name-span"></span>
                                             		
@@ -145,36 +139,35 @@
                                                    	th:text="'剩余    '+${offering.getRemainingNumber()}+'份 '"></span>
                                         			
                                             	 </h4>
-												<p  style="color:gray;font-size: 13px;" th:text="${offering.getNote()}"></p>
-												
+												<p style="color:gray;font-size: 13px;" th:text="${offering.getNote()}"></p>
+
 											</div>
-											
+
 											<div style="margin-bottom: -30px;" class="row">
-												<divv style="margin-left: 30px;"  class="col-xs-6 pull-left " >
-	                                                <span style="color: darkred;font-size: 32px;" th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}"
-	                                                      class="offering-div-price-span"></span>
-	                                                <span style="color: darkred;font-size: 15px;">&nbsp;&nbsp;元</span>
-	                                            </div>
-	                                            <div style="margin-right: -30px;" class="col-xs-6 btn-group pull-right " >
-													<button class="btn transparent-block offering-div-minus-button" type="button">
+												<divv style="margin-left: 30px;" class="col-xs-6 pull-left ">
+													<span style="color: darkred;font-size: 32px;" th:text="${#numbers.formatDecimal(offering.getPrice(),0,2)}" class="offering-div-price-span"></span>
+													<span style="color: darkred;font-size: 15px;">&nbsp;&nbsp;元</span>
+											</div>
+											<div style="margin-right: -30px;" class="col-xs-6 btn-group pull-right ">
+												<button class="btn transparent-block offering-div-minus-button" type="button">
                                                 		<span style="font-size: 16px;"  class="glyphicon glyphicon-minus-sign"></span>
                                             		</button>
-													<button disabled="disabled" style=" cursor:default " class="btn transparent-block selected-offering-minus-button">
+												<button disabled="disabled" style=" cursor:default " class="btn transparent-block selected-offering-minus-button">
                                                 		<span style="font-size: 16px;"  class="offering-selected-number">1</span>
                                             		</button>
-													<button class="btn transparent-block offering-div-plus-button" type="button">
+												<button class="btn transparent-block offering-div-plus-button" type="button">
 		                                                <span style="font-size: 16px;"  class="glyphicon glyphicon-plus-sign"></span>
 		                                        	</button>
-												</div>
-											</div>	
+											</div>
 										</div>
-										<br>
 									</div>
+									<br>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+			</div>
 			</div>
 
 			<th:block th:if="${customer}!=null">
@@ -194,10 +187,10 @@
 													<p style="margin-top: 6px;" class="offering-name-id"></p>
 												</td>
 												<td>
-													<p style="margin-top: 6px;"  class="offering-price-td"></p>
+													<p style="margin-top: 6px;" class="offering-price-td"></p>
 												</td>
 												<td>
-									<!--				<span>×</span>-->
+													<!--				<span>×</span>-->
 
 												</td>
 												<td>
