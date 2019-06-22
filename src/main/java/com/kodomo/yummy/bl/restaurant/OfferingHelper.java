@@ -122,7 +122,7 @@ public class OfferingHelper {
      * @param rid
      * @param vo
      */
-    void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, DateSettingException {
+    public void saveOffering(Integer rid, OfferingVo vo) throws ParamErrorException, UserNotExistsException, UnupdatableException, DateSettingException {
         if (rid == null || vo == null) {
             throw new ParamErrorException();
         }

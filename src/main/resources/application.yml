@@ -79,7 +79,7 @@ testdata:
     registerEndingTime: 2019-06-04
     offering:
       typeSize: 4
-      offeringSize: 30
+      offeringSize: 20
       maxPrice: 100
       offeringRemaining: 50
   customer:

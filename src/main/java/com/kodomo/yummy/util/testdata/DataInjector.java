@@ -69,8 +69,8 @@ public class DataInjector implements ApplicationRunner {
         }
     }
 
-    @Transactional
-    void injectRestaurantData() {
+    //@Transactional
+    private void injectRestaurantData() {
         log.info("正在注入商家信息");
         List<Restaurant> restaurants = restaurantInjector.injectRestaurants();
         offeringInjector.injectTypeAndOffering(restaurants);
