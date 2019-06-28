@@ -1,3 +1,15 @@
+//var listss = document.getElementsByClassName("faculty-member");
+//for(var i = 0; i <= 193; i++) {
+//	var elee = listss[i];
+//
+//	;
+//	var imgurl = elee.childNodes[1].childNodes[0].src;
+//	var tname = elee.childNodes[3].childNodes[1].innerHTML;
+//	console.log(i+"|||"+imgurl+"|||"+tname)
+//}
+//
+//document.querySelector("#block-system-main > div > div.view-content > div:nth-child(" + ") > figure > img")
+
 //提交订单
 $('#offering-submit-button').on('click', function() {
 	const infoText = $('#offering-submit-info');
@@ -47,36 +59,74 @@ $('#offering-submit-button').on('click', function() {
 	});
 });
 
-$('.offering-div-plus-button').on('click', function() {
+$('.offering-div-plus-button').on('click', function(node) {
+	console.log("hhh")
 	const father = $(this).parents('.offering-div');
 	const offeringId = father.attr('value');
 	const name = father.find('.offering-div-name-span').text();
 	const price = father.find('.offering-div-price-span').text();
 	var elem = findSelectedOffering(offeringId);
-	if(elem.length > 0) {
-		var numberElem = elem.find('.offering-selected-number');
-		var newTxt = Number(numberElem.text()) + 1
-		numberElem.text(newTxt);
 
+	var offering1 = $('button.offering-selected-number[value="' + offeringId + '"]');
+
+	console.log("offering1", offering1)
+	var numberElem1 = offering1.find('.offering-selected-number');
+
+	var num = 0
+	if(numberElem1.length > 1) {
+		//		numberElem1=numberElem1.get(0)
+		num = Number(numberElem1.get(0).innerHTML);
+	} else {
+		num = Number(numberElem1.text());
+	}
+	console.log("numberElem1", numberElem1)
+
+	console.log("num1", num)
+	num = num + 1;
+	console.log("num2", num)
+	numberElem1.text(num)
+	console.log("num3", num)
+	if(elem.length > 0) {
+		var numberElem2 = elem.find('.offering-selected-number');
+		//		const num = Number(numberElem2.text());
+		numberElem2.text(num);
 	} else {
 		createNewSelectedOffering(offeringId, name, price);
 	}
+
 	calculateTotal();
 });
 
 $('.offering-div-minus-button').on('click', function() {
 	const offeringId = $(this).parents('.offering-div').attr('value');
 	var elem = findSelectedOffering(offeringId);
+
+	var offering1 = $('button.offering-selected-number[value="' + offeringId + '"]');
+	var numberElem1 = offering1.find('.offering-selected-number');
+	var num = 0
+	if(numberElem1.length > 1) {
+		num = Number(numberElem1.get(0).innerHTML);
+	} else {
+		num = Number(numberElem1.text());
+
+	if(num === 0) {
+		return
+	}
+
+	num = num - 1;
+	numberElem1.text(num)
+
 	if(elem.length > 0) {
 		var numberElem = elem.find('.offering-selected-number');
-		const num = Number(numberElem.text());
-		if(num === 1) {
+		
+		if(num === 0) {
 			elem.remove();
 		} else {
-			numberElem.text(num - 1);
+			numberElem.text(num);
 		}
 		calculateTotal();
 	}
+
 });
 
 function createNewSelectedOffering(id, name, price) {
@@ -86,19 +136,62 @@ function createNewSelectedOffering(id, name, price) {
 	newElement.find('.offering-price-td').text(price);
 	newElement.attr('id', '').attr('class', 'offering-selected-tr').attr('value', id).show();
 	newElement.find('.selected-offering-plus-button').on('click', function() {
+		//		var numberElem = newElement.find('.offering-selected-number');
+		//		numberElem.text(Number(numberElem.text()) + 1);
+		//		calculateTotal();
+
+		var offering1 = $('button.offering-selected-number[value="' + id + '"]');
+		console.log("offering1", offering1)
+		var numberElem1 = offering1.find('.offering-selected-number');
+
+		var num = 0
+		if(numberElem1.length > 1) {
+			num = Number(numberElem1.get(0).innerHTML);
+		} else {
+			num = Number(numberElem1.text());
+		}
+		num = num + 1;
+		numberElem1.text(num)
+
 		var numberElem = newElement.find('.offering-selected-number');
-		numberElem.text(Number(numberElem.text()) + 1);
+		numberElem.text(num);
+
 		calculateTotal();
+
 	});
 	newElement.find('.selected-offering-minus-button').on('click', function() {
+		//		var numberElem = newElement.find('.offering-selected-number');
+		//		const num = Number(numberElem.text());
+		//		if(num === 1) {
+		//			newElement.remove();
+		//		} else {
+		//			numberElem.text(num - 1);
+		//		}
+		//		calculateTotal();
+		var offering1 = $('button.offering-selected-number[value="' + id + '"]');
+		var numberElem1 = offering1.find('.offering-selected-number');
+		var num = 0
+		if(numberElem1.length > 1) {
+			num = Number(numberElem1.get(0).innerHTML);
+		} else {
+			num = Number(numberElem1.text());
+		}
+
+		if(num === 0) {
+			return
+		}
+
+		num = num - 1;
+		numberElem1.text(num)
+
 		var numberElem = newElement.find('.offering-selected-number');
-		const num = Number(numberElem.text());
-		if(num === 1) {
+		if(num === 0) {
 			newElement.remove();
 		} else {
-			numberElem.text(num - 1);
+			numberElem.text(num );
 		}
 		calculateTotal();
+
 	});
 	newElement.find('.selected-offering-remove-button').on('click', function() {
 		newElement.remove();
