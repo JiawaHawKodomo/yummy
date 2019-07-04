@@ -107,18 +107,15 @@ $('.offering-div-minus-button').on('click', function() {
 	if(numberElem1.length > 1) {
 		num = Number(numberElem1.get(0).innerHTML);
 	} else {
-		num = Number(numberElem1.text());
-
+        num = Number(numberElem1.text());
+    }
 	if(num === 0) {
 		return
 	}
-
 	num = num - 1;
 	numberElem1.text(num)
-
 	if(elem.length > 0) {
 		var numberElem = elem.find('.offering-selected-number');
-		
 		if(num === 0) {
 			elem.remove();
 		} else {
