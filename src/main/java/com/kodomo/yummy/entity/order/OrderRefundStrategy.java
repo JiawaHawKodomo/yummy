@@ -54,7 +54,7 @@ public class OrderRefundStrategy {
         return StaticConfig.getOrderRefundDefaultRate();
     }
 
-    
+
     public List<OrderRefundStrategyDetail> getDetailsByOrder() {
         if (getDetails() == null) return new ArrayList<>();
         return getDetails().stream()

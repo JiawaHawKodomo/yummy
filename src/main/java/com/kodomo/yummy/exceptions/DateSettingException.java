@@ -6,7 +6,7 @@ import java.security.PrivilegedActionException;
  * @author Shuaiyu Yao
  * @create 2019-03-02 12:49
  */
-public class DateSettingException extends Exception{
+public class DateSettingException extends Exception {
 
     /**
      * Constructs a new exception with {@code null} as its detail message.

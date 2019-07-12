@@ -63,6 +63,7 @@ public class Offering {
 
     /**
      * 是否正在销售
+     *
      * @return
      */
     boolean isOnSale() {
